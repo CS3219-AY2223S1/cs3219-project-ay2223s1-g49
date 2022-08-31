@@ -19,3 +19,12 @@ export async function createUser(req, res) {
         return res.status(500).json({message: 'Database failure when creating new user!'})
     }
 }
+
+export async function authUser(req, res) {
+    try{
+        const { username, password } = req.body;
+        return res.status(201).json({message: 'Routed successfully!'})
+    } catch (err){
+        return res.status(500).json({message: 'Error occured during login.'})
+    }
+}
