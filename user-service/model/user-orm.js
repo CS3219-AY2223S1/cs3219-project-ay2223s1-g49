@@ -13,11 +13,23 @@ export async function ormCreateUser(username, password) {
 }
 
 export async function ormAuthUser(username, password) {
-    console.log(`Attempting to authenticate ${username}`)
-    return await authUser(username, password);
+    try{
+        console.log(`Attempting to authenticate ${username} ...`)
+        const authSuccess = await authUser(username, password)
+        return authSuccess;
+    } catch (err) {
+        console.log(`Error occured during authentication attempt! Username: ${username}`)
+        return { err };
+    }
 }
 
 export async function ormCheckUser(username) {
-    return await checkUser(username);
+    try{
+        console.log(`Checking if ${username} exists ...`)
+        const checkRes = await checkUser(username);
+        return checkRes;
+    } catch (err){
+        console.log(`Error occured during user check! Username: ${username}`)
+        return { err }
+    }
 }
-

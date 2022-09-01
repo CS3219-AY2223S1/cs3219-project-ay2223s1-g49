@@ -25,19 +25,27 @@ export async function createUser(req, res) {
 export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
-        if (username && password) {
-            const resp = await _authUser(username, password);
-            console.log(resp);
-            if (!resp) {
-                return res.status(400).json({message: `Authentication failed for ${username}`});
-            } else {
-                console.log(`${username} Logged in successfully!`)
-                return res.status(200).json({message: `Logged in as ${username} successfully!`});
-            }
-        } else {
+
+        if (!username || !password){
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
+
+        const resp = await _authUser(username, password);
+        console.log(resp)
+
+        if (resp.err){
+            return res.status(500),json({message: 'Error occured during authentication'})
+        } else {
+            if (resp){
+                console.log(`${username} successfully authenticated!`)
+                return res.status(200).json({message: `Logged in as ${username}!`});
+            } else {
+                console.log(`Authentication failed for ${username}`)
+                return res.status(403).json({message: `Authentication failed for ${username}!`})
+            }
+        }
     } catch (err){
+        console.log(err)
         return res.status(500).json({message: 'Error occured during login.'})
     }
 }
@@ -45,18 +53,19 @@ export async function authUser(req, res) {
 export async function checkUser(req, res) {
     try{
         const { username } = req.body;
-        if (username) {
-            const resp = await _checkUser(username);
-            console.log(resp);
-            if (!resp) {
-                return res.status(400).json({message: `${username} does not exist`});
-            } else {
-                return res.status(200).json({message: `${username} exists!`});
-            }
+        if (!username) return res.status(400).json({message: 'Username is missing!'});
+
+        const resp = await _checkUser(username);
+        console.log(resp);
+        
+        if (!resp) {
+            return res.status(400).json({message: `${username} does not exist`});
         } else {
-            return res.status(400).json({message: 'Username is missing!'});
+            return res.status(200).json({message: `${username} exists!`});
         }
+
     } catch (err){
+        console.log(err)
         return res.status(500).json({message: 'Error occured during check.'})
     }
 }
