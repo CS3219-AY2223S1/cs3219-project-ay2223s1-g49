@@ -3,7 +3,6 @@ import 'dotenv/config'
 
 //Set up mongoose connection
 import mongoose from 'mongoose';
-import { authUser } from '../controller/user-controller.js';
 import { json } from 'express';
 
 let mongoDB = process.env.ENV == "PROD" ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
@@ -24,6 +23,19 @@ export async function checkUser(_username) {
     const query = UserModel.find({username: _username }).exec()
     await query.then( function(users) {
         if (users)  res = users.length > 0
+    })
+
+    return res;
+}
+
+export async function authUser(_username, _password) {
+    var res = false
+
+    const query = UserModel.find({ username: _username }).exec()
+    await query.then( function(users) {
+      if (users && users.length > 0) {
+        res = (_password == users[0].password)
+      }
     })
 
     return res;

@@ -28,7 +28,7 @@ export async function authUser(req, res) {
         if (username && password) {
             const resp = await _authUser(username, password);
             console.log(resp);
-            if (resp.err) {
+            if (!resp) {
                 return res.status(400).json({message: `Authentication failed for ${username}`});
             } else {
                 console.log(`${username} Logged in successfully!`)
