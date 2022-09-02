@@ -15,3 +15,14 @@ export async function createUser(params) {
   return new UserModel(params)
 }
 
+export async function checkUser(_username) {
+
+  var res = false;
+
+  const query = UserModel.find({username: _username }).exec()
+  await query.then( function(users) {
+      if (users)  res = users.length > 0
+  })
+
+  return res;
+}
