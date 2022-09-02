@@ -5,23 +5,28 @@ export async function ormCreateUser(username, password) {
   try {
     const newUser = await createUser({ username, password });
     await newUser.save();
-    return {
+
+    const resp = {
       err: null,
       message: `Created new user ${username} successfully!`,
     };
+
+    return resp;
   } catch (err) {
     let logMessage;
+    let resp;
 
     if (err && err.code === 11000) {
       //duplicate key
       logMessage = `Username ${username} has been used!`;
+      resp = {
+        err: err,
+        message: logMessage,
+      };
     }
 
     console.log(logMessage);
-
-    return {
-      err: err,
-      message: logMessage,
-    };
+    return resp;
+    
   }
 }
