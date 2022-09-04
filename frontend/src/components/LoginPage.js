@@ -12,7 +12,7 @@ import {
 import {useState} from "react";
 import axios from "axios";
 import {URL_USER_LOGIN} from "../configs";
-import {STATUS_CODE_LOGIN_FAILED, STATUS_CODE_LOGIN_SUCCESS, STATUS_CODE_LOGIN_MISSING} from "../constants";
+import { STATUS_CODE_LOGIN_SUCCESS } from "../constants";
 import {Link} from "react-router-dom";
 
 function LoginPage() {
@@ -89,7 +89,7 @@ function LoginPage() {
                 </DialogContent>
                 <DialogActions>
                     {isLoginSuccess
-                        ? <Button component={Link} to="/mainpage">Main Page</Button>
+                        ? <Button component={Link} to="/mainpage">Main Page  </Button>
                         : <Button onClick={closeDialog}>Done</Button>
                     }
                 </DialogActions>
