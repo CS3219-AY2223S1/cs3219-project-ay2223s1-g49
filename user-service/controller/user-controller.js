@@ -26,7 +26,7 @@ export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
 
-        if (!username || !password){
+        if (!username || username==="" || !password || password===""){
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
 

@@ -118,9 +118,37 @@ describe("Test user login", () => {
         })
     })
 
+    it("Testing empty username", done => {
+        const EMPTY_USERNAME = ""
+        const VALID_PASSWORD = "NONE"
+        let invalidLogin = { username: EMPTY_USERNAME , password: VALID_PASSWORD}
+        chai.request(app)
+        .post('/api/user/login')
+        .send(invalidLogin)
+        .end( (req,res) => {
+            expect(res).to.have.status(400);
+            expect(res.body.message).to.equal(`Username and/or Password are missing!`)
+            done();
+        })
+    })
+
     it("Testing missing password", done => {
         const VALID_PASSWORD = "test"
         let invalidLogin = { username: VALID_PASSWORD }
+        chai.request(app)
+        .post('/api/user/login')
+        .send(invalidLogin)
+        .end( (req,res) => {
+            expect(res).to.have.status(400);
+            expect(res.body.message).to.equal(`Username and/or Password are missing!`)
+            done();
+        })
+    })
+
+    it("Testing empty password", done => {
+        const VALID_PASSWORD = "test"
+        const EMPTY_PASSWORD = ""
+        let invalidLogin = { username: VALID_PASSWORD , password: EMPTY_PASSWORD}
         chai.request(app)
         .post('/api/user/login')
         .send(invalidLogin)
