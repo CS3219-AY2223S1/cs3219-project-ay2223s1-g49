@@ -45,7 +45,7 @@ export async function authUser(req, res) {
             }
         }
     } catch (err){
-        console.log(err)
+        console.error(err)
         return res.status(500).json({message: 'Error occured during login.'})
     }
 }
@@ -56,16 +56,15 @@ export async function checkUser(req, res) {
         if (!username) return res.status(400).json({message: 'Username is missing!'});
 
         const resp = await _checkUser(username);
-        console.log(resp);
         
         if (!resp) {
-            return res.status(400).json({message: `${username} does not exist`});
+            return res.status(200).json({message: `${username} does not exist`});
         } else {
             return res.status(200).json({message: `${username} exists!`});
         }
 
     } catch (err){
-        console.log(err)
+        console.error(err)
         return res.status(500).json({message: 'Error occured during check.'})
     }
 }

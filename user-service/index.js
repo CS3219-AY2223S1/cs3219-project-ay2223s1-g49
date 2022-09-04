@@ -9,11 +9,12 @@ app.options('*', cors())
 import { createUser } from './controller/user-controller.js';
 import { authUser } from './controller/user-controller.js';
 import { checkUser } from './controller/user-controller.js';
+import { HELLO_WORLD_STRING } from './constants.js';
 
 const router = express.Router()
 
 // Controller will contain all the User-defined Routes
-router.get('/', (_, res) => res.send('Hello World from user-service'))
+router.get('/', (_, res) => res.send(HELLO_WORLD_STRING))
 router.post('/', createUser)
 router.post('/login', authUser)
 router.get('/check',checkUser)
