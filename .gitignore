@@ -1,4 +1,3 @@
 /frontend/node_modules/*
 /user-service/node_modules/*
-/matching-service/client/node_modules/*
-/matching-service/server/node_modules/*
+/matching-service/*/node_modules/*

@@ -9,6 +9,10 @@ let UserModelSchema = new Schema({
     difficulty: {
         type: String,
         required: true,
+    },
+    status: {
+        type: String,
+        required: true,
     }
 }, {
     timestamps: true,
