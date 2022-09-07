@@ -1,31 +1,26 @@
 import { createUser, checkUser } from "./repository.js";
+import bcrypt from 'bcrypt'
 
 //need to separate orm functions from repository to decouple business logic from persistence
-export async function ormCreateUser(username, password) {
+export async function ormCreateUser(username, unhashedPassword) {
   try {
-    const newUser = await createUser({ username, password });
+    const salt  = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(unhashedPassword, salt)
+    const newUser = await createUser({ username, password, salt });
+
     await newUser.save();
 
     const resp = {
       err: null,
       message: `Created new user ${username} successfully!`,
     };
-
     return resp;
+
   } catch (err) {
-    let logMessage;
-    let resp;
-
-    if (err && err.code === 11000) {
-      //duplicate key
-      logMessage = `Username ${username} has been used!`;
-      resp = {
-        err: err,
-        message: logMessage,
-      };
-    }
-
-    console.log(logMessage);
+    const resp = {
+      err: err,
+      message: "Unknown error occured in ormCreateUser",
+    };
     return resp;
 
   }
@@ -36,8 +31,10 @@ export async function ormCheckUser(username) {
       console.log(`Checking if ${username} exists ...`)
       const checkRes = await checkUser(username);
       return checkRes;
+
   } catch (err){
       console.log(`Error occured during user check! Username: ${username}`)
       return { err }
+
   }
 }

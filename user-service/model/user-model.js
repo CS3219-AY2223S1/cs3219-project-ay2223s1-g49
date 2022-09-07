@@ -9,6 +9,10 @@ let UserModelSchema = new Schema({
     password: {
         type: String,
         required: true,
+    },
+    salt: {
+        type: String,
+        required:true,
     }
 })
 
