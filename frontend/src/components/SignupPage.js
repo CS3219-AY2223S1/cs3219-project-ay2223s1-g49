@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import {useState} from "react";
 import axios from "axios";
-import {URL_USER_SVC} from "../configs";
+import {URL_USER_SIGNUP} from "../configs";
 import {STATUS_CODE_CONFLICT, STATUS_CODE_CREATED, STATUS_CODE_MISSING_PARAM, STATUS_CODE_UNKNOWN_ERROR} from "../constants";
 import {Link} from "react-router-dom";
 
@@ -25,7 +25,7 @@ function SignupPage() {
 
     const handleSignup = async () => {
         setIsSignupSuccess(false)
-        const res = await axios.post(URL_USER_SVC, { username, password })
+        const res = await axios.post(URL_USER_SIGNUP, { username, password })
             .catch((err) => {
                 console.log(err)
                 
