@@ -7,12 +7,17 @@ app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
 import { createUser } from './controller/user-controller.js';
+import { authUser } from './controller/user-controller.js';
+import { checkUser } from './controller/user-controller.js';
+import { HELLO_WORLD_STRING } from './constants.js';
 
 const router = express.Router()
 
 // Controller will contain all the User-defined Routes
-router.get('/', (_, res) => res.send('Hello World from user-service'))
+router.get('/', (_, res) => res.send(HELLO_WORLD_STRING))
 router.post('/', createUser)
+router.post('/login', authUser)
+router.get('/check',checkUser)
 
 app.use('/api/user', router).all((_, res) => {
     res.setHeader('content-type', 'application/json')
@@ -20,3 +25,5 @@ app.use('/api/user', router).all((_, res) => {
 })
 
 app.listen(8000, () => console.log('user-service listening on port 8000'));
+
+export default app
