@@ -22,11 +22,11 @@ function LoginPage() {
     const [dialogTitle, setDialogTitle] = useState("")
     const [dialogMsg, setDialogMsg] = useState("")
     const [isLoginSuccess, setIsLoginSuccess] = useState(false)
+    const storedJwt = localStorage.getItem('token');
+    const [jwt, setJwt] = useState(storedJwt || null);
 
     const handleLogin = async () => {
         setIsLoginSuccess(false)
-        console.error(username)
-        console.error(password)
         if (username==="" || password===""){
             setErrorDialog('Username or Password is missing!')
             return
@@ -37,6 +37,8 @@ function LoginPage() {
                 return
             })
         if (res && res.status === STATUS_CODE_LOGIN_SUCCESS) {
+            setJwt(res.data.token)
+            localStorage.setItem('token', res.data.token);
             setSuccessDialog('Logged in!')
             setIsLoginSuccess(true)
         }
