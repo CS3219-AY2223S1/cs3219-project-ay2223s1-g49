@@ -58,7 +58,6 @@ describe("Test user login", () => {
         .send(validLogin)
         .end( (req,res) => {
             expect(res).to.have.status(200);
-            expect(res.body.message).to.equal(`Logged in as ${VALID_USERNAME}!`)
             done();
         })
     })

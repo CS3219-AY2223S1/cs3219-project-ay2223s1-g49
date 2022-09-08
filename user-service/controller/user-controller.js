@@ -44,12 +44,9 @@ export async function authUser(req, res) {
                 console.log(`${username} successfully authenticated!`)
                 const user = { username: username }
                 let token = jwt.sign({ user:user },"TEST_KEY")
-                console.log(token)
                 res.status(200).cookie('token', token, { httpOnly: true });
                 res.json({ token });
-                console.log(res)
-                return res
-  //              return res.status(200).json({message: `Logged in as ${username}!`, token: token});
+                return res;
             } else {
                 console.log(`Authentication failed for ${username}`)
                 return res.status(403).json({message: `Authentication failed for ${username}!`})
