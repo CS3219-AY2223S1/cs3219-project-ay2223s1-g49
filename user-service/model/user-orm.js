@@ -1,15 +1,34 @@
-import { authUser, checkUser, createUser } from './repository.js';
+import { authUser, checkUser, createUser, checkUser } from "./repository.js";
 
 //need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateUser(username, password) {
-    try {
-        const newUser = await createUser({username, password});
-        newUser.save();
-        return true;
-    } catch (err) {
-        console.log('ERROR: Could not create new user');
-        return { err };
+  try {
+    const newUser = await createUser({ username, password });
+    await newUser.save();
+
+    const resp = {
+      err: null,
+      message: `Created new user ${username} successfully!`,
+    };
+
+    return resp;
+  } catch (err) {
+    let logMessage;
+    let resp;
+
+    if (err && err.code === 11000) {
+      //duplicate key
+      logMessage = `Username ${username} has been used!`;
+      resp = {
+        err: err,
+        message: logMessage,
+      };
     }
+
+    console.log(logMessage);
+    return resp;
+
+  }
 }
 
 export async function ormAuthUser(username, password) {

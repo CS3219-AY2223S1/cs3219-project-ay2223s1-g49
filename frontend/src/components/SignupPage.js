@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import {useState} from "react";
 import axios from "axios";
-import {URL_USER_SVC} from "../configs";
-import {STATUS_CODE_CONFLICT, STATUS_CODE_CREATED} from "../constants";
+import {URL_USER_SIGNUP} from "../configs";
+import {STATUS_CODE_CONFLICT, STATUS_CODE_CREATED, STATUS_CODE_MISSING_PARAM, STATUS_CODE_UNKNOWN_ERROR} from "../constants";
 import {Link} from "react-router-dom";
 
 function SignupPage() {
@@ -25,12 +25,23 @@ function SignupPage() {
 
     const handleSignup = async () => {
         setIsSignupSuccess(false)
-        const res = await axios.post(URL_USER_SVC, { username, password })
+        const res = await axios.post(URL_USER_SIGNUP, { username, password })
             .catch((err) => {
-                if (err.response.status === STATUS_CODE_CONFLICT) {
-                    setErrorDialog('This username already exists')
-                } else {
-                    setErrorDialog('Please try again later')
+                console.log(err)
+                
+                switch(err.response.status) {
+                    case STATUS_CODE_CONFLICT:
+                        setErrorDialog('This username already exists');
+                        break;
+                    case STATUS_CODE_MISSING_PARAM:
+                        setErrorDialog('Username/Password field is missing');
+                        break;
+                    case STATUS_CODE_UNKNOWN_ERROR:
+                        setErrorDialog('Unknown error occured, please contact developers');
+                        break;
+                    default:
+                        setErrorDialog('Please try again later')
+                        break;
                 }
             })
         if (res && res.status === STATUS_CODE_CREATED) {
