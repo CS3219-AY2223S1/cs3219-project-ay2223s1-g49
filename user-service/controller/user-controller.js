@@ -1,6 +1,10 @@
 import { ormCreateUser as _createUser } from '../model/user-orm.js'
 import { ormAuthUser as _authUser } from '../model/user-orm.js';
 import { ormCheckUser as _checkUser } from '../model/user-orm.js';
+import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
+
+const SECRET_KEY = crypto.randomBytes(16).toString('hex')
 
 export async function createUser(req, res) {
     try {
@@ -26,7 +30,7 @@ export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
 
-        if (!username || !password){
+        if (!username || username==="" || !password || password===""){
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
 
@@ -38,7 +42,10 @@ export async function authUser(req, res) {
         } else {
             if (resp){
                 console.log(`${username} successfully authenticated!`)
-                return res.status(200).json({message: `Logged in as ${username}!`});
+                const user = { username: username }
+                let token = jwt.sign({ user:user },"TEST_KEY")
+                console.log(token)
+                return res.status(200).json({message: `Logged in as ${username}!`, token: token});
             } else {
                 console.log(`Authentication failed for ${username}`)
                 return res.status(403).json({message: `Authentication failed for ${username}!`})
