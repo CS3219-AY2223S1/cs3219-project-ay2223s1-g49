@@ -1,5 +1,5 @@
-import { ormCreateUser as _createUser } from '../model/user-orm.js'
-import { ormCheckUser as _checkUser } from '../model/user-orm.js';
+import { ormCreateUser as _createUser, 
+         ormCheckUser as _checkUser } from '../model/user-orm.js'
 
 
 export async function createUser(req, res) {
