@@ -9,6 +9,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
+import Cookies from 'universal-cookie';
 import {useState} from "react";
 import axios from "axios";
 import {URL_USER_LOGIN} from "../configs";
@@ -22,7 +23,7 @@ function LoginPage() {
     const [dialogTitle, setDialogTitle] = useState("")
     const [dialogMsg, setDialogMsg] = useState("")
     const [isLoginSuccess, setIsLoginSuccess] = useState(false)
-    const storedJwt = localStorage.getItem('token');
+    const storedJwt = new Cookies().get('access token')
     const [jwt, setJwt] = useState(storedJwt || null);
 
     const handleLogin = async () => {
@@ -38,7 +39,11 @@ function LoginPage() {
             })
         if (res && res.status === STATUS_CODE_LOGIN_SUCCESS) {
             setJwt(res.data.token)
-            localStorage.setItem('token', res.data.token);
+            
+            const cookies = new Cookies();
+            cookies.set('access token', res.data.token, { path: '/' });
+            console.log(cookies.get('access token')); // Pacman
+            
             setSuccessDialog('Logged in!')
             setIsLoginSuccess(true)
         }
