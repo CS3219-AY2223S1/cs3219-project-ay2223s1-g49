@@ -10,7 +10,7 @@ let UserModelSchema = new Schema({
         type: String,
         required: true,
     },
-    status: {
+    roomId: {
         type: String,
         required: true,
     }
@@ -18,4 +18,4 @@ let UserModelSchema = new Schema({
     timestamps: true,
 })
 
-export default mongoose.model('pendingMatchModel', UserModelSchema)
+export default mongoose.model('MatchModel', UserModelSchema)

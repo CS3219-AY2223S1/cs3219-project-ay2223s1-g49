@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from "socket.io";
-import { createPendingMatch } from '../model/repository.js';
+import { createMatch } from '../controller/match-controller.js';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -22,7 +22,11 @@ const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
   console.log('Socket connected with id: ' + socket.id)
-  socket.on('begin-pending-match', (username, difficulty) => {
-    createPendingMatch({username, difficulty});
+  socket.on('match', (message) => {
+    createMatch(message, socket.id);
+  })
+
+  socket.on(`matchSuccess`, (message) => {
+
   })
 });
