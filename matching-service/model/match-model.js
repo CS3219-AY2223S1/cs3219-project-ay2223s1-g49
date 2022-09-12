@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 var Schema = mongoose.Schema
-let UserModelSchema = new Schema({
+let MatchModelSchema = new Schema({
     username: {
         type: String,
         required: true,
@@ -18,4 +18,4 @@ let UserModelSchema = new Schema({
     timestamps: true,
 })
 
-export default mongoose.model('MatchModel', UserModelSchema)
+export default mongoose.model('MatchModel', MatchModelSchema)

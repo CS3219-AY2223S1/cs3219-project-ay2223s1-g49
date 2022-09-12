@@ -1,4 +1,4 @@
-import { createMatch } from './repository.js';
+import { createMatch, getDifficultyForUser, deleteMatchForUser } from './repository.js';
 
 //need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateMatch(username, difficulty, roomId) {
@@ -12,3 +12,22 @@ export async function ormCreateMatch(username, difficulty, roomId) {
     }
 }
 
+export async function ormGetMatchForDifficulty(difficulty) {
+    try {
+        const userNameFound = getDifficultyForUser(difficulty);
+        return userNameFound;
+    } catch (err) {
+        console.log(`ERROR: Could not get entry with difficulty of ${difficulty}`);
+        return { err };
+    }
+}
+
+export async function ormDeleteMatchForUser(username) {
+    try {
+        const deleted = deleteMatchForUser(username);
+        return deleted;
+    } catch (err) {
+        console.log(`ERROR: Could not delete match for user: ${username}`);
+        return { err };
+    }
+}

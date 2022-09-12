@@ -17,3 +17,20 @@ export async function createMatch(params) {
   return new MatchModel(params)
 }
 
+export async function getDifficultyForUser(param) {
+  const query = MatchModel.findOne({"difficulty" : param}).exec();
+  var matchedUser = null;
+  await query.then( (matched) => {
+    matchedUser = matched;
+  })
+  return matchedUser;
+}
+
+export async function deleteMatchForUser(param) {
+  const query = MatchModel.findOneAndDelete({"username" : param}).exec();
+  var matchedUser = null;
+  await query.then( (matched) => {
+    matchedUser = matched;
+  })
+  return matchedUser;
+}
