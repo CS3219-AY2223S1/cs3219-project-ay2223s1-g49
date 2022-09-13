@@ -14,7 +14,7 @@ export async function ormCreateMatch(username, difficulty, roomId) {
 
 export async function ormGetMatchForDifficulty(difficulty) {
     try {
-        const userNameFound = getDifficultyForUser(difficulty);
+        const userNameFound = await getDifficultyForUser(difficulty);
         return userNameFound;
     } catch (err) {
         console.log(`ERROR: Could not get entry with difficulty of ${difficulty}`);

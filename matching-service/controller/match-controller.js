@@ -29,7 +29,6 @@ export async function createMatch(message, roomId) {
 export async function getMatchForDifficulty(difficulty) {
     try {
         const obj = await _getMatchForDifficulty(difficulty);
-        console.log(obj)
         return obj
     } catch (err) {
         console.log(`Error getting a match for difficulty of ${difficulty}`);
@@ -55,10 +54,8 @@ export async function attemptJoinMatch(message, socket) {
             await deleteMatchForUser(userMatch.username);
             await deleteMatchForUser(message.username);
             socket.emit(`matchSuccess`, socket.id, userMatch.roomId, uuidv4());
-            console.log(`emiteeeeeeeeeeee `)
-            console.log(uuidv4())
         } else {
-            console.log(`There is currently no users in the database with difficulty of: ${difficulty}`);
+            console.log(`There is currently no users in the database with difficulty of: ${message.difficulty}`);
         }
     } catch (err) {
         console.log(err)

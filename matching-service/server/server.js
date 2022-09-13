@@ -24,11 +24,13 @@ io.on("connection", (socket) => {
   console.log('Client connected with id: ' + socket.id)
 
   socket.on('match', (message) => {
-    if (getMatchForDifficulty(message.difficulty)) {
-      attemptJoinMatch(message, socket);
-    } else {
-      createMatch(message, socket.id);
-    }
+    getMatchForDifficulty(message.difficulty).then(result => {
+      if (result == null) {
+        createMatch(message, socket.id);
+      } else {
+        attemptJoinMatch(message, socket);
+      }
+    })
   })
 
   socket.on(`get`, (message) => {
