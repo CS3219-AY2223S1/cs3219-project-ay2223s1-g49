@@ -41,11 +41,4 @@ io.on("connection", (socket) => {
     deleteMatchForUser(message.username);
   })
 
-  socket.on(`matchSuccess`, (socketId1, socketId2, newRoomId) => {
-    console.log(`i hear youuuuuuuuuuuuuuuuuuuuu`)
-    if (socket.id == socketId1 || socket.id == socketId2) {
-      socket.join(newRoomId);
-      console.log(`Successfully joined room!`)
-    }
-  })
 });

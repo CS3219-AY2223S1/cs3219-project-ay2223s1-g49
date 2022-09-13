@@ -1,7 +1,7 @@
 import { ormCreateMatch as _createMatch } from '../model/match-orm.js'
 import { ormGetMatchForDifficulty as _getMatchForDifficulty } from '../model/match-orm.js'
 import { ormDeleteMatchForUser as _deleteMatchForUser} from '../model/match-orm.js'
-import { v4 as uuidv4 } from 'uuid'
+
 
 // message is a json object containing a username and difficulty field.
 export async function createMatch(message, roomId) {
@@ -53,12 +53,12 @@ export async function attemptJoinMatch(message, socket) {
             console.log(`Found user ${userMatch.username} with difficulty of : ${message.difficulty}`);
             await deleteMatchForUser(userMatch.username);
             await deleteMatchForUser(message.username);
-            socket.emit(`matchSuccess`, socket.id, userMatch.roomId, uuidv4());
+            socket.join(userMatch.roomId);
+            socket.emit(`matchSuccess`, socket.id, userMatch.roomId);
         } else {
             console.log(`There is currently no users in the database with difficulty of: ${message.difficulty}`);
         }
     } catch (err) {
-        console.log(err)
         console.log(`Unexpected error when joining match!`);
     }
 }
