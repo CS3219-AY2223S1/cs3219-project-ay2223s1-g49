@@ -1,6 +1,10 @@
-import { ormCreateUser as _createUser } from '../model/user-orm.js'
-import { ormAuthUser as _authUser } from '../model/user-orm.js';
-import { ormCheckUser as _checkUser } from '../model/user-orm.js';
+import { 
+    ormCreateUser as _createUser,
+    ormAuthUser as _authUser,
+    ormCheckUser as _checkUser,
+    ormBlacklistToken as _blacklistToken
+ } from '../model/user-orm.js'
+
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import cookieParser from 'cookie-parser';
@@ -56,8 +60,7 @@ export async function authUser(req, res) {
                 console.log(`${username} successfully authenticated!`)
                 const user = { username: username }
                 let token = jwt.sign({ user:user },"TEST_KEY")
-                res.status(200).cookie('token', token, { httpOnly: true });
-                res.json({ token });
+                res.status(200).json({ message: `Logged in as ${username}!`, token });
                 return res;
             } else {
                 console.log(`Authentication failed for ${username}`)
@@ -92,10 +95,27 @@ export async function checkUser(req, res) {
 export async function logout(req, res) {
     try{
         console.log('logout attempt')
-        //const cookie = req.headers.cookie
-        //console.log(req)
-        console.log(req.cookies['access token'])
-        res.status(200).json({message: 'done'})
+        const token = req.body.token;
+        console.log(token);
+        if (!token) return res.status(400).json({message: "No token given!"})
+        else {
+            // verify token
+            jwt.verify(token,"TEST_KEY", async (err,decoded) => {
+                if (err){
+                    return res.status(400).json({message: "Invalid token"})
+                } else{
+                    console.log(decoded);
+                    const username = decoded.user.username
+                    const resp = await _blacklistToken({username,token})
+                    if (resp.err){
+                        return res.status(400).json({message: "Unable to blacklist token"})
+                    } else {
+                        return res.status(200).json({message: "token blacklisted"})
+                    }
+                }
+            })
+        }
+
     } catch (err) {
         console.error(err)
         return res.status(500).json({message: 'Error occured during logout'})

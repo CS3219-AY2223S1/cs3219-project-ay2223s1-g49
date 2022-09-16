@@ -1,4 +1,5 @@
-import UserModel from './user-model.js';
+import  UserModel  from './user-model.js';
+import  TokenModel from './token-model.js'
 import 'dotenv/config'
 
 //Set up mongoose connection
@@ -39,4 +40,8 @@ export async function authUser(_username, _password) {
     })
 
     return res;
+}
+
+export async function blacklistToken(params) {
+    return new TokenModel(params)
 }
