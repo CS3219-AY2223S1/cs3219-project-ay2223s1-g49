@@ -1,0 +1,17 @@
+.body-container {
+   display: flex;
+   justify-content: center;
+   margin-top: 4vw;
+   height: 100%;
+   width: 100%;
+}
+
+.main-container {
+   display: flex;
+   flex-direction: column;
+   background-color: #F3F3F3;
+   position: absolute;
+   height: 100%;
+   width: 100%;
+}
+
