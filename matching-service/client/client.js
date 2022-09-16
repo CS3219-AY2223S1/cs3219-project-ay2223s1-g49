@@ -12,4 +12,13 @@ socket.on("connect", () => {
     })
 })
 
-socket.emit("match", {username : 'tester123', difficulty : 'hardy'});
+socket.emit("match", {username : 'teemo', difficulty : 'easy'});
+socket.emit("match", {username : 'tester123', difficulty : 'easy'});
+socket.emit("match", {username : 'fre', difficulty : 'easy'});
+socket.emit("match", {username : 'carl', difficulty : 'easy'});
+socket.emit("match", {username : 'bob', difficulty : 'easy'});
+socket.emit("match", {username : 'tim', difficulty : 'easy'});
+socket.emit("match", {username : 'tom', difficulty : 'easy'});
+socket.emit("match", {username : 'tie', difficulty : 'easy'});
+socket.emit("match", {username : 'kee', difficulty : 'easy'});
+socket.emit("match", {username : 'boby', difficulty : 'easy'});

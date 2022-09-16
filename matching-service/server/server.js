@@ -28,7 +28,7 @@ io.on("connection", (socket) => {
       if (result == null) {
         createMatch(message, socket.id);
       } else {
-        attemptJoinMatch(message, socket);
+        attemptJoinMatch(message, socket, io);
       }
     })
   })

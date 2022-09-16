@@ -11,7 +11,6 @@ export async function createMatch(message, roomId) {
         console.log(`Recieved username of: ${username} and difficulty of: ${difficulty}`)
         if (username && difficulty) {
             const resp = await _createMatch(username, difficulty, roomId);
-            console.log(resp);
             if (resp.err) {
                 console.log(`Could not create a match for ${username} with difficulty of ${difficulty}!`)
             } else {
@@ -46,7 +45,7 @@ export async function deleteMatchForUser(username) {
     }
 }
 
-export async function attemptJoinMatch(message, socket) {
+export async function attemptJoinMatch(message, socket, io) {
     try {
         const userMatch = await getMatchForDifficulty(message.difficulty);
         if (userMatch) {
@@ -54,11 +53,14 @@ export async function attemptJoinMatch(message, socket) {
             await deleteMatchForUser(userMatch.username);
             await deleteMatchForUser(message.username);
             socket.join(userMatch.roomId);
-            socket.emit(`matchSuccess`, socket.id, userMatch.roomId);
+            console.log(`${socket.id} has joined room ${userMatch.roomId}`);
+            console.log(`${userMatch.username} is matched with ${message.username}`);
+            io.to(userMatch.roomId).emit(`matchSuccess`, socket.id, userMatch.roomId);
         } else {
             console.log(`There is currently no users in the database with difficulty of: ${message.difficulty}`);
         }
     } catch (err) {
+        console.log(err)
         console.log(`Unexpected error when joining match!`);
     }
 }
