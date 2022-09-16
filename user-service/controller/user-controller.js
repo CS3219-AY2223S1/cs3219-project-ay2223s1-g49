@@ -3,6 +3,7 @@ import { ormAuthUser as _authUser } from '../model/user-orm.js';
 import { ormCheckUser as _checkUser } from '../model/user-orm.js';
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
+import cookieParser from 'cookie-parser';
 
 const SECRET_KEY = crypto.randomBytes(16).toString('hex')
 
@@ -85,5 +86,18 @@ export async function checkUser(req, res) {
     } catch (err){
         console.error(err)
         return res.status(500).json({message: 'Error occured during check.'})
+    }
+}
+
+export async function logout(req, res) {
+    try{
+        console.log('logout attempt')
+        //const cookie = req.headers.cookie
+        //console.log(req)
+        console.log(req.cookies['access token'])
+        res.status(200).json({message: 'done'})
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({message: 'Error occured during logout'})
     }
 }
