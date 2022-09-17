@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import cookieParser from 'cookie-parser';
 
-const SECRET_KEY = crypto.randomBytes(16).toString('hex')
+const SECRET_KEY = process.env.JWT_TEST_KEY || crypto.randomBytes(16).toString('hex')
 
 export async function createUser(req, res) {
     try {
@@ -59,7 +59,7 @@ export async function authUser(req, res) {
             if (resp){
                 console.log(`${username} successfully authenticated!`)
                 const user = { username: username }
-                let token = jwt.sign({ user:user },"TEST_KEY")
+                let token = jwt.sign({ user:user },SECRET_KEY)
                 res.status(200).json({ message: `Logged in as ${username}!`, token });
                 return res;
             } else {
@@ -100,7 +100,7 @@ export async function logout(req, res) {
         if (!token) return res.status(400).json({message: "No token given!"})
         else {
             // verify token
-            jwt.verify(token,"TEST_KEY", async (err,decoded) => {
+            jwt.verify(token, SECRET_KEY, async (err,decoded) => {
                 if (err){
                     return res.status(400).json({message: "Invalid token"})
                 } else{

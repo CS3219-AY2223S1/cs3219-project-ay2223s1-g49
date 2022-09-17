@@ -3,14 +3,41 @@ import {
     Button,
     Typography
 } from "@mui/material";
-import {Link} from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
+import Cookies from 'universal-cookie';
+import React, { useState } from 'react'
+import axios from "axios";
+import { URL_USER_LOGOUT } from "../configs";
+import LoginPage from "./LoginPage";
+//import jwt from 'jsonwebtoken'
+const SECRET_KEY = process.env.JWT_TEST_KEY
 
 function MainPage() {
+    const [isLogin, setIsLogin] = React.useState(false)
+    const [token, setToken] = useState()
+
+    if (!token){
+        return <LoginPage setToken={setToken} />
+    }
+
+    const handleLogout = async () => {
+        const cookies = new Cookies()
+        const jwt = cookies.get('access token')
+        cookies.remove('access token')
+
+        const res = await axios.post(URL_USER_LOGOUT, { token: jwt })
+        window.location.reload(false)
+    }
+
     return (
         <Box display={"flex"} flexDirection={"column"} width={"30%"}>
             <Typography variant={"h3"} marginBottom={"2rem"}>Loggged In Succesfully!</Typography>
             <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
-                <Button variant={"outlined"} component={Link} to="/login">Log Out</Button>
+                <Button variant={"outlined"} onClick={handleLogout} component={Link} to="/mainpage">Log Out</Button>
+                {isLogin
+                        ? <Typography variant={"h5"} marginBottom={"2rem"}>Valid Token</Typography>
+                        : <Typography variant={"h5"} marginBottom={"2rem"}>Invalid Token</Typography>
+                    }
             </Box>
         </Box>
     )
