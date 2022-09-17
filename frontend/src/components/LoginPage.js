@@ -42,7 +42,7 @@ export default function LoginPage({ setToken }) {
             setJwt(res.data.token)
             
             const cookies = new Cookies();
-            cookies.set('access token', res.data.token, { path: '/' });
+            cookies.set('access token', res.data.token, { path: '/', expires: new Date(Date.now()+86400000) }); // token expires in a day(86400000 ms)
             console.log(cookies.get('access token')); // Pacman
             setToken(res.data.token)
             setIsLoginSuccess(true)

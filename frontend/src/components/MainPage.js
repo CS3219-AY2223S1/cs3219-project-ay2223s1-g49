@@ -9,19 +9,21 @@ import React, { useState } from 'react'
 import axios from "axios";
 import { URL_USER_LOGOUT } from "../configs";
 import LoginPage from "./LoginPage";
+//import validateToken from "./validate-token";
 //import jwt from 'jsonwebtoken'
 const SECRET_KEY = process.env.JWT_TEST_KEY
 
 function MainPage() {
+    const cookies = new Cookies()
     const [isLogin, setIsLogin] = React.useState(false)
-    const [token, setToken] = useState()
+    const [token, setToken] = useState(cookies.get('access token'))
 
     if (!token){
         return <LoginPage setToken={setToken} />
     }
 
     const handleLogout = async () => {
-        const cookies = new Cookies()
+        
         const jwt = cookies.get('access token')
         cookies.remove('access token')
 
