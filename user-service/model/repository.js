@@ -45,3 +45,15 @@ export async function authUser(_username, _password) {
 export async function blacklistToken(params) {
     return new TokenModel(params)
 }
+
+export async function getBlacklistedToken(_token) {
+    var res = null;
+    const query = TokenModel.find({ token: _token }).exec()
+    await query.then(function(tokens) {
+        if (tokens && tokens.length > 0){
+            res = tokens[0]
+        }
+    })
+
+    return res;
+}

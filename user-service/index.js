@@ -7,7 +7,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
-import { createUser, authUser, checkUser, logout } from './controller/user-controller.js';
+import { createUser, authUser, checkUser, logout, validateToken } from './controller/user-controller.js';
 import { HELLO_WORLD_STRING } from './constants.js';
 import cookieParser from 'cookie-parser';
 
@@ -19,6 +19,7 @@ router.post('/signup', createUser)
 router.post('/login', authUser)
 router.get('/check',checkUser)
 router.post('/logout', logout)
+router.post('/validate-token', validateToken)
 
 app.use('/api/user', router).all((_, res) => {
     res.setHeader('content-type', 'application/json')

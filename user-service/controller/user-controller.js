@@ -2,14 +2,15 @@ import {
     ormCreateUser as _createUser,
     ormAuthUser as _authUser,
     ormCheckUser as _checkUser,
-    ormBlacklistToken as _blacklistToken
+    ormBlacklistToken as _blacklistToken,
+    ormGetBlacklistToken as _getBlacklistedToken
  } from '../model/user-orm.js'
 
 import jwt from 'jsonwebtoken'
-import crypto from 'crypto'
-import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv'
+dotenv.config()
 
-const SECRET_KEY = process.env.JWT_TEST_KEY || crypto.randomBytes(16).toString('hex')
+const SECRET_KEY = process.env.JWT_SECRET_KEY //|| crypto.randomBytes(16).toString('hex')
 
 export async function createUser(req, res) {
     try {
@@ -119,5 +120,34 @@ export async function logout(req, res) {
     } catch (err) {
         console.error(err)
         return res.status(500).json({message: 'Error occured during logout'})
+    }
+}
+
+export async function validateToken(req, res){
+    try{
+        const token = req.body.token
+        console.log(`verifying ${token}`);
+        
+        // No token provided
+        if (!token) {
+            return res.status(400)
+        }
+        
+        try{
+            jwt.verify(token,SECRET_KEY)
+        } catch (err) {
+            // Token invalid
+            return res.status(400)
+        }
+
+        const resp = await _getBlacklistedToken(token)
+        if (resp.err || !resp){
+            // Token blacklisted
+            return res.status(400)
+        } else {
+            return res.status(200)
+        }
+    } catch(err){
+        return res.status(400)
     }
 }
