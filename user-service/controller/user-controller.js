@@ -96,8 +96,7 @@ export async function checkUser(req, res) {
 export async function logout(req, res) {
     try{
         console.log('logout attempt')
-        const token = req.body.token;
-        console.log(token);
+        const token = req.headers['authorization'];
         if (!token) return res.status(400).json({message: "No token given!"})
         else {
             // verify token
@@ -125,29 +124,8 @@ export async function logout(req, res) {
 
 export async function validateToken(req, res){
     try{
-        const token = req.body.token
-        console.log(`verifying ${token}`);
-        
-        // No token provided
-        if (!token) {
-            return res.status(400)
-        }
-        
-        try{
-            jwt.verify(token,SECRET_KEY)
-        } catch (err) {
-            // Token invalid
-            return res.status(400)
-        }
-
-        const resp = await _getBlacklistedToken(token)
-        if (resp.err || !resp){
-            // Token blacklisted
-            return res.status(400)
-        } else {
-            return res.status(200)
-        }
+        return res.status(200).send()
     } catch(err){
-        return res.status(400)
+        return res.status(400).send()
     }
 }

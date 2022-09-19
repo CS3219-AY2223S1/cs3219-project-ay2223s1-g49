@@ -11,9 +11,6 @@ import { URL_USER_LOGOUT } from "../configs";
 import LoginPage from "./LoginPage";
 import validateToken from "./validate-token";
 
-//import jwt from 'jsonwebtoken'
-const SECRET_KEY = process.env.JWT_TEST_KEY
-
 function MainPage() {
     const cookies = new Cookies()
     const [isLogin, setIsLogin] = React.useState(false)
@@ -23,7 +20,9 @@ function MainPage() {
         return <LoginPage setToken={setToken} />
     }
 
+    console.log(`main page: ${token}`)
     validateToken(token).then(tokenValid => {
+        console.log("verifying token")
         if (!tokenValid){
             console.log("invalid token")
             cookies.remove('access token')
@@ -39,7 +38,15 @@ function MainPage() {
         const jwt = cookies.get('access token')
         cookies.remove('access token')
 
-        const res = await axios.post(URL_USER_LOGOUT, { token: jwt })
+
+        console.log(`logout ${jwt}`)
+        const instance = axios.create({
+            headers: {
+                'Authorization': jwt
+            }
+        })
+        const res = await instance.post(URL_USER_LOGOUT).catch((err) => {})
+        setIsLogin(false)
         window.location.reload(false)
     }
 
