@@ -1,8 +1,8 @@
-import { createUser, checkUser } from "./repository.js";
+import { createUser, checkUser, deleteUser } from "./repository.js";
 import bcrypt from 'bcrypt'
 
 //need to separate orm functions from repository to decouple business logic from persistence
-export async function ormCreateUser(username, unhashedPassword) {
+async function ormCreateUser(username, unhashedPassword) {
   try {
     const salt  = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(unhashedPassword, salt)
@@ -26,7 +26,7 @@ export async function ormCreateUser(username, unhashedPassword) {
   }
 }
 
-export async function ormCheckUser(username) {
+async function ormCheckUser(username) {
   try{
       console.log(`Checking if ${username} exists ...`)
       const checkRes = await checkUser(username);
@@ -38,3 +38,18 @@ export async function ormCheckUser(username) {
 
   }
 }
+
+async function ormDeleteUser(username) {
+  try {
+    console.log(`Attempting to delete account ${username} ...`)
+    const checkRes = await deleteUser(username);
+    return checkRes;
+
+  } catch (err){
+    console.log(`Error occured when deleting user! Username: ${username}`)
+    return { err }
+
+  }
+}
+
+export {ormCreateUser, ormCheckUser, ormDeleteUser}

@@ -17,7 +17,7 @@ export async function createUser(params) {
 
 export async function checkUser(_username) {
 
-  var res = false;
+  let res = false;
 
   const query = UserModel.find({username: _username }).exec()
   await query.then( function(users) {
@@ -25,4 +25,20 @@ export async function checkUser(_username) {
   })
 
   return res;
+}
+
+export async function deleteUser(_username) {
+
+  let res = false;
+
+  const request = UserModel.findOneAndDelete({username:_username}).exec()
+  await request.then( function (user, err) {
+    if (err) {
+      console.log("Error in deleteUser")
+    } else {
+      console.log("Deleted User : ", user);
+      res = true;
+    }
+  })
+  return res
 }
