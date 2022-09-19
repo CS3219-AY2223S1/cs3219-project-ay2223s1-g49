@@ -7,7 +7,9 @@ import { createMatch, deleteMatchForUser, getMatchForDifficulty, attemptJoinMatc
 const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cors()) // config cors so that front-end can use
+app.use(cors(
+  {origin: "*",}
+)) 
 app.options('*', cors())
 
 app.get('/', (req, res) => {
@@ -16,7 +18,7 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app)
 
-httpServer.listen(8001);
+httpServer.listen(3001);
 
 const io = new Server(httpServer);
 
