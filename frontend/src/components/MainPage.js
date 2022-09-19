@@ -46,7 +46,7 @@ function MainPage() {
             }
         })
         const res = await instance.post(URL_USER_LOGOUT).catch((err) => {})
-        setIsLogin(false)
+        //setIsLogin(false)
         window.location.reload(false)
     }
 
