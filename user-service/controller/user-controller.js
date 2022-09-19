@@ -38,12 +38,12 @@ async function deleteUser(req, res) {
 
         const isValidAccount = await _checkUser(username)
         if (!isValidAccount) {
-            return res.status(201).json({message: `Account with username ${username} is not valid, unable to delete account`})
+            return res.status(403).json({message: `Account with username ${username} is not valid, unable to delete account`})
         }
 
         const resp = await _deleteUser(username);
         if (resp.err) {
-            return res.status(500),json({message: 'Error occured when deleting user'})
+            return res.status(500).json({message: 'Error occured when deleting user'})
         } else {
             return res.status(202).json({message: `Deleted new user ${username} successfully!`});
         }
