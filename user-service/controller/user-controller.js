@@ -1,10 +1,16 @@
-import { ormCreateUser as _createUser } from '../model/user-orm.js'
-import { ormAuthUser as _authUser } from '../model/user-orm.js';
-import { ormCheckUser as _checkUser } from '../model/user-orm.js';
-import jwt from 'jsonwebtoken'
-import crypto from 'crypto'
+import { 
+    ormCreateUser as _createUser,
+    ormAuthUser as _authUser,
+    ormCheckUser as _checkUser,
+    ormBlacklistToken as _blacklistToken,
+    ormGetBlacklistToken as _getBlacklistedToken
+ } from '../model/user-orm.js'
 
-const SECRET_KEY = crypto.randomBytes(16).toString('hex')
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+dotenv.config()
+
+const SECRET_KEY = process.env.JWT_SECRET_KEY //|| crypto.randomBytes(16).toString('hex')
 
 export async function createUser(req, res) {
     try {
@@ -54,9 +60,8 @@ export async function authUser(req, res) {
             if (resp){
                 console.log(`${username} successfully authenticated!`)
                 const user = { username: username }
-                let token = jwt.sign({ user:user },"TEST_KEY")
-                res.status(200).cookie('token', token, { httpOnly: true });
-                res.json({ token });
+                let token = jwt.sign({ user:user },SECRET_KEY)
+                res.status(200).json({ message: `Logged in as ${username}!`, token });
                 return res;
             } else {
                 console.log(`Authentication failed for ${username}`)
@@ -85,5 +90,64 @@ export async function checkUser(req, res) {
     } catch (err){
         console.error(err)
         return res.status(500).json({message: 'Error occured during check.'})
+    }
+}
+
+export async function logout(req, res) {
+    try{
+        console.log('logout attempt')
+        const token = req.body.token;
+        console.log(token);
+        if (!token) return res.status(400).json({message: "No token given!"})
+        else {
+            // verify token
+            jwt.verify(token, SECRET_KEY, async (err,decoded) => {
+                if (err){
+                    return res.status(400).json({message: "Invalid token"})
+                } else{
+                    console.log(decoded);
+                    const username = decoded.user.username
+                    const resp = await _blacklistToken({username,token})
+                    if (resp.err){
+                        return res.status(400).json({message: "Unable to blacklist token"})
+                    } else {
+                        return res.status(200).json({message: "token blacklisted"})
+                    }
+                }
+            })
+        }
+
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({message: 'Error occured during logout'})
+    }
+}
+
+export async function validateToken(req, res){
+    try{
+        const token = req.body.token
+        console.log(`verifying ${token}`);
+        
+        // No token provided
+        if (!token) {
+            return res.status(400)
+        }
+        
+        try{
+            jwt.verify(token,SECRET_KEY)
+        } catch (err) {
+            // Token invalid
+            return res.status(400)
+        }
+
+        const resp = await _getBlacklistedToken(token)
+        if (resp.err || !resp){
+            // Token blacklisted
+            return res.status(400)
+        } else {
+            return res.status(200)
+        }
+    } catch(err){
+        return res.status(400)
     }
 }

@@ -1,4 +1,5 @@
-import UserModel from './user-model.js';
+import  UserModel  from './user-model.js';
+import  TokenModel from './token-model.js'
 import 'dotenv/config'
 
 //Set up mongoose connection
@@ -36,6 +37,22 @@ export async function authUser(_username, _password) {
       if (users && users.length > 0) {
         res = (_password == users[0].password)
       }
+    })
+
+    return res;
+}
+
+export async function blacklistToken(params) {
+    return new TokenModel(params)
+}
+
+export async function getBlacklistedToken(_token) {
+    var res = null;
+    const query = TokenModel.find({ token: _token }).exec()
+    await query.then(function(tokens) {
+        if (tokens && tokens.length > 0){
+            res = tokens[0]
+        }
     })
 
     return res;

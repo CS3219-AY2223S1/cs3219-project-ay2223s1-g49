@@ -15,8 +15,9 @@ import axios from "axios";
 import {URL_USER_LOGIN} from "../configs";
 import { STATUS_CODE_LOGIN_SUCCESS } from "../constants";
 import {Link} from "react-router-dom";
+import PropTypes from 'prop-types'
 
-function LoginPage() {
+export default function LoginPage({ setToken }) {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -41,10 +42,9 @@ function LoginPage() {
             setJwt(res.data.token)
             
             const cookies = new Cookies();
-            cookies.set('access token', res.data.token, { path: '/' });
+            cookies.set('access token', res.data.token, { path: '/', expires: new Date(Date.now()+86400000) }); // token expires in a day(86400000 ms)
             console.log(cookies.get('access token')); // Pacman
-            
-            setSuccessDialog('Logged in!')
+            setToken(res.data.token)
             setIsLoginSuccess(true)
         }
     }
@@ -83,6 +83,7 @@ function LoginPage() {
                 sx={{marginBottom: "2rem"}}
             />
             <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
+                <Button variant={"outlined"} component={Link} to="/signup">Sign Up</Button>
                 <Button variant={"outlined"} onClick={handleLogin}>Log In</Button>
             </Box>
 
@@ -95,14 +96,15 @@ function LoginPage() {
                     <DialogContentText>{dialogMsg}</DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    {isLoginSuccess
-                        ? <Button component={Link} to="/mainpage">Main Page  </Button>
-                        : <Button onClick={closeDialog}>Done</Button>
-                    }
+                    <Button onClick={closeDialog}>Done</Button>
                 </DialogActions>
             </Dialog>
         </Box>
     )
+
+    
 }
 
-export default LoginPage;
+LoginPage.propTypes = {
+    setToken: PropTypes.func.isRequired
+  }

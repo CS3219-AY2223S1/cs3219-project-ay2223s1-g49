@@ -84,6 +84,7 @@ function SignupPage() {
                 sx={{marginBottom: "2rem"}}
             />
             <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
+            <Button variant={"outlined"} component={Link} to="/mainpage">Log In</Button>
                 <Button variant={"outlined"} onClick={handleSignup}>Sign up</Button>
             </Box>
 
@@ -97,7 +98,7 @@ function SignupPage() {
                 </DialogContent>
                 <DialogActions>
                     {isSignupSuccess
-                        ? <Button component={Link} to="/login">Log in</Button>
+                        ? <Button component={Link} to="/mainpage">Log in</Button>
                         : <Button onClick={closeDialog}>Done</Button>
                     }
                 </DialogActions>
