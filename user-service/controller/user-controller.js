@@ -24,8 +24,7 @@ export async function createUser(req, res) {
             }
 
             const hashedPassword = await createSaltAndHash(password);
-            console.log(hashedPassword)
-
+            
             const resp = await _createUser(username, hashedPassword);
             if (resp.err == null) {
                 console.log(`Created new user ${username} successfully!`)
@@ -51,7 +50,6 @@ export async function createUser(req, res) {
 export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
-        console.log("here")
         if (!username || username==="" || !password || password===""){
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
@@ -100,7 +98,6 @@ export async function checkUser(req, res) {
 
 export async function logout(req, res) {
     try{
-        console.log('logout attempt')
         const token = req.headers['authorization'];
         if (!token) return res.status(400).json({message: "No token given!"})
         else {
