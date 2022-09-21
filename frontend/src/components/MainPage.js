@@ -7,7 +7,7 @@ import {Link, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import React, { useState } from 'react'
 import axios from "axios";
-import { URL_USER_LOGOUT } from "../configs";
+import { URL_USER_LOGOUT, URL_USER_DELETE } from "../configs";
 import LoginPage from "./LoginPage";
 import validateToken from "./validate-token";
 
@@ -34,23 +34,40 @@ function MainPage() {
     })
 
     const handleLogout = async () => {
-        
-        const jwt = cookies.get('access token')
+        const instance = createAxiosHeader();
+        const res = await instance.post(URL_USER_LOGOUT).catch((err) => {})
         cookies.remove('access token')
+        //setIsLogin(false)
+        window.location.reload(false)
+    }
 
+    const handleDeleteAccount = async () => {
+        const username = cookies.get('username')
+        const instance = createAxiosHeader();
+        const res = await instance.post(URL_USER_DELETE, { username })
+            .catch((err) => {
+                console.log("Error at handleDeleteAccount")
+            })
 
-        console.log(`logout ${jwt}`)
+        console.log("RES IS", res)
+        if (res && res.status === 202) {
+            console.log("SUCCESS")
+        } else {
+            console.log("FAILURE")
+        }
+        handleLogout()
+    }
+
+    function createAxiosHeader() {
+        const jwt = cookies.get('access token')
         const instance = axios.create({
             headers: {
                 'Authorization': jwt
             }
         })
-        const res = await instance.post(URL_USER_LOGOUT).catch((err) => {})
-        //setIsLogin(false)
-        window.location.reload(false)
+
+        return instance
     }
-
-
 
     return (
         !isLogin 
@@ -67,6 +84,7 @@ function MainPage() {
                 </Box>
                 <p>
                     <Button variant={"outlined"} onClick={handleLogout} component={Link} to="/mainpage">Log Out</Button>
+                    <Button variant={"outlined"} onClick={handleDeleteAccount} component={Link} to="/mainpage">Delete User</Button>
                 </p>
             </div>
     )

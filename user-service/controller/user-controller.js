@@ -15,7 +15,7 @@ dotenv.config()
 
 const SECRET_KEY = process.env.JWT_SECRET_KEY //|| crypto.randomBytes(16).toString('hex')
 
-async function createUser(req, res) {
+export async function createUser(req, res) {
     try {
         const { username, password } = req.body;
         if (username && password) {
@@ -43,7 +43,7 @@ async function createUser(req, res) {
     }
 }
 
-async function deleteUser(req, res) {
+export async function deleteUser(req, res) {
     try {
         const { username } = req.body;
         if (!username) {
@@ -52,7 +52,7 @@ async function deleteUser(req, res) {
 
         const isValidAccount = await _checkUser(username)
         if (!isValidAccount) {
-            return res.status(403).json({message: `Account with username ${username} is not valid, unable to delete account`})
+            return res.status(402).json({message: `Account with username ${username} is not valid, unable to delete account`})
         }
 
         const resp = await _deleteUser(username);
@@ -67,7 +67,6 @@ async function deleteUser(req, res) {
     }
 }
 
-export { createUser, deleteUser }
 export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
@@ -85,7 +84,7 @@ export async function authUser(req, res) {
                 console.log(`${username} successfully authenticated!`)
                 const user = { username: username }
                 let token = jwt.sign({ user:user },SECRET_KEY)
-                res.status(200).json({ message: `Logged in as ${username}!`, token });
+                res.status(200).json({ message: `Logged in as ${username}!`, token, username });
                 return res;
             } else {
                 console.log(`Authentication failed for ${username}`)
