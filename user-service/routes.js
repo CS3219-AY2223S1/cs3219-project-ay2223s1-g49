@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
 
-import { createUser, authUser, checkUser, logout, validateToken } from './controller/user-controller.js';
+import { createUser, authUser, checkUser, logout, validateToken, deleteUser } from './controller/user-controller.js';
 
 const routes = express.Router()
 routes.get('/', (_, res) => res.send(HELLO_WORLD_STRING))
@@ -21,6 +21,6 @@ routes.post('/login', allow, authUser)
 routes.get('/check', block, checkUser)
 routes.post('/logout', auth, logout)
 routes.post('/validate-token', auth, validateToken)
-routes.post('/deleteuser', auth, deleteUser)
+routes.post('/delete-user', auth, deleteUser)
 
 export default routes 
