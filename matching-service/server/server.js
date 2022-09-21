@@ -18,12 +18,12 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app)
 
-httpServer.listen(3001);
+httpServer.listen(3000);
 
 const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
-  console.log('Client connected with id: ' + socket.id)
+  console.log('Client (S) connected with id: ' + socket.id)
 
   socket.on('match', (message) => {
     getMatchForDifficulty(message.difficulty).then(result => {

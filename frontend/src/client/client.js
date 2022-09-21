@@ -1,9 +1,9 @@
 import { io } from "socket.io-client";
 
-const socket = io('http://localhost:3001');
+const socket = io('http://localhost:3000');
 
 socket.on("connect", () => {
-    console.log(`Client connected with id of: ${socket.id}`);
+    console.log(`Client (C) connected with id of: ${socket.id}`);
 
     socket.on(`matchSuccess`, (socketId1, newRoomId) => {
         if (socket.id === socketId1 || socket.id === newRoomId) {
@@ -14,7 +14,6 @@ socket.on("connect", () => {
 
 
 export function findMatch(usernameVal, difficultyVal) {
-  console.log("calling...")
+  console.log("Client finding match")
   socket.emit('match', {username : usernameVal, difficulty : difficultyVal});
-  console.log("CALLED")
 }
