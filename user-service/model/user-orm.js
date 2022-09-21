@@ -1,11 +1,8 @@
-import { createUser, checkUser } from "./repository.js";
-import bcrypt from 'bcrypt'
+import { authUser, checkUser, createUser, blacklistToken, getBlacklistedToken } from "./repository.js";
 
 //need to separate orm functions from repository to decouple business logic from persistence
-export async function ormCreateUser(username, unhashedPassword) {
+export async function ormCreateUser(username, password, salt) {
   try {
-    const salt  = await bcrypt.genSalt(10);
-    const password = await bcrypt.hash(unhashedPassword, salt)
     const newUser = await createUser({ username, password, salt });
 
     await newUser.save();
@@ -26,15 +23,59 @@ export async function ormCreateUser(username, unhashedPassword) {
   }
 }
 
+export async function ormAuthUser(username, password) {
+    try{
+        console.log(`Attempting to authenticate ${username} ...`)
+        const authSuccess = await authUser(username, password)
+        return authSuccess;
+    } catch (err) {
+        console.log(`Error occured during authentication attempt! Username: ${username}`)
+        return { err };
+    }
+}
+
 export async function ormCheckUser(username) {
-  try{
-      console.log(`Checking if ${username} exists ...`)
-      const checkRes = await checkUser(username);
-      return checkRes;
+    try{
+        console.log(`Checking if ${username} exists ...`)
+        const checkRes = await checkUser(username);
+        return checkRes;
+    } catch (err){
+        console.log(`Error occured during user check! Username: ${username}`)
+        return { err }
+    }
+}
 
-  } catch (err){
-      console.log(`Error occured during user check! Username: ${username}`)
-      return { err }
+export async function ormBlacklistToken(params){
+    try{
+        const token = await blacklistToken(params)
+        await token.save()
 
-  }
+        const resp = {
+            err: null,
+            message: `Token blacklisted!`,
+          };
+      
+          return resp;
+
+    } catch (err) {
+        return {err}
+    }
+}
+
+export async function ormGetBlacklistToken(_token){
+    try {
+        const token = await getBlacklistedToken(_token)
+        return token ? false : true;
+    } catch (err) {
+        return { err }
+    }
+}
+
+export async function ormGetUserSalt(username){
+    try {
+        const salt = await getUserSalt(username)
+        return salt;
+    } catch (err) {
+        return { err }
+    }
 }
