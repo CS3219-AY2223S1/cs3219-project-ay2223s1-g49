@@ -50,19 +50,25 @@ function MainPage() {
         window.location.reload(false)
     }
 
+
+
     return (
         !isLogin 
-        ?  <LoginPage setToken={setToken} /> : 
-         <Box display={"flex"} flexDirection={"column"} width={"30%"}>
-            <Typography variant={"h3"} marginBottom={"2rem"}>Loggged In Succesfully!</Typography>
-            <Box display={"flex"} flexDirection={"row"} justifyContent={"flex-end"}>
-                <Button variant={"outlined"} onClick={handleLogout} component={Link} to="/mainpage">Log Out</Button>
-                {isLogin
+        ?   <LoginPage setToken={setToken} /> 
+        :   <div>
+                <Box display={"flex"} flexDirection={"column"} width={"50%"}>
+                    <Typography variant={"h3"} marginBottom={"2rem"}>Loggged In Succesfully!</Typography>
+                    <Box display={"flex"} flexDirection={"row"} justifyContent={"centre"}>
+                    {isLogin
                         ? <Typography variant={"h5"} marginBottom={"2rem"}>Valid Token</Typography>
                         : <Typography variant={"h5"} marginBottom={"2rem"}>Invalid Token</Typography>
                     }
-            </Box>
-        </Box>
+                    </Box>
+                </Box>
+                <p>
+                    <Button variant={"outlined"} onClick={handleLogout} component={Link} to="/mainpage">Log Out</Button>
+                </p>
+            </div>
     )
 }
 

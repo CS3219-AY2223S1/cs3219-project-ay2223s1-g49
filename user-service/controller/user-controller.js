@@ -3,8 +3,10 @@ import {
     ormAuthUser as _authUser,
     ormCheckUser as _checkUser,
     ormBlacklistToken as _blacklistToken,
-    ormGetBlacklistToken as _getBlacklistedToken
+    ormGetBlacklistToken as _getBlacklistedToken,
  } from '../model/user-orm.js'
+
+import {createSaltAndHash} from "../utils/hash-module.js"
 
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -21,7 +23,9 @@ export async function createUser(req, res) {
                 return res.status(409).json({message: `Username ${username} has been used!`});
             }
 
-            const resp = await _createUser(username, password);
+            const hashedPassword = await createSaltAndHash(password);
+            
+            const resp = await _createUser(username, hashedPassword);
             if (resp.err == null) {
                 console.log(`Created new user ${username} successfully!`)
                 return res.status(201).json({message: resp.message});
@@ -46,7 +50,6 @@ export async function createUser(req, res) {
 export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
-
         if (!username || username==="" || !password || password===""){
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
@@ -95,7 +98,6 @@ export async function checkUser(req, res) {
 
 export async function logout(req, res) {
     try{
-        console.log('logout attempt')
         const token = req.headers['authorization'];
         if (!token) return res.status(400).json({message: "No token given!"})
         else {

@@ -11,7 +11,7 @@ export default async function validateToken(_token){
 
         const res = await instance.post(URL_TOKEN_VALIDATION)
 
-        return (res && res.status==200);
+        return (res && res.status===200);
     } catch (err){
         return false    
     }
