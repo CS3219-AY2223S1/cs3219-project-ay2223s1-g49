@@ -23,12 +23,8 @@ export default function LoginPage({ setToken }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [dialogTitle, setDialogTitle] = useState("")
     const [dialogMsg, setDialogMsg] = useState("")
-    const [isLoginSuccess, setIsLoginSuccess] = useState(false)
-    const storedJwt = new Cookies().get('access token')
-    const [jwt, setJwt] = useState(storedJwt || null);
 
     const handleLogin = async () => {
-        setIsLoginSuccess(false)
         if (username==="" || password===""){
             setErrorDialog('Username or Password is missing!')
             return
@@ -39,13 +35,11 @@ export default function LoginPage({ setToken }) {
                 return
             })
         if (res && res.status === STATUS_CODE_LOGIN_SUCCESS) {
-            setJwt(res.data.token)
-            
             const cookies = new Cookies();
             cookies.set('access token', res.data.token, { path: '/', expires: new Date(Date.now()+86400000) }); // token expires in a day(86400000 ms)
-            console.log(cookies.get('access token')); // Pacman
+            console.log("cookie returned")
+            console.log(cookies.get("access token")); 
             setToken(res.data.token)
-            setIsLoginSuccess(true)
         }
     }
 
