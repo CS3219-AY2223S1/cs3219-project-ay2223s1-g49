@@ -1,6 +1,5 @@
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 import SignupPage from './components/SignupPage';
-import LoginPage from './components/LoginPage';
 import MainPage from "./components/MainPage";
 import {Box} from "@mui/material";
 
