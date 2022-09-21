@@ -1,4 +1,6 @@
-import UserModel from './user-model.js';
+import  UserModel  from './user-model.js';
+import  TokenModel from './token-model.js'
+import {verifyPassword} from "../utils/hash-module.js"
 import 'dotenv/config'
 
 //Set up mongoose connection
@@ -12,7 +14,7 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 export async function createUser(params) { 
-  return new UserModel(params)
+  return new UserModel(params);
 }
 
 export async function checkUser(_username) {
@@ -25,6 +27,35 @@ export async function checkUser(_username) {
   })
 
   return res;
+}
+
+export async function authUser(_username, _password) {
+    let res = false
+
+    const query = UserModel.find({ username: _username }).exec()
+    await query.then( function(users) {
+      if (users && users.length > 0) {
+        res = verifyPassword(_password, users[0].password);
+      }
+    })
+
+    return res;
+}
+
+export async function blacklistToken(params) {
+    return new TokenModel(params)
+}
+
+export async function getBlacklistedToken(_token) {
+    let res = null;
+    const query = TokenModel.find({ token: _token }).exec()
+    await query.then(function(tokens) {
+        if (tokens && tokens.length > 0){
+            res = tokens[0]
+        }
+    })
+
+    return res;
 }
 
 export async function deleteUser(_username) {
