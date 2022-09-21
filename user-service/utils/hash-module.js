@@ -1,16 +1,18 @@
 import bcrypt from 'bcrypt'
 
-function createSaltAndHash(password) {
-    const salt = bcrypt.genSalt(10);
-    const hashedPassword = bcrypt.hash(password, salt);
-
-    return [salt, hashedPassword];
-}
-
-function generateHash(salt, unhashedPassword) {
-    const hashedPassword = bcrypt.hash(unhashedPassword, salt);
+async function createSaltAndHash(password) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     return hashedPassword;
 }
 
-export {createSaltAndHash, generateHash}
+async function verifyPassword(attempt, storedPassword) {
+    try {
+        return await bcrypt.compare(attempt, storedPassword);
+    } catch(err) {
+        console.log("Error occured at verifyPassword", err)
+    }
+}
+
+export {createSaltAndHash, verifyPassword}
