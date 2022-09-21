@@ -1,9 +1,9 @@
 import { authUser, checkUser, createUser, blacklistToken, getBlacklistedToken } from "./repository.js";
 
 //need to separate orm functions from repository to decouple business logic from persistence
-export async function ormCreateUser(username, password, salt) {
+export async function ormCreateUser(username, password) {
   try {
-    const newUser = await createUser({ username, password, salt });
+    const newUser = await createUser({ username, password});
 
     await newUser.save();
 
@@ -71,11 +71,3 @@ export async function ormGetBlacklistToken(_token){
     }
 }
 
-export async function ormGetUserSalt(username){
-    try {
-        const salt = await getUserSalt(username)
-        return salt;
-    } catch (err) {
-        return { err }
-    }
-}

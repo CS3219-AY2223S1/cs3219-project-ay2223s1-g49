@@ -1,10 +1,10 @@
 import  UserModel  from './user-model.js';
 import  TokenModel from './token-model.js'
+import {verifyPassword} from "../utils/hash-module.js"
 import 'dotenv/config'
 
 //Set up mongoose connection
 import mongoose from 'mongoose';
-import { json } from 'express';
 
 let mongoDB = process.env.ENV == "PROD" ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
 
@@ -35,7 +35,7 @@ export async function authUser(_username, _password) {
     const query = UserModel.find({ username: _username }).exec()
     await query.then( function(users) {
       if (users && users.length > 0) {
-        res = (_password == users[0].password)
+        res = verifyPassword(_password, users[0].password);
       }
     })
 
@@ -56,16 +56,4 @@ export async function getBlacklistedToken(_token) {
     })
 
     return res;
-}
-
-export async function getUserSalt(_username) {
-  var res = null;
-  const query = UserModel.find({ username: _username }).exec()
-  await query.then(function(user) {
-      if (user && user.length === 0){
-          res = user[0].salt
-      }
-  })
-
-  return res;
 }

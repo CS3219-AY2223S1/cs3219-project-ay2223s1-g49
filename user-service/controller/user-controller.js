@@ -4,10 +4,9 @@ import {
     ormCheckUser as _checkUser,
     ormBlacklistToken as _blacklistToken,
     ormGetBlacklistToken as _getBlacklistedToken,
-    ormGetUserSalt as _getUserSalt
  } from '../model/user-orm.js'
 
-import {createSaltAndHash, generateHash} from "utils/hash-module.js"
+import {createSaltAndHash} from "../utils/hash-module.js"
 
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -24,11 +23,10 @@ export async function createUser(req, res) {
                 return res.status(409).json({message: `Username ${username} has been used!`});
             }
 
-            const saltHashPair = createSaltAndHash(unhashedPassword);
-            const salt = saltHashPair[0];
-            const password = saltHashPair[1];
+            const hashedPassword = await createSaltAndHash(password);
+            console.log(hashedPassword)
 
-            const resp = await _createUser(username, password, salt);
+            const resp = await _createUser(username, hashedPassword);
             if (resp.err == null) {
                 console.log(`Created new user ${username} successfully!`)
                 return res.status(201).json({message: resp.message});
@@ -53,19 +51,12 @@ export async function createUser(req, res) {
 export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
-
+        console.log("here")
         if (!username || username==="" || !password || password===""){
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
 
-        const userSalt = await _getUserSalt(username);
-        if (!userSalt) {
-            console.log(`Unable to get salt for ${username}`)
-            return res.status(403).json({message: `Authentication failed for ${username}!`})
-        }
-        const hashedPassword = generateHash(userSalt, password);
-
-        const resp = await _authUser(username, hashedPassword);
+        const resp = await _authUser(username, password);
         console.log(resp)
 
         if (resp.err){
