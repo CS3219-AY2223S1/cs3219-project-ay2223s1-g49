@@ -3,11 +3,12 @@ import {
     Button,
     Typography
 } from "@mui/material";
-import {Link, useNavigate } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Cookies from 'universal-cookie';
 import React, { useState } from 'react'
 import axios from "axios";
-import { URL_USER_LOGOUT, URL_USER_DELETE } from "../configs";
+import { URL_USER_LOGOUT, URL_USER_DELETE, URL_USER_GET_USERNAME } from "../configs";
+import { STATUS_CODE_DELETE_USER_SUCCESS } from "../constants";
 import LoginPage from "./LoginPage";
 import validateToken from "./validate-token";
 
@@ -35,38 +36,49 @@ function MainPage() {
 
     const handleLogout = async () => {
         const instance = createAxiosHeader();
-        const res = await instance.post(URL_USER_LOGOUT).catch((err) => {})
+        await instance.post(URL_USER_LOGOUT)
+            .then(res => {})
+            .catch((err) => {})
         cookies.remove('access token')
         //setIsLogin(false)
         window.location.reload(false)
     }
 
     const handleDeleteAccount = async () => {
-        const username = cookies.get('username')
         const instance = createAxiosHeader();
-        const res = await instance.post(URL_USER_DELETE, { username })
-            .catch((err) => {
-                console.log("Error at handleDeleteAccount")
-            })
+        let username = null;
 
-        console.log("RES IS", res)
-        if (res && res.status === 202) {
-            console.log("SUCCESS")
-        } else {
-            console.log("FAILURE")
+        await instance.post(URL_USER_GET_USERNAME)
+            .then(res => {username = res.data.username})
+            .catch((err) => {console.log("Error getting username from cookie: ", err.toJSON())})
+
+        if (!username) {
+            console.log("No username can be retrieved from cookie, please relogin...")
+            return;
         }
+        
+        await instance.post(URL_USER_DELETE, { username })
+            .then(res =>{
+                if (res && res.status === STATUS_CODE_DELETE_USER_SUCCESS) {
+                    console.log("Delete user successful!")
+                } else {
+                    console.log("Delete user failure!")
+                }
+            })
+            .catch((err) => {
+                console.log("Error at handleDeleteAccount: ", err.toJSON())
+            })
         handleLogout()
     }
 
     function createAxiosHeader() {
-        const jwt = cookies.get('access token')
+        const jwt = cookies.get('access token');
         const instance = axios.create({
             headers: {
                 'Authorization': jwt
             }
-        })
-
-        return instance
+        });
+        return instance;
     }
 
     return (
