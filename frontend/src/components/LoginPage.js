@@ -37,7 +37,6 @@ export default function LoginPage({ setToken }) {
         if (res && res.status === STATUS_CODE_LOGIN_SUCCESS) {
             const cookies = new Cookies();
             cookies.set('access token', res.data.token, { path: '/', expires: new Date(Date.now()+86400000) }); // token expires in a day(86400000 ms)
-            cookies.set('username', res.data.username)
             console.log("cookie returned")
             console.log(cookies.get("access token")); 
             setToken(res.data.token)
