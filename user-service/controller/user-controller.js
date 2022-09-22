@@ -63,7 +63,7 @@ export async function deleteUser(req, res) {
         }
 
     } catch (err) {
-        console.log("failed at deleteUser")
+        return res.status(500).json({message: 'Unexpected database failure when deleting user!'})
     }
 }
 
@@ -84,7 +84,7 @@ export async function authUser(req, res) {
                 console.log(`${username} successfully authenticated!`)
                 const user = { username: username }
                 let token = jwt.sign({ user:user },SECRET_KEY)
-                res.status(200).json({ message: `Logged in as ${username}!`, token, username });
+                res.status(200).json({ message: `Logged in as ${username}!`, token});
                 return res;
             } else {
                 console.log(`Authentication failed for ${username}`)
@@ -149,5 +149,25 @@ export async function validateToken(req, res){
         return res.status(200).send()
     } catch(err){
         return res.status(400).send()
+    }
+}
+
+export async function getUsername(req, res) {
+    try {
+        const token = req.headers['authorization'];
+        if (!token) return res.status(400).json({message: "No token given!"})
+        let _username = null;
+        jwt.verify(token, SECRET_KEY, async (err,decoded) => {
+            if (err){
+                return res.status(400).json({message: "Invalid token"})
+            } else{
+                _username = decoded.user.username
+            }
+        })  
+        console.log("Username is: ", _username)
+        return res.status(200).json({username: _username})
+    } catch {
+        console.error(err)
+        return res.status(500).json({message: 'Error occured during getUsername'})
     }
 }
