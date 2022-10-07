@@ -1,14 +1,12 @@
 import { io } from "socket.io-client";
 
-const socket = io('http://localhost:3000');
+const socket = io('http://localhost:3001');
 
 socket.on("connect", () => {
     console.log(`Client (C) connected with id of: ${socket.id}`);
 
-    socket.on(`matchSuccess`, (socketId1, newRoomId) => {
-        if (socket.id === socketId1 || socket.id === newRoomId) {
-          console.log(`Successfully joined room! of ${newRoomId}`)
-        }
+    socket.on(`matchSuccess`, (newRoomId) => {
+        console.log(`Successfully joined room! of ${newRoomId}`)
     })
 })
 

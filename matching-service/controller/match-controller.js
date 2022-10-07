@@ -55,7 +55,7 @@ export async function attemptJoinMatch(message, socket, io) {
             socket.join(userMatch.roomId);
             console.log(`${socket.id} has joined room ${userMatch.roomId}`);
             console.log(`${userMatch.username} is matched with ${message.username}`);
-            io.to(userMatch.roomId).emit(`matchSuccess`, socket.id, userMatch.roomId);
+            io.to(userMatch.roomId).emit(`matchSuccess`, userMatch.roomId);
         } else {
             console.log(`There is currently no users in the database with difficulty of: ${message.difficulty}`);
         }

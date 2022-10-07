@@ -7,10 +7,8 @@ import { createMatch, deleteMatchForUser, getMatchForDifficulty, attemptJoinMatc
 const app = express();
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cors(
-  {origin: "*",}
-)) 
-app.options('*', cors())
+app.use(cors());
+app.options("*", cors());
 
 app.get('/', (req, res) => {
     res.send('Hello World from matching-service');
@@ -18,11 +16,12 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app)
 
-httpServer.listen(3000);
+httpServer.listen(3001);
 
-const io = new Server(httpServer);
+const io = new Server(httpServer , {cors: { origin : "*"}});
 
 io.on("connection", (socket) => {
+
   console.log('Client (S) connected with id: ' + socket.id)
 
   socket.on('match', (message) => {
