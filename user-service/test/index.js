@@ -266,3 +266,50 @@ describe("Test delete user", () => {
 
     // need to delete token after this test
 })
+
+describe('Test change password', () => {
+    const VALID_USERNAME = "newuser"
+    const INVALID_USERNAME = "NONE"
+    const VALID_OLDPASSWORD = "newuser"
+    const INVALID_OLDPASSWORD = "NONE"
+    const VALID_NEWPASSWORD = "newuser1"
+    let validUsername = { username: VALID_USERNAME }
+    let token = jwt.sign({ user: validUsername }, SECRET_KEY)
+
+    before(()=>{
+        // insert test user into DB
+        let validUser = { username: VALID_USERNAME, password: VALID_OLDPASSWORD }
+        chai.request(app)
+        .post('/api/user/signup')
+        .send(validUser)
+        .end( (req,res) => {
+            expect(res).to.have.status(201);
+            expect(res.body.message).to.equal(`Created new user ${VALID_USERNAME} successfully!`)
+            done();
+        })
+    })
+
+
+
+    it(`should be able to change password with correct credentials`, () => {
+        let validUser = { username: VALID_USERNAME, oldpassword: VALID_OLDPASSWORD, newpassword: VALID_NEWPASSWORD }
+        let changedPwLogin = { username: VALID_USERNAME, password: VALID_NEWPASSWORD }
+
+        chai.request(app)
+        .post('/api/user/change-password')
+        .send(validUser)
+        .set("Authorization", token)
+        .end( (req,res) => {
+            expect(res).to.have.status(201);
+            expect(res.body.message).to.equal(`Password for ${VALID_USERNAME} changed successfully!`)
+            done();
+        })
+
+        chai.request(app)
+        .post('/api/user/login')
+        .send(changedPwLogin)
+        .end( (req,res) => {
+            expect(res).to.have.status(200);
+        })
+    })
+})

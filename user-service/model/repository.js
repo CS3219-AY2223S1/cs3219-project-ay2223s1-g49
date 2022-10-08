@@ -77,7 +77,10 @@ export async function deleteUser(_username) {
 export async function changePassword(_username,_newPassword){
   let res = false;
 
-  const req = UserModel.findOneAndUpdate({username:_username,password:_newPassword});
+  const find = {username: _username}
+  const update = {password: _newPassword}
+
+  const req = UserModel.findOneAndUpdate(find,update);
   await req.then((user,err)=>{
     if (err) console.log('unable to change password')
     else {

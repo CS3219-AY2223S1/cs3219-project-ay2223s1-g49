@@ -185,12 +185,12 @@ export async function changePassword(req,res) {
             }
 
             const hashedPassword = await createSaltAndHash(newpassword);
-            const resp = await _changePassword(username,newpassword);
+            const resp = await _changePassword(username,hashedPassword);
 
 
-            if (resp.err != null && resp){
+            if (resp.err == null && resp){
                 console.log(`Password for ${username} changed successfully!`)
-                return res.status(201).json({message: resp.message});
+                return res.status(200).json({message: `Password for ${username} changed successfully!`});
             } 
 
             return res.status(500).json({message: resp.message || 'Unable to change password!'})
