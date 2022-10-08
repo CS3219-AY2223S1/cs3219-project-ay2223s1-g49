@@ -155,7 +155,7 @@ export default function LoginPage({ setToken }) {
     return (
         <div className={classes.container}>
             <div className={`${classes.containerOverlay}`}></div>
-            <Box className={`${classes.boxContainer} `} sx={{ boxShadow: 10}}>
+            <Box className={`${classes.boxContainer}`}>
                 <div className={classes.leftPanel}></div>
                 <div className={`${classes.rightPanel} ${classes.background}`}>
                     <div className={`${classes.formHeader}`}>
