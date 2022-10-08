@@ -6,7 +6,7 @@ import {Box} from "@mui/material";
 function App() {
     return (
         <div className="App">
-            <Box display={"flex"} flexDirection={"column"} padding={"4rem"}>
+            <Box display={"flex"} flexDirection={"column"} backgroundColor={'#F0F0F0'} height={'100%'}>
                 <Router>
                     <Routes>
                         <Route path="/signup" element={<SignupPage/>}/>
