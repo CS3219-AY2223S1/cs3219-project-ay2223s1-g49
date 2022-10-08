@@ -162,7 +162,7 @@ function SignupPage() {
                     </DialogContent>
                     <DialogActions>
                         {isSignupSuccess
-                            ? <Button component={Link} to="/mainpage">Log in</Button>
+                            ? <Button component={RouterLink} to="/mainpage">Log in</Button>
                             : <Button onClick={closeDialog}>Done</Button>
                         }
                     </DialogActions>
