@@ -19,18 +19,18 @@ export async function createUser(params) {
 
 export async function checkUser(_username) {
 
-    var res = false;
+  let res = false;
 
-    const query = UserModel.find({username: _username }).exec()
-    await query.then( function(users) {
-        if (users)  res = users.length > 0
-    })
+  const query = UserModel.find({username: _username }).exec()
+  await query.then( function(users) {
+      if (users)  res = users.length > 0
+  })
 
-    return res;
+  return res;
 }
 
 export async function authUser(_username, _password) {
-    var res = false
+    let res = false
 
     const query = UserModel.find({ username: _username }).exec()
     await query.then( function(users) {
@@ -47,7 +47,7 @@ export async function blacklistToken(params) {
 }
 
 export async function getBlacklistedToken(_token) {
-    var res = null;
+    let res = null;
     const query = TokenModel.find({ token: _token }).exec()
     await query.then(function(tokens) {
         if (tokens && tokens.length > 0){
@@ -56,4 +56,20 @@ export async function getBlacklistedToken(_token) {
     })
 
     return res;
+}
+
+export async function deleteUser(_username) {
+
+  let res = false;
+
+  const request = UserModel.findOneAndDelete({username:_username}).exec()
+  await request.then( function (user, err) {
+    if (err) {
+      console.log("Error in deleteUser")
+    } else {
+      console.log("Deleted User : ", user);
+      res = true;
+    }
+  })
+  return res
 }

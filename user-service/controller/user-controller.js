@@ -4,6 +4,7 @@ import {
     ormCheckUser as _checkUser,
     ormBlacklistToken as _blacklistToken,
     ormGetBlacklistToken as _getBlacklistedToken,
+    ormDeleteUser as _deleteUser,
  } from '../model/user-orm.js'
 
 import {createSaltAndHash} from "../utils/hash-module.js"
@@ -31,19 +32,38 @@ export async function createUser(req, res) {
                 return res.status(201).json({message: resp.message});
             }
 
-            switch(resp.err.code) {
-                case 11000:
-                    return res.status(409).json({message: resp.message});
-
-                default:
-                    return res.status(500).json({message: resp.message})
-            }
+            // Other unknown error occured
+            return res.status(500).json({message: resp.message})
 
         } else {
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
     } catch (err) {
         return res.status(500).json({message: 'Unexpected database failure when creating new user!'})
+    }
+}
+
+export async function deleteUser(req, res) {
+    try {
+        const { username } = req.body;
+        if (!username) {
+            return res.status(400).json({message: 'Username to delete is missing!'});
+        }
+
+        const isValidAccount = await _checkUser(username)
+        if (!isValidAccount) {
+            return res.status(402).json({message: `Account with username ${username} is not valid, unable to delete account`})
+        }
+
+        const resp = await _deleteUser(username);
+        if (resp.err) {
+            return res.status(500).json({message: 'Error occured when deleting user'})
+        } else {
+            return res.status(202).json({message: `Deleted new user ${username} successfully!`});
+        }
+
+    } catch (err) {
+        return res.status(500).json({message: 'Unexpected database failure when deleting user!'})
     }
 }
 
@@ -64,7 +84,7 @@ export async function authUser(req, res) {
                 console.log(`${username} successfully authenticated!`)
                 const user = { username: username }
                 let token = jwt.sign({ user:user },SECRET_KEY)
-                res.status(200).json({ message: `Logged in as ${username}!`, token });
+                res.status(200).json({ message: `Logged in as ${username}!`, token});
                 return res;
             } else {
                 console.log(`Authentication failed for ${username}`)
@@ -129,5 +149,25 @@ export async function validateToken(req, res){
         return res.status(200).send()
     } catch(err){
         return res.status(400).send()
+    }
+}
+
+export async function getUsername(req, res) {
+    try {
+        const token = req.headers['authorization'];
+        if (!token) return res.status(400).json({message: "No token given!"})
+        let _username = null;
+        jwt.verify(token, SECRET_KEY, async (err,decoded) => {
+            if (err){
+                return res.status(400).json({message: "Invalid token"})
+            } else{
+                _username = decoded.user.username
+            }
+        })  
+        console.log("Username is: ", _username)
+        return res.status(200).json({username: _username})
+    } catch {
+        console.error(err)
+        return res.status(500).json({message: 'Error occured during getUsername'})
     }
 }
