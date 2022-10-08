@@ -5,6 +5,7 @@ import {
     ormBlacklistToken as _blacklistToken,
     ormGetBlacklistToken as _getBlacklistedToken,
     ormDeleteUser as _deleteUser,
+    ormChangePassword as _changePassword,
  } from '../model/user-orm.js'
 
 import {createSaltAndHash} from "../utils/hash-module.js"
@@ -169,5 +170,35 @@ export async function getUsername(req, res) {
     } catch {
         console.error(err)
         return res.status(500).json({message: 'Error occured during getUsername'})
+    }
+}
+
+export async function changePassword(req,res) {
+    try {
+        const { username, oldpassword, newpassword } = req.body;
+        if (username && oldpassword && newpassword) {
+
+            const authenticatedUser = await _authUser(username, oldpassword);
+
+            if (authenticatedUser.err || !authenticatedUser) {
+                return res.status(401).json({message: `Unable to change password! Please check your credentials!`});
+            }
+
+            const hashedPassword = await createSaltAndHash(newpassword);
+            const resp = await _changePassword(username,newpassword);
+
+
+            if (resp.err != null && resp){
+                console.log(`Password for ${username} changed successfully!`)
+                return res.status(201).json({message: resp.message});
+            } 
+
+            return res.status(500).json({message: resp.message || 'Unable to change password!'})
+
+        } else {
+            return res.status(400).json({message: 'Username and/or Password(s) are missing!'});
+        }
+    } catch (err) {
+        return res.status(500).json({message: 'Unexpected database failure when creating new user!'})
     }
 }

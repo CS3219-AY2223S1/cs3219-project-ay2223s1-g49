@@ -1,4 +1,4 @@
-import { authUser, checkUser, createUser, blacklistToken, getBlacklistedToken, deleteUser } from "./repository.js";
+import { authUser, checkUser, createUser, blacklistToken, getBlacklistedToken, deleteUser, changePassword } from "./repository.js";
 
 //need to separate orm functions from repository to decouple business logic from persistence
 export async function ormCreateUser(username, password) {
@@ -81,6 +81,25 @@ export async function ormDeleteUser(username) {
     console.log(`Error occured when deleting user! Username: ${username}`)
     return { err }
 
+  }
+}
+
+export async function ormChangePassword(username, newPassword){
+  
+  try{
+    // Sanity check for user existence
+    const userExist = await ormCheckUser(username);
+    if (userExist.err || !userExist){
+      const err = 'User does not exist!'
+      return { err }
+    }
+
+    // User exists
+    const changePwReq = await changePassword(username,newPassword);
+    return changePwReq;
+
+  } catch (err) {
+    return {err}
   }
 }
 
