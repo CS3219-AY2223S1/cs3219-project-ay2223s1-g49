@@ -2,9 +2,7 @@ name: User Service Test
 
 on:
   workflow_dispatch:
-    inputs:
-      tags:
-        description: 'Manual run job'
+
   push:
     branches: [ "**" ]
 
@@ -20,9 +18,6 @@ jobs:
   test:
 
     runs-on: ubuntu-latest
-    environment: 
-      name: Test
-      url: https://github.com
 
     strategy:
       matrix:
