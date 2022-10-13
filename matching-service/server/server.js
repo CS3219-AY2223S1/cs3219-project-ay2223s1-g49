@@ -22,7 +22,7 @@ const io = new Server(httpServer , {cors: { origin : "*"}});
 
 io.on("connection", (socket) => {
 
-  console.log('Client (S) connected with id: ' + socket.id)
+  console.log('Client (Backend) connected with id: ' + socket.id)
 
   socket.on('match', (message) => {
     getMatchForDifficulty(message.difficulty).then(result => {
@@ -32,6 +32,10 @@ io.on("connection", (socket) => {
         attemptJoinMatch(message, socket, io);
       }
     })
+  })
+
+  socket.on(`timeout`, (message) => {
+    deleteMatchForUser(message.username);
   })
 
   socket.on(`get`, (message) => {
