@@ -11,6 +11,9 @@ import { URL_USER_LOGOUT, URL_USER_DELETE, URL_USER_GET_USERNAME } from "../conf
 import { STATUS_CODE_DELETE_USER_SUCCESS } from "../constants";
 import LoginPage from "./LoginPage";
 import validateToken from "./validate-token";
+import Form from "./ChangePwForm";
+import Container from "./Container";
+//import jwt from 'jsonwebtoken'
 
 function MainPage() {
     const cookies = new Cookies()
@@ -52,6 +55,8 @@ function MainPage() {
             .then(res => {username = res.data.username})
             .catch((err) => {console.log("Error getting username from cookie: ", err.toJSON())})
 
+        //console.log(jwt.decode(token));
+
         if (!username) {
             console.log("No username can be retrieved from cookie, please relogin...")
             return;
@@ -69,6 +74,19 @@ function MainPage() {
                 console.log("Error at handleDeleteAccount: ", err.toJSON())
             })
         handleLogout()
+    }
+
+    const handleChangePassword = async (event) => {
+        const instance = createAxiosHeader();
+        let username = null;
+
+        await instance.post(URL_USER_GET_USERNAME)
+            .then(res => {username = res.data.username})
+            .catch((err) => {console.log("Error getting username from cookie: ", err.toJSON())})
+
+        event.preventDefault(event);
+        console.log(event.target.oldpw.value)
+
     }
 
     function createAxiosHeader() {
@@ -97,6 +115,7 @@ function MainPage() {
                 <p>
                     <Button variant={"outlined"} onClick={handleLogout} component={Link} to="/mainpage">Log Out</Button>
                     <Button variant={"outlined"} onClick={handleDeleteAccount} component={Link} to="/mainpage">Delete User</Button>
+                    <Container triggerText="Change Password" onSubmit={handleChangePassword} />
                 </p>
             </div>
     )
