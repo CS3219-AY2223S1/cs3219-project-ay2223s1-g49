@@ -34,6 +34,12 @@ io.on("connection", (socket) => {
     })
   })
 
+  socket.on(`echo`,(message) => {
+    socket.rooms.forEach((value) => {
+      io.to(value).emit(`hear`, message)
+    })
+  })
+
   socket.on(`timeout`, (message) => {
     deleteMatchForUser(message.username);
   })
