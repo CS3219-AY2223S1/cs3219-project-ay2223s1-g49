@@ -22,8 +22,7 @@ export async function deleteQuestion(_id) {
     let resp = null;
     const query = QuestionModel.findByIdAndDelete(_id).exec();
     await query.then(function (res) {
-        if (!res)
-            resp = { err: "Question not found in database", success: false };
+        if (!res) throw Error("Question not found in database");
         else resp = { success: true };
     });
 
@@ -44,20 +43,13 @@ export async function getDifficultyLimit(_difficulty) {
 
 export async function getRandomId(_difficulty) {
     let id = null;
-    const query = QuestionModel.aggregate(
-        [{ $match: { difficulty: _difficulty } }, { $sample: { size: 1 } }],
-        {
-            _id: {
-                $toString: "$_id",
-            },
-        }
-    ).exec();
+    const query = QuestionModel.aggregate([
+        { $match: { difficulty: _difficulty } },
+        { $sample: { size: 1 } },
+    ]).exec();
     await query.then(function (question) {
-        if (question.length == 0) {
-            id = "No questions available";
-        } else {
-            id = question[0]._id.toString();
-        }
+        if (question.length == 0) throw Error("No questions available");
+        else id = question[0]._id.toString();
     });
     return id;
 }
@@ -66,6 +58,7 @@ export async function getQuestionContent(id) {
     let content = null;
     const query = QuestionModel.findById(id).exec();
     await query.then(function (question) {
+        if (!question) throw Error("Question id not found in database");
         content = question.content;
     });
 

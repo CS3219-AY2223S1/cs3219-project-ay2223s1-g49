@@ -19,7 +19,6 @@ function createErrResponse(err, method) {
 export async function ormCreateQuestion(difficulty, content) {
     try {
         const newQuestion = await createQuestion({ difficulty, content });
-
         await newQuestion.save();
 
         const resp = {
@@ -28,49 +27,58 @@ export async function ormCreateQuestion(difficulty, content) {
         };
         return resp;
     } catch (err) {
-        return createErrResponse(err, "ormCreateQuestion");
+        return createErrResponse(err.message, "ormCreateQuestion");
     }
 }
 
 export async function ormDeleteQuestion(id) {
     try {
-        const res = await deleteQuestion(id);
-        let response;
-        if (res.err)
-            response = {
-                err: res.err,
-                message: "Failed to delete question!",
-            };
-        else response = { message: `Successfully deleted question ${id}` };
-        return response;
+        const message = await deleteQuestion(id);
+        const resp = {
+            err: null,
+            limit: message,
+        };
+        return resp;
     } catch (err) {
-        return createErrResponse(err, "ormDeleteQuestion");
+        return createErrResponse(err.message, "ormDeleteQuestion");
     }
 }
 
 export async function ormGetDifficultyLimit(difficulty) {
     try {
         const maxQuestion = await getDifficultyLimit(difficulty);
-        return maxQuestion;
+        const resp = {
+            err: null,
+            limit: maxQuestion,
+        };
+        return resp;
     } catch (err) {
-        return createErrResponse(err, "ormGetDifficultyLimit");
+        return createErrResponse(err.message, "ormGetDifficultyLimit");
     }
 }
 
 export async function ormGetRandomId(difficulty) {
     try {
         const questionId = await getRandomId(difficulty);
-        return questionId;
+        const resp = {
+            err: null,
+            id: questionId,
+        };
+        return resp;
     } catch (err) {
-        return createErrResponse(err, "ormGetRandomId");
+        return createErrResponse(err.message, "ormGetRandomId");
     }
 }
 
 export async function ormGetQuestionContent(id) {
     try {
         const content = await getQuestionContent(id);
-        return content;
+        const resp = {
+            err: null,
+            content: content,
+        };
+        return resp;
     } catch (err) {
-        return createErrResponse(err, "ormGetQuestionContent");
+        return createErrResponse(err.message, "ormGetQuestionContent");
     }
 }
