@@ -30,7 +30,9 @@ jobs:
       uses: actions/setup-node@v3
       
       with:
+        ENV: "TEST"
         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        DB_CLOUD_URI_TEST: ${{ secrets.DB_CLOUD_URI_TEST }}
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         

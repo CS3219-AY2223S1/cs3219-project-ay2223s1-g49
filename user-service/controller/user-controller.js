@@ -14,7 +14,8 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY //|| crypto.randomBytes(16).toString('hex')
+
+const SECRET_KEY = process.env.ENV == "PROD" ? process.env.JWT_SECRET_KEY : process.env.JWT_TEST_KEY
 
 export async function createUser(req, res) {
     try {
