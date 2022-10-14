@@ -1,2 +1,11 @@
-.idea/cs3219-project-ay2223s1-g49-main.iml
-.idea/
+
+frontend/node_modules/
+
+matching-service/node_modules/
+
+user-service/node_modules/
+
+.env
+
+node_modules
+.idea

@@ -15,6 +15,8 @@ import TabPanel from "./TabPanel.js"
 import DropDown from "./DropDown.js"
 import '../styles/FindMatch.css';
 
+import {findMatch} from "../client/client.js"
+
 function FindMatch() {
 
     const [level, setLevel] = React.useState("1");
@@ -40,7 +42,7 @@ function FindMatch() {
                         <Button
                             variant="contained"
                             sx={{ width: 200, padding: 1, margin: 2 }}
-                            onClick={() => {setLevel(4)}}>
+                            onClick={() => {setLevel(4); findMatch("saul", "hard af")}}>
                             Find A Match
                         </Button>
                     </div>
