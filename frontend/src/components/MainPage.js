@@ -1,14 +1,16 @@
 import {
     Box,
     Button,
-    Typography
+    Typography,
+    TextField,
+    Stack
 } from "@mui/material";
 import {Link} from "react-router-dom";
 import Cookies from 'universal-cookie';
 import { useState } from 'react'
 import axios from "axios";
-import { URL_USER_LOGOUT, URL_USER_DELETE, URL_USER_GET_USERNAME } from "../configs";
-import { STATUS_CODE_DELETE_USER_SUCCESS } from "../constants";
+import { URL_USER_LOGOUT, URL_USER_DELETE, URL_USER_GET_USERNAME, URL_USER_CHANGE_PASSWORD } from "../configs";
+import { STATUS_CODE_DELETE_USER_SUCCESS, STATUS_CODE_CHANGE_PASSWORD_SUCCESS, STATUS_CODE_CHANGE_PASSWORD_INVALID_CRED } from "../constants";
 import LoginPage from "./LoginPage";
 import validateToken from "./validate-token";
 
@@ -17,6 +19,9 @@ function MainPage() {
     const [isLogin, setIsLogin] = useState(false)
     const [token, setToken] = useState(cookies.get('access token'))
     const [username, setUsername] = useState("")
+    const [oldpassword, setOldPw] = useState("")
+    const [newpassword, setNewPw] = useState("")
+    const [verifynewpassword, setVerifyNewPw] = useState("")
 
     if (!token){
         return <LoginPage setToken={setToken} />;
@@ -73,6 +78,57 @@ function MainPage() {
         handleLogout()
     }
 
+    const handleChangePassword = async () => {
+
+        if (!newpassword || newpassword == "" || !oldpassword || oldpassword == "" || !verifynewpassword || verifynewpassword == ""){
+            console.log("All fields are required");
+            alert("All fields are required.");
+            return;
+        }
+        
+        if (newpassword !== verifynewpassword){
+            console.log("New passwords do not match. Please retype your new passwords.");
+            alert("New passwords do not match. Please retype your new passwords.");
+            resetPasswordFields();
+            return;
+        }
+
+        const instance = createAxiosHeader();
+        await instance.post(URL_USER_CHANGE_PASSWORD, 
+            {   
+                username: username,
+                oldpassword: oldpassword,
+                newpassword: newpassword 
+            }).then(res =>{
+                if (res && res.status === STATUS_CODE_CHANGE_PASSWORD_SUCCESS) {
+                    console.log("Password successfully changed!")
+                    alert("Password successfully changed!")
+                    resetPasswordFields()                    
+                } else {
+                    console.log("Unable to change password")
+                    alert("Unable to change password, please try again later")
+                    resetPasswordFields()
+                }
+            })
+            .catch((err) => {
+                if (err.response.status == STATUS_CODE_CHANGE_PASSWORD_INVALID_CRED){
+                    console.log("Unable to verify current password. Please try again.")
+                    alert("Unable to verify current password. Please try again.")
+                    resetPasswordFields()
+                }
+                else {
+                    console.log("Error at handleChangePW: ", err.toJSON())
+                }
+            })
+    }
+
+    const resetPasswordFields = () => {
+        setOldPw("")
+        setNewPw("")
+        setVerifyNewPw("")
+
+    }
+
     function createAxiosHeader() {
         const jwt = cookies.get('access token');
         const instance = axios.create({
@@ -99,7 +155,15 @@ function MainPage() {
                 <p>
                     <Button variant={"outlined"} onClick={handleLogout} component={Link} to="/mainpage">Log Out</Button>
                     <Button variant={"outlined"} onClick={handleDeleteAccount} component={Link} to="/mainpage">Delete User</Button>
+                    <Button variant={"outlined"} onClick={handleChangePassword} >Change Password</Button>
                 </p>
+                <div>
+                    <Stack spacing={2} width={400}>
+                            <TextField fullwidth id="oldpw" label="Old Pasword" variant="outlined" type="password" value={oldpassword} onChange={(e) => setOldPw(e.target.value)} ></TextField>
+                            <TextField fullwidth id="newpw" label="New Password" variant="outlined" type="password" value={newpassword} onChange={(e) => setNewPw(e.target.value)} ></TextField>
+                            <TextField fullwidth id="verifynewpw" label="Retype New Password" variant="outlined" type="password" value={verifynewpassword} onChange={(e) => setVerifyNewPw(e.target.value)}></TextField>
+                    </Stack>
+                </div>
             </div>
     )
 }
