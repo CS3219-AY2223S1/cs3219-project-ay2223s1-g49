@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import {Link} from "react-router-dom";
 import Cookies from 'universal-cookie';
-import React, { useState } from 'react'
+import { useState } from 'react'
 import axios from "axios";
 import { URL_USER_LOGOUT, URL_USER_DELETE, URL_USER_GET_USERNAME } from "../configs";
 import { STATUS_CODE_DELETE_USER_SUCCESS } from "../constants";
@@ -14,14 +14,14 @@ import validateToken from "./validate-token";
 
 function MainPage() {
     const cookies = new Cookies()
-    const [isLogin, setIsLogin] = React.useState(false)
+    const [isLogin, setIsLogin] = useState(false)
     const [token, setToken] = useState(cookies.get('access token'))
+    const [username, setUsername] = useState("")
 
     if (!token){
-        return <LoginPage setToken={setToken} />
-    }
+        return <LoginPage setToken={setToken} />;
+    } 
 
-    console.log(`main page: ${token}`)
     validateToken(token).then(tokenValid => {
         console.log("verifying token")
         if (!tokenValid){
@@ -31,8 +31,16 @@ function MainPage() {
         } else {
             console.log("valid token")
             setIsLogin(true)
+            initialiseUsername()
         }
     })
+
+    const initialiseUsername = () => {
+        const instance = createAxiosHeader();
+        instance.post(URL_USER_GET_USERNAME)
+                .then(res => {setUsername(res.data.username)})
+                .catch((err) => {console.log("Error getting username from cookie: ", err.toJSON())})
+    }
 
     const handleLogout = async () => {
         const instance = createAxiosHeader();
@@ -46,14 +54,8 @@ function MainPage() {
 
     const handleDeleteAccount = async () => {
         const instance = createAxiosHeader();
-        let username = null;
-
-        await instance.post(URL_USER_GET_USERNAME)
-            .then(res => {username = res.data.username})
-            .catch((err) => {console.log("Error getting username from cookie: ", err.toJSON())})
-
-        if (!username) {
-            console.log("No username can be retrieved from cookie, please relogin...")
+        if (!username || username === "") {
+            console.log("No username initialised, please relogin...")
             return;
         }
         
