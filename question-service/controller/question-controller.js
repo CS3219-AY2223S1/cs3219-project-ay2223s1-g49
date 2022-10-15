@@ -20,7 +20,7 @@ export async function createQuestion(req, res) {
 
         if (missingParam.length != 0) {
             const message = createMissingParamError(missingParam.join(", "));
-            return res.status(500).json({ message: message });
+            return res.status(500).json({ Error: message });
         }
 
         const resp = await ormCreateQuestion(
@@ -41,7 +41,7 @@ export async function deleteQuestion(req, res) {
     try {
         if (!req.body.id) {
             const message = createMissingParamError("id");
-            return res.status(500).json({ message: message });
+            return res.status(500).json({ Error: message });
         }
 
         const resp = await ormDeleteQuestion(req.body.id);
@@ -58,7 +58,7 @@ export async function getLimit(req, res) {
     try {
         if (!req.body.difficulty) {
             const message = createMissingParamError("difficulty");
-            return res.status(500).json({ message: message });
+            return res.status(500).json({ Error: message });
         }
 
         const resp = await ormGetDifficultyLimit(req.body.difficulty);
@@ -75,7 +75,7 @@ export async function getRandomId(req, res) {
     try {
         if (!req.body.difficulty) {
             const message = createMissingParamError("difficulty");
-            return res.status(500).json({ message: message });
+            return res.status(500).json({ Error: message });
         }
 
         const resp = await ormGetRandomId(req.body.difficulty);
@@ -92,7 +92,7 @@ export async function getQuestionContent(req, res) {
     try {
         if (!req.body.id) {
             const message = createMissingParamError("id");
-            return res.status(500).json({ message: message });
+            return res.status(500).json({ Error: message });
         }
 
         const resp = await ormGetQuestionContent(req.body.id);
