@@ -12,7 +12,7 @@ Each question has 3 field:
 __Endpoint:__ _url_/service/create/question  
 __request body:__  
 {  
-&nbsp;&nbsp;"difficulty": "hard,  
+&nbsp;&nbsp;"difficulty": "hard",  
 &nbsp;&nbsp;"content: "this is a hard question"  
 }  
 __response body:__  
