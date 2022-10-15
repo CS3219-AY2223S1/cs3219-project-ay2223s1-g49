@@ -33,10 +33,10 @@ export async function ormCreateQuestion(difficulty, content) {
 
 export async function ormDeleteQuestion(id) {
     try {
-        const message = await deleteQuestion(id);
+        await deleteQuestion(id);
         const resp = {
             err: null,
-            limit: message,
+            message: "Question deleted successfully!",
         };
         return resp;
     } catch (err) {

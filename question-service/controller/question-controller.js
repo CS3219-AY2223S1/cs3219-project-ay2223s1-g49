@@ -21,11 +21,13 @@ export async function createQuestion(req, res) {
             return res.status(500).json({ message: message });
         }
 
-        const resp = ormCreateQuestion(req.body.difficulty, req.body.content);
+        const resp = await ormCreateQuestion(
+            req.body.difficulty,
+            req.body.content
+        );
+
         if (resp.err) throw Error(resp.err);
-        return res
-            .status(200)
-            .json({ message: "Question created successfully!" });
+        return res.status(200).json({ message: resp.message });
     } catch (err) {
         return res.status(500).json({
             Error: `Create question failed with error: ${err.message}`,
@@ -39,11 +41,10 @@ export async function deleteQuestion(req, res) {
             const message = createMissingParamError("id");
             return res.status(500).json({ message: message });
         }
+
         const resp = await ormDeleteQuestion(req.body.id);
         if (resp.err) throw Error(resp.err);
-        return res
-            .status(200)
-            .json({ message: "Question deleted successfully!" });
+        return res.status(200).json({ message: resp.message });
     } catch (err) {
         return res.status(500).json({
             Error: `Delete question failed with error: ${err.message}`,
@@ -57,6 +58,7 @@ export async function getLimit(req, res) {
             const message = createMissingParamError("difficulty");
             return res.status(500).json({ message: message });
         }
+
         const resp = await ormGetDifficultyLimit(req.body.difficulty);
         if (resp.err) throw Error(resp.err);
         return res.status(200).json({ limit: resp.limit });
@@ -73,6 +75,7 @@ export async function getRandomId(req, res) {
             const message = createMissingParamError("difficulty");
             return res.status(500).json({ message: message });
         }
+
         const resp = await ormGetRandomId(req.body.difficulty);
         if (resp.err) throw Error(resp.err);
         return res.status(200).json({ id: resp.id });
@@ -89,6 +92,7 @@ export async function getQuestionContent(req, res) {
             const message = createMissingParamError("id");
             return res.status(500).json({ message: message });
         }
+
         const resp = await ormGetQuestionContent(req.body.id);
         if (resp.err) throw Error(resp.err);
         return res.status(200).json({ content: resp.content });
