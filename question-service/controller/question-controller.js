@@ -13,8 +13,10 @@ function createMissingParamError(param) {
 export async function createQuestion(req, res) {
     try {
         const missingParam = [];
-        if (!req.body.difficulty) missingParam.push("difficulty");
-        if (!req.body.content) missingParam.push("content");
+        if (!req.body.difficulty || req.body.difficulty.trim().length == 0)
+            missingParam.push("difficulty");
+        if (!req.body.content || req.body.content.trim().length == 0)
+            missingParam.push("content");
 
         if (missingParam.length != 0) {
             const message = createMissingParamError(missingParam.join(", "));

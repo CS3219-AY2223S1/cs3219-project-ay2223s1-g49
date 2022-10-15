@@ -19,11 +19,11 @@ export async function createQuestion(params) {
 }
 
 export async function deleteQuestion(_id) {
-    let resp = null;
+    let resp = false;
     const query = QuestionModel.findByIdAndDelete(_id).exec();
     await query.then(function (res) {
         if (!res) throw Error("Question not found in database");
-        else resp = { success: true };
+        else resp = true;
     });
 
     return resp;
