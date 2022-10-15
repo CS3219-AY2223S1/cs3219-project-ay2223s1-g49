@@ -52,4 +52,12 @@ io.on("connection", (socket) => {
     deleteMatchForUser(message.username);
   })
 
+  socket.on(`quitMatching`, () => {
+    socket.disconnect()
+  })
+
+  socket.on(`disconnect`, () => {
+    console.log(`socket ${socket.id} has left matching service`)
+  })
+
 });

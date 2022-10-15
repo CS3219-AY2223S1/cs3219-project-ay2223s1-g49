@@ -42,7 +42,7 @@ function FindMatch() {
                         <Button
                             variant="contained"
                             sx={{ width: 200, padding: 1, margin: 2 }}
-                            onClick={() => {setLevel(4); findMatch("saul", "hard af")}}>
+                            onClick={() => {setLevel(4); findMatch("tomus", "very hard")}}>
                             Find A Match
                         </Button>
                     </div>
@@ -58,7 +58,7 @@ function FindMatch() {
                         <Button
                             variant="contained"
                             sx={{ width: 200, padding: 1, margin: 2 }}
-                            onClick={() => {setLevel(4)}}>
+                            onClick={() => {setLevel(4); findMatch("james", "very hard")}}>
                             Find A Match
                         </Button>
                     </div>
