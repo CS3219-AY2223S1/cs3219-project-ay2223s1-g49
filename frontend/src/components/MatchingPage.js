@@ -28,10 +28,15 @@ const useStyles = makeStyles({
     height: '100vh',
   },
   rightContainer: {
-    backgroundColor: '#FFFFFF',
     height: '100vh',
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  contentContainer: {
+    backgroundColor: '#FFFFFF',
+    height: '90vh',
+    borderRadius: 15,
   },
   planetImage: {
     borderRadius: 8,
@@ -72,39 +77,41 @@ function MatchingPage() {
             </div>
         </Col>
         <Col className={classes.rightContainer} xs={8}>
-          <div class="mt-2">
-            <Typography style={{ flexGrow: 1, fontWeight: 600, fontSize: 40}} color="#424242">
-              Welcome to Peerprep
-              <RocketLaunchIcon style={{marginLeft: 6, marginBottom: 4,fontSize: 40}}/>
-            </Typography>
-          </div>
-          <div class="mt-2">
-            <Typography style={{ flexGrow: 1, fontWeight: 600, fontSize: 25}} color="#424242">
-              Find a Coding Partner
-            </Typography>
-            <Typography style={{ flexGrow: 1, fontSize: 14}} color="#424242">
-              Collaborate with another student and practice for your interviews together.
-            </Typography>
-          </div>
-          <div class="mt-2 d-flex flex-row">
-            <Card
-              class="overflow-hidden"
-              style={{ width: '33%', height: '14vw', borderColor: '#FFFFFF'}}
-              onClick={() => alert("Clicked on Easy Mode")}>
-              <Card.Img src={greenPlanet} alt="Card image" className={classes.planetImage}/>
-            </Card>
-            <Card
-              class="overflow-hidden"
-              style={{ width: '33%', height: '14vw', marginLeft: 10, borderColor: '#FFFFFF'}}
-              onClick={() => alert("Clicked on Intermediate Mode")}>
-              <Card.Img src={yellowPlanet} alt="Card image" className={classes.planetImage}/>
-            </Card>
-            <Card
-              class="overflow-hidden"
-              style={{ width: '33%', height: '14vw', marginLeft: 10, borderColor: '#FFFFFF'}}
-              onClick={() => alert("Clicked on Hard Mode")}>
-              <Card.Img src={redPlanet} alt="Card image" className={classes.planetImage} />
-            </Card>
+          <div className={classes.contentContainer}>
+            <div class="mt-2">
+              <Typography style={{ marginLeft: 10, flexGrow: 1, fontWeight: 600, fontSize: 40}} color="#424242">
+                Welcome to Peerprep
+                <RocketLaunchIcon style={{marginLeft: 6, marginBottom: 4,fontSize: 40}}/>
+              </Typography>
+            </div>
+            <div class="mt-2">
+              <Typography style={{ marginLeft: 10, flexGrow: 1, fontWeight: 600, fontSize: 25}} color="#424242">
+                Find a Coding Partner
+              </Typography>
+              <Typography style={{ marginLeft: 10, flexGrow: 1, fontSize: 14}} color="#424242">
+                Collaborate with another student and practice for your interviews together.
+              </Typography>
+            </div>
+            <div class="mt-2 d-flex flex-row">
+              <Card
+                class="overflow-hidden"
+                style={{ width: '31%', height: '13vw', marginLeft: 10, borderColor: '#FFFFFF'}}
+                onClick={() => alert("Clicked on Easy Mode")}>
+                <Card.Img src={greenPlanet} alt="Card image" className={classes.planetImage}/>
+              </Card>
+              <Card
+                class="overflow-hidden"
+                style={{ width: '31%', height: '13vw', marginLeft: 10, borderColor: '#FFFFFF'}}
+                onClick={() => alert("Clicked on Intermediate Mode")}>
+                <Card.Img src={yellowPlanet} alt="Card image" className={classes.planetImage}/>
+              </Card>
+              <Card
+                class="overflow-hidden"
+                style={{ width: '31%', height: '13vw', marginLeft: 10, borderColor: '#FFFFFF'}}
+                onClick={() => alert("Clicked on Hard Mode")}>
+                <Card.Img src={redPlanet} alt="Card image" className={classes.planetImage} />
+              </Card>
+            </div>
           </div>
         </Col>
       </Row>
