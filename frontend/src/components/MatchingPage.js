@@ -28,15 +28,11 @@ const useStyles = makeStyles({
     height: '100vh',
   },
   rightContainer: {
+    backgroundColor: '#FFFFFF',
     height: '100vh',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center'
-  },
-  contentContainer: {
-    backgroundColor: '#FFFFFF',
-    height: '90vh',
-    borderRadius: 35,
   },
   planetImage: {
     borderRadius: 10,
@@ -77,8 +73,7 @@ function MatchingPage() {
             </div>
         </Col>
         <Col className={classes.rightContainer} xs={8}>
-          <div className={classes.contentContainer}>
-            <div class="mt-2">
+            <div>
               <Typography style={{ marginLeft: 20, flexGrow: 1, fontWeight: 600, fontSize: 40}} color="#424242">
                 Welcome to Peerprep
                 <RocketLaunchIcon style={{marginLeft: 6, marginBottom: 4,fontSize: 40}}/>
@@ -112,7 +107,6 @@ function MatchingPage() {
                 <Card.Img src={redPlanet} alt="Card image" className={classes.planetImage} />
               </Card>
             </div>
-          </div>
         </Col>
       </Row>
       <ParticlesComponent />
