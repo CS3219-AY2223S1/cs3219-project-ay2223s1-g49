@@ -21,13 +21,17 @@ import yellowPlanet from "../images/yellow-planet.png"
 import ParticlesComponent from "./Particles.js"
 
 const useStyles = makeStyles({
-  leftContainer: {
+  mainContainer: {
     backgroundColor: '#0B034A',
+  },
+  leftContainer: {
     height: '100vh',
   },
   rightContainer: {
     backgroundColor: '#FFFFFF',
     height: '100vh',
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
   },
   planetImage: {
     borderRadius: 8,
@@ -40,7 +44,7 @@ function MatchingPage() {
     const classes = useStyles();
     const username = "Sim Jun Heng";
     return (
-    <Container fluid>
+    <Container fluid className={classes.mainContainer}>
       <Row>
         <Col className={classes.leftContainer} xs={4}>
             <div class="d-flex justify-content-center mt-4">
