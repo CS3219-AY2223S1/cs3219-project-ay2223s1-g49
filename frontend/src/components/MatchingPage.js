@@ -1,26 +1,31 @@
 import React from 'react';
 import {
+  Box,
   Button,
-  Typography
+  Typography,
+  Modal
 } from "@mui/material";
 import {makeStyles} from "@material-ui/core/styles";
 import {
   Container,
-  Carousel,
   Row,
   Col,
   Image,
   Card
 } from "react-bootstrap";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import ParticlesComponent from "./Particles.js";
+import Timer from "./Timer.js";
+import {findMatch} from "../client/client.js"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import rocketImage from "../images/rocket.gif";
-import greenPlanet from "../images/green-planet.png"
-import redPlanet from "../images/red-planet.png"
-import yellowPlanet from "../images/yellow-planet.png"
-import ParticlesComponent from "./Particles.js"
 
-const useStyles = makeStyles({
+import rocketImage from "../images/rocket.gif";
+import greenPlanet from "../images/green-planet.png";
+import redPlanet from "../images/red-planet.png";
+import yellowPlanet from "../images/yellow-planet.png";
+import moonImage from "../images/moon.gif";
+
+const useStyles = makeStyles(theme => ({
   mainContainer: {
     backgroundColor: '#0B034A',
   },
@@ -38,11 +43,27 @@ const useStyles = makeStyles({
     borderRadius: 10,
     height: '100%',
     width: '100%'
-  }
-})
+  },
+  modalStyle: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 380,
+    height: 450,
+    backgroundColor: '#161844',
+    boxShadow: theme.shadows[5],
+  },
+}));
 
 function MatchingPage() {
     const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     const username = "Sim Jun Heng";
     return (
     <Container fluid className={classes.mainContainer}>
@@ -64,6 +85,7 @@ function MatchingPage() {
             <div class="d-flex justify-content-center mt-4">
               <Button
                 variant="outlined"
+                onClick={() => alert("Logout")}
                 style={{
                     borderRadius: 35,
                     backgroundColor: "#21b6ae",
@@ -91,24 +113,38 @@ function MatchingPage() {
               <Card
                 class="overflow-hidden"
                 style={{ width: '31%', height: '13vw', marginLeft: 20, borderColor: '#FFFFFF', borderRadius: 5}}
-                onClick={() => alert("Clicked on Easy Mode")}>
+                onClick={() => {handleOpen(); findMatch("test", "easy")}}>
                 <Card.Img src={greenPlanet} alt="Card image" className={classes.planetImage}/>
               </Card>
               <Card
                 class="overflow-hidden"
                 style={{ width: '31%', height: '13vw', marginLeft: 10, borderColor: '#FFFFFF', borderRadius: 5}}
-                onClick={() => alert("Clicked on Intermediate Mode")}>
+                onClick={() => {handleOpen(); findMatch("test", "medium")}}>
                 <Card.Img src={yellowPlanet} alt="Card image" className={classes.planetImage}/>
               </Card>
               <Card
                 class="overflow-hidden"
                 style={{ width: '31%', height: '13vw', marginLeft: 10, borderColor: '#FFFFFF', borderRadius: 5}}
-                onClick={() => alert("Clicked on Hard Mode")}>
+                onClick={() => {handleOpen(); findMatch("test", "hard")}}>
                 <Card.Img src={redPlanet} alt="Card image" className={classes.planetImage} />
               </Card>
             </div>
         </Col>
       </Row>
+      <Modal open={open}>
+        <Box className={classes.modalStyle}>
+          <Image fluid src={moonImage} style={{height: '64%', width: '100%'}}/>
+          <Typography style={{ marginTop: -40, flexGrow: 1, fontWeight: 600, fontSize: 15}} color="#FFFFFF">
+            Please wait while we find you a match
+          </Typography>
+          <Timer maxRange={30} />
+          <div style={{paddingBottom: 30}}>
+            <Button variant="outlined" onClick={handleClose} style={{backgroundColor:'#FFFFFF'}}>
+              Cancel
+            </Button>
+          </div>
+        </Box>
+      </Modal>
       <ParticlesComponent />
     </Container>
     );
