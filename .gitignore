@@ -1,9 +1,5 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+.idea/
 frontend/node_modules/
-
-matching-service/node_modules/
-
-user-service/node_modules/
-
-.env
-
-node_modules
