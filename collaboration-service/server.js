@@ -20,15 +20,27 @@ httpServer.listen(3002)
 
 const io = new Server(httpServer , {cors: { origin : "*"}})
 
+var myCollabRoom = ""
+
 io.on("connection", (socket) => {
     console.log(`client (Backend) connected to collab service with id ${socket.id}`)
-
     socket.on(`collab`, (collabId, username, difficulty) => {
-        console.log(`recieved collab signal from ${username} with collabId: ${collabId}`)
+        console.log(`recieved collab signal from ${username} of room ${socket.id} with collabId: ${collabId}`)
+        myCollabRoom = collabId
         socket.join(collabId)
         createCollab(collabId, username, difficulty)
         socket.emit(`collabSuccess`, collabId)
+        listAllConnectedRooms(socket)
     })
+
+    function listAllConnectedRooms(socket) {
+        console.log("__________________________")
+        socket.rooms.forEach((value) => {
+            console.log(value)
+        })
+        console.log("My current id " + socket.id)
+        console.log("__________________________")
+    }
 
     socket.on(`echo`,(message) => {
         socket.rooms.forEach((value) => {
@@ -36,12 +48,14 @@ io.on("connection", (socket) => {
         })
     })
 
-    socket.on(`quitCollab`, (collabId, username) => {
+    socket.on(`quitCollab`, (username) => {
         deleteCollabForUser(username)
-        socket.leave(collabId)
+        socket.leave(myCollabRoom)
     })
 
     socket.on('CODE_CHANGED', async (roomId, code) => {
-        collabSocket.to(roomId).emit('CODE_CHANGED', code)
+        console.log('someone sent ' + code)
+        socket.to(myCollabRoom).emit('CODE_CHANGED', roomId, code)
+        console.log(`something has changed on one end for room ${roomId}    collabRoom: ${myCollabRoom}`)
     })
 })

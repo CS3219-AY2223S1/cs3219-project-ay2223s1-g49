@@ -37,12 +37,17 @@ export function findMatch(usernameVal, difficultyVal) {
 }
 
 //-------------------------------- Collab service ----------------------------------------------------
-export const collabSocket = io('http://localhost:3002')
+export const collabSocket = io('http://localhost:3002', {
+  transports: ['websocket']
+})
+
+export var myCollabId = ""
 
 collabSocket.on("connect", () => {
     console.log(`Client (FrontEnd) connected to collab service with id of: ${collabSocket.id}`)
 
     collabSocket.on(`collab`, (collabRoomId, username, difficulty) => {
+      myCollabId = collabRoomId
       console.log(`Client (FrontEnd) is attempting to join collab room of ${collabRoomId}`)
     })
 
