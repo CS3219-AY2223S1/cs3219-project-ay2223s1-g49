@@ -40,4 +40,8 @@ io.on("connection", (socket) => {
         deleteCollabForUser(username)
         socket.leave(collabId)
     })
+
+    socket.on('CODE_CHANGED', async (roomId, code) => {
+        collabSocket.to(roomId).emit('CODE_CHANGED', code)
+    })
 })
