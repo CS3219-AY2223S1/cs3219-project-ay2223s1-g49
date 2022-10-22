@@ -1,0 +1,15 @@
+version: "3.5"
+
+services:
+  user-service:
+    image: tp-question-service
+    build: ./
+    container_name: question-service
+
+    ports:
+      - "7000:7000"
+    environment:
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "JWT_TEST_KEY=TEST_KEY"
+      - "JWT_SECRET_KEY=TEST_KEY"

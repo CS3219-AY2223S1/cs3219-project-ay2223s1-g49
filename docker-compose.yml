@@ -1,0 +1,54 @@
+version: "3.5"
+
+services:
+  user-service:
+    image: tp-user-service
+    build: ./user-service
+    container_name: user-service
+
+    ports:
+      - "8000:8000"    
+    environment:
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "JWT_TEST_KEY=TEST_KEY"
+      - "JWT_SECRET_KEY=TEST_KEY"
+
+  question-service:
+    image: tp-question-service
+    build: ./question-service
+    container_name: question-service
+
+    ports:
+      - "7000:7000"
+    environment:
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "JWT_TEST_KEY=TEST_KEY"
+      - "JWT_SECRET_KEY=TEST_KEY"
+
+  
+  matching-service:
+    image: tp-matching-service
+    build: ./matching-service
+    container_name: matching-service
+
+    ports:
+      - "3001:3001"
+    environment:
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "JWT_TEST_KEY=TEST_KEY"
+      - "JWT_SECRET_KEY=TEST_KEY"
+      
+  frontend-service:
+    image: tp-frontend-service
+    build: ./frontend
+    container_name: frontend-service
+
+    ports:
+      - "3000:3000"
+      
+    environment:
+      - "URI_USER_SVC=http://192.168.1.146:8000"
+    
