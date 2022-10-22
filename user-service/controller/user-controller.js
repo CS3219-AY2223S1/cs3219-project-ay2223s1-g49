@@ -20,7 +20,7 @@ const SECRET_KEY = process.env.ENV == "PROD" ? process.env.JWT_SECRET_KEY : proc
 export async function createUser(req, res) {
     try {
         const { username, password } = req.body;
-        if (username && password) {
+        if (username && username.trim() !=="" && password) {
             const usernameInUse = await _checkUser(username);
             if (usernameInUse) {
                 return res.status(409).json({message: `Username ${username} has been used!`});
@@ -48,7 +48,7 @@ export async function createUser(req, res) {
 export async function deleteUser(req, res) {
     try {
         const { username } = req.body;
-        if (!username) {
+        if (!username || username.trim() ==="") {
             return res.status(400).json({message: 'Username to delete is missing!'});
         }
 
@@ -72,7 +72,7 @@ export async function deleteUser(req, res) {
 export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
-        if (!username || username==="" || !password || password===""){
+        if (!username || username.trim() ==="" || !password || password===""){
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
 
@@ -102,7 +102,7 @@ export async function authUser(req, res) {
 export async function checkUser(req, res) {
     try{
         const { username } = req.body;
-        if (!username) return res.status(400).json({message: 'Username is missing!'});
+        if (!username || username.trim()==="") return res.status(400).json({message: 'Username is missing!'});
 
         const resp = await _checkUser(username);
         
@@ -177,7 +177,7 @@ export async function getUsername(req, res) {
 export async function changePassword(req,res) {
     try {
         const { username, oldpassword, newpassword } = req.body;
-        if (username && oldpassword && newpassword) {
+        if (username && username.trim() !=="" && oldpassword && newpassword) {
 
             const authenticatedUser = await _authUser(username, oldpassword);
 
