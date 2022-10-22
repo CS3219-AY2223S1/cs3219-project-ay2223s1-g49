@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { auth } from "./middleware.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -17,12 +18,12 @@ import {
     deleteQuestion,
 } from "./controller/question-controller.js";
 
-const routes = express.Router();
+const  routes = express.Router();
 
 routes.get("/", (_, res) =>
     res.send(`Server live at ${new Date().toUTCString()}`)
 );
-routes.post("/create/question", createQuestion);
+routes.post("/create/question", auth, createQuestion);
 routes.post("/delete/question", deleteQuestion);
 routes.post("/get/limit", getLimit);
 routes.post("/get/random-id", getRandomId);
