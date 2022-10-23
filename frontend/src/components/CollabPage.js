@@ -20,14 +20,14 @@ const useStyles = makeStyles(theme => ({
   },
   QuestionContainer: {
     height: '100vh',
-    borderRight: '1px solid rgba(155, 191, 250)',
+    borderRight: '1px solid rgba(235, 233, 230)',
   },
   CodeContainer: {
     height: '100vh',
   },
   ChatContainer: {
     height: '100vh',
-    borderLeft: '1px solid rgba(155, 191, 250)',
+    borderLeft: '1px solid rgba(235, 233, 230)',
   },
 }));
 
@@ -56,21 +56,24 @@ function CollabPage() {
         </Col>
         <Col className={classes.CodeContainer} xs={5}>
           <Row>
-          <div style={{height: "10vh", backgroundColor: "#5692F5",
-            borderBottom: '1px solid rgba(155, 191, 250)'}} >
-
+          <div style={{height: "90vh"}} >
           </div>
-          <div style={{height: "80vh"}} >
-          </div>
-          <div style={{height: "10vh", backgroundColor: "#5692F5",
-            borderTop: '1px solid rgba(155, 191, 250)'}} >
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',
+            height: "10vh", backgroundColor: "#0B034A", borderTop: '1px solid rgba(155, 191, 250)'}} >
+              <div>
+                <Button variant="outlined"
+                  onClick={() => alert("End Session")}
+                  style={{ borderRadius: 5, backgroundColor: "#e6f6ff"}}>
+                  End Session
+                </Button>
+              </div>
           </div>
           </Row>
         </Col>
         <Col className={classes.ChatContainer} xs={3}>
           <div style={{display: 'flex', justifyContent: 'center'}}>
             <Typography style={{marginTop: 10, fontSize: 10, fontSize: 20, fontWeight: 600,
-              fontStyle: 'italic', color: "#5692F5"}}>
+              fontStyle: 'italic', color: "#0B034A"}}>
               Chat Application
             </Typography>
           </div>
