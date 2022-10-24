@@ -1,6 +1,7 @@
 import { ormCreateMatch as _createMatch } from '../model/match-orm.js'
 import { ormGetMatchForDifficulty as _getMatchForDifficulty } from '../model/match-orm.js'
 import { ormDeleteMatchForUser as _deleteMatchForUser} from '../model/match-orm.js'
+import { ormGetUserDetails as _getUserDetails} from '../model/match-orm.js'
 
 
 // message is a json object containing a username and difficulty field.
@@ -33,6 +34,17 @@ export async function getMatchForDifficulty(difficulty) {
         console.log(`Error getting a match for difficulty of ${difficulty}`);
     }
 }
+
+//find if match with username of ${username} return username if exists and null otherwise
+export async function getUserDetails(username) {
+    try {
+        const obj = await _getUserDetails(username);
+        return obj
+    } catch (err) {
+        console.log(`Error getting a match with username of ${username}`);
+    }
+}
+
 
 //pop and return the entry from database with username ${username}
 export async function deleteMatchForUser(username) {

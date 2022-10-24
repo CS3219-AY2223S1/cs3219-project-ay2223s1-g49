@@ -34,3 +34,12 @@ export async function deleteMatchForUser(param) {
   })
   return matchedUser;
 }
+
+export async function getUserDetails(param) {
+  const query = MatchModel.fineOne({"username" : param}).exec();
+  var matchedUser = null;
+  await query.then( (matched) => {
+    matchedUser = matched;
+  })
+  return matchedUser;
+}
