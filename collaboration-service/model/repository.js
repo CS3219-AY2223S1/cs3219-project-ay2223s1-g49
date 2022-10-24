@@ -27,3 +27,15 @@ export async function deleteCollabForUser(param) {
     }
   })
 }
+
+export async function getUserDetails(param) {
+  CollabModel.findOne({"username" : param}).exec()
+  await query.then((matched) => {
+    if (matched) {
+      return matched
+    } else {
+      console.log(`user ${username} could not be found in the collab db`)
+      return null
+    }
+  })
+}

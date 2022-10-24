@@ -17,6 +17,8 @@ function Test() {
             </Box>
             <Button variant="contained" onClick={()=> {findMatch("button11", "ezz")}}>Button 1</Button>
             <Button variant="contained" onClick={()=> {findMatch("button22", "ezz")}}>Button 2</Button>
+            <Button variant="contained" onClick={()=> {findMatch("james", "harder")}}>Button 1</Button>
+            <Button variant="contained" onClick={()=> {findMatch("zoomer", "harder")}}>Button 2</Button>
             <RealTimeEditor/>
         </Container>
 
