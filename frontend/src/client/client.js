@@ -17,10 +17,11 @@ matchingSocket.on("connect", () => {
     console.log(`Client (FrontEnd) connected to Matching service with id of: ${matchingSocket.id}`)
 
     matchingSocket.on(`matchSuccess`, (newRoomId) => {
-      console.log(`Successfully matched with matching Id: ${newRoomId}`)
-      matchingSocket.emit(`quitMatching`)
-      roomId = newRoomId
-      collabSocket.emit(`collab`, roomId, username, difficulty)
+      console.log(`Successfully matched with matching Id: ${newRoomId}`);
+      matchingSocket.emit(`quitMatching`);
+      roomId = newRoomId;
+      collabSocket.emit(`collab`, roomId, username, difficulty);
+      //window.location.href = "/test";
     })
 })
 
@@ -52,7 +53,7 @@ collabSocket.on("connect", () => {
     })
 
     collabSocket.on(`collabSuccess`, (collabRoomId) => {
-      console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId}`)
+      console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId}`);
     })
 
 })

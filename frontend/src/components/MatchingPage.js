@@ -13,9 +13,12 @@ import {
   Image,
   Card
 } from "react-bootstrap";
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import {findMatch} from "../client/client.js";
 import {Link} from "react-router-dom";
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import {
+  findMatch,
+  timeOut
+} from "../client/client.js";
 import ParticlesComponent from "./Particles.js";
 import Timer from "./Timer.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -59,12 +62,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+
 function MatchingPage(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const [matchStatus, setMatchStatus] = React.useState("Please wait while we find you a match");
+    const handleMatchInProgress = () => setMatchStatus("Please wait while we find you a match");
+    const handleNoMatchFound = () => setMatchStatus("No match available now. Please try again later");
+    const [difficultyLevel, setDifficultyLevel] = React.useState("hard");
+    const handleEasy = () => {
+      setDifficultyLevel("easy");
+      return "easy"
+    }
+    const handleMedium = () => {
+      setDifficultyLevel("medium");
+      return "medium"
+    }
+    const handleHard = () => {
+      setDifficultyLevel("hard");
+      return "hard"
+    }
     return (
     <Container fluid className={classes.mainContainer}>
       <Row>
@@ -117,19 +136,29 @@ function MatchingPage(props) {
               <Card
                 class="overflow-hidden"
                 style={{ width: '31%', height: '13vw', marginLeft: 20, borderColor: '#FFFFFF', borderRadius: 5}}
-                onClick={() => {handleOpen(); findMatch("test", "easy")}}>
+                onClick={() => {
+                  handleMatchInProgress();
+                  handleOpen();
+                  findMatch(props.username, handleEasy())}}>
                 <Card.Img src={greenPlanet} alt="Card image" className={classes.planetImage}/>
               </Card>
               <Card
                 class="overflow-hidden"
                 style={{ width: '31%', height: '13vw', marginLeft: 10, borderColor: '#FFFFFF', borderRadius: 5}}
-                onClick={() => {handleOpen(); findMatch("test", "medium")}}>
+                onClick={() => {
+                  handleMatchInProgress();
+                  handleOpen();
+                  findMatch(props.username, handleMedium())}}>
                 <Card.Img src={yellowPlanet} alt="Card image" className={classes.planetImage}/>
               </Card>
               <Card
                 class="overflow-hidden"
                 style={{ width: '31%', height: '13vw', marginLeft: 10, borderColor: '#FFFFFF', borderRadius: 5}}
-                onClick={() => {handleOpen(); findMatch("test", "hard")}}>
+                onClick={() => {
+                  handleHard();
+                  handleMatchInProgress();
+                  handleOpen();
+                  findMatch(props.username, handleHard())}}>
                 <Card.Img src={redPlanet} alt="Card image" className={classes.planetImage} />
               </Card>
             </div>
@@ -139,11 +168,20 @@ function MatchingPage(props) {
         <Box className={classes.modalStyle}>
           <Image fluid src={moonImage} style={{height: '64%', width: '100%'}}/>
           <Typography style={{ marginTop: -40, flexGrow: 1, fontWeight: 600, fontSize: 15}} color="#FFFFFF">
-            Please wait while we find you a match
+            {matchStatus}
           </Typography>
-          <Timer maxRange={30} />
+          <Timer
+            maxRange={30}
+            username={props.username}
+            difficultyLevel={difficultyLevel}
+            handleNoMatchFound={handleNoMatchFound}/>
           <div style={{paddingBottom: 30}}>
-            <Button variant="outlined" onClick={handleClose} style={{backgroundColor:'#FFFFFF'}}>
+            <Button variant="outlined"
+              onClick={() => {
+                handleClose();
+                timeOut(props.username, difficultyLevel);
+              }}
+              style={{backgroundColor:'#FFFFFF'}}>
               Cancel
             </Button>
           </div>

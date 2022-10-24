@@ -8,7 +8,7 @@ export async function createMatch(message, roomId) {
     try {
         const username = message.username;
         const difficulty = message.difficulty;
-        console.log(`Recieved username of: ${username} and difficulty of: ${difficulty}`)
+        console.log(`Received username of: ${username} and difficulty of: ${difficulty}`)
         if (username && difficulty) {
             const resp = await _createMatch(username, difficulty, roomId);
             if (resp.err) {

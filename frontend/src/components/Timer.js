@@ -9,13 +9,19 @@ import {
   Card
 } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {
+  timeOut
+} from "../client/client.js";
 
-export default function Timer({maxRange}) {
-  const [counter, setCounter] = useState(maxRange);
+export default function Timer(props) {
+  const [counter, setCounter] = useState(props.maxRange);
 
   useEffect(() => {
     if (counter > 0) {
       setTimeout(() => setCounter(counter - 1), 1000);
+    } else {
+      props.handleNoMatchFound();
+      timeOut(props.username, props.difficultyLevel);
     }
   }, [counter])
 
