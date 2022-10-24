@@ -8,3 +8,4 @@ user-service/node_modules/
 question-service/node_modules/
 collaboration-service/node_modules/
 *.env
+.idea

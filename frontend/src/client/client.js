@@ -57,6 +57,7 @@ collabSocket.on("connect", () => {
 
     collabSocket.on(`collabSuccess`, (collabRoomId) => {
       console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId}`);
+
     })
 
     collabSocket.on('getUserDetails', (Details) => {

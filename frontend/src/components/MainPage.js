@@ -143,29 +143,10 @@ function MainPage() {
     return (
         !isLogin 
         ?   <LoginPage setToken={setToken} />
-        :   <div>
-                <Box display={"flex"} flexDirection={"column"} width={"50%"}>
-                    <Typography variant={"h3"} marginBottom={"2rem"}>Loggged In Succesfully!</Typography>
-                    <Box display={"flex"} flexDirection={"row"} justifyContent={"centre"}>
-                    {isLogin
-                        ? <Typography variant={"h5"} marginBottom={"2rem"}>Valid Token</Typography>
-                        : <Typography variant={"h5"} marginBottom={"2rem"}>Invalid Token</Typography>
-                    }
-                    </Box>
-                </Box>
-                <p>
-                    <Button variant={"outlined"} onClick={handleLogout} component={Link} to="/mainpage">Log Out</Button>
-                    <Button variant={"outlined"} onClick={handleDeleteAccount} component={Link} to="/mainpage">Delete User</Button>
-                    <Button variant={"outlined"} onClick={handleChangePassword} >Change Password</Button>
-                </p>
-                <div>
-                    <Stack spacing={2} width={400}>
-                            <TextField fullwidth id="oldpw" label="Old Pasword" variant="outlined" type="password" value={oldpassword} onChange={(e) => setOldPw(e.target.value)} ></TextField>
-                            <TextField fullwidth id="newpw" label="New Password" variant="outlined" type="password" value={newpassword} onChange={(e) => setNewPw(e.target.value)} ></TextField>
-                            <TextField fullwidth id="verifynewpw" label="Retype New Password" variant="outlined" type="password" value={verifynewpassword} onChange={(e) => setVerifyNewPw(e.target.value)}></TextField>
-                    </Stack>
-                </div>
-            </div>
+        :   <MatchingPage
+                handleLogout={handleLogout}
+                handleDeleteAccount={handleDeleteAccount}
+                username={username}/>
     )
 }
 
