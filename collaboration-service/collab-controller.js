@@ -1,5 +1,6 @@
 import { ormCreateCollab as _createCollab } from './model/collab-orm.js'
 import { ormDeleteCollabForUser as _deleteCollabForUser} from './model/collab-orm.js'
+import { ormGetUserDetails as _getUserDetails} from './model/collab-orm.js'
 
 export async function createCollab(roomId, username, difficulty) {
     try {
@@ -28,5 +29,18 @@ export async function deleteCollabForUser(username) {
         return obj;
     } catch (err) {
         console.log(`Unable to delete collab for user: ${username}!`);
+    }
+}
+
+export async function getUserDetails(username) {
+    try {
+        const obj = await _getUserDetails(username);
+        if (obj) {
+            return obj
+        } else {
+            return null
+        }
+    } catch (err) {
+        console.log(`Faced an error finding a collab for user: ${username}!`);
     }
 }

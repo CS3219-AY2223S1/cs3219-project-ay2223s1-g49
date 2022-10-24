@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import { createCollab, deleteCollabForUser } from './collab-controller.js'
+import { createCollab, deleteCollabForUser, getUserDetails } from './collab-controller.js'
 
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -20,13 +20,14 @@ httpServer.listen(3002)
 
 const io = new Server(httpServer , {cors: { origin : "*"}})
 
-var myCollabRoom = ""
+//key: socket.id, value: shared room
+var dictionaryCollab = {}
 
 io.on("connection", (socket) => {
     console.log(`client (Backend) connected to collab service with id ${socket.id}`)
     socket.on(`collab`, (collabId, username, difficulty) => {
         console.log(`recieved collab signal from ${username} of room ${socket.id} with collabId: ${collabId}`)
-        myCollabRoom = collabId
+        dictionaryCollab[socket.id] = collabId
         socket.join(collabId)
         createCollab(collabId, username, difficulty)
         socket.emit(`collabSuccess`, collabId)
@@ -34,12 +35,11 @@ io.on("connection", (socket) => {
     })
 
     function listAllConnectedRooms(socket) {
-        console.log("__________________________")
+        console.log(`__________________Following are the connected rooms for ${socket.id}__________________`)
         socket.rooms.forEach((value) => {
             console.log(value)
         })
-        console.log("My current id " + socket.id)
-        console.log("__________________________")
+        console.log(`___________________________________END_______________________________________________`)
     }
 
     socket.on(`echo`,(message) => {
@@ -50,12 +50,17 @@ io.on("connection", (socket) => {
 
     socket.on(`quitCollab`, (username) => {
         deleteCollabForUser(username)
-        socket.leave(myCollabRoom)
+        socket.leave(dictionaryCollab[socket.id])
     })
 
     socket.on('CODE_CHANGED', async (roomId, code) => {
         console.log('someone sent ' + code)
-        socket.to(myCollabRoom).emit('CODE_CHANGED', roomId, code)
-        console.log(`something has changed on one end for room ${roomId}    collabRoom: ${myCollabRoom}`)
+        socket.to(dictionaryCollab[socket.id]).emit('CODE_CHANGED', roomId, code)
+        console.log(`something has changed on one end for room ${roomId}    collabRoom: ${dictionaryCollab[socket.id]}`)
+    })
+
+    socket.on('getUserDetails', async (username) => {
+        const details = await getUserDetails(username)
+        socket.emit('getUserDetails', details)
     })
 })

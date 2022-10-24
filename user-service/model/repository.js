@@ -6,7 +6,7 @@ import 'dotenv/config'
 //Set up mongoose connection
 import mongoose from 'mongoose';
 
-let mongoDB = process.env.ENV == "PROD" ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
+let mongoDB = process.env.ENV == "PROD" ? process.env.DB_CLOUD_URI_PROD : process.env.DB_CLOUD_URI_TEST;
 
 mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
 
@@ -72,4 +72,22 @@ export async function deleteUser(_username) {
     }
   })
   return res
+}
+
+export async function changePassword(_username,_newPassword){
+  let res = false;
+
+  const find = {username: _username}
+  const update = {password: _newPassword}
+
+  const req = UserModel.findOneAndUpdate(find,update);
+  await req.then((user,err)=>{
+    if (err) console.log('unable to change password')
+    else {
+      console.log(`password changed for ${_username}`)
+      res = true;
+    }
+  })
+
+  return res;
 }
