@@ -10,6 +10,7 @@ import axios from "axios";
 import { URL_USER_LOGOUT, URL_USER_DELETE, URL_USER_GET_USERNAME } from "../configs";
 import { STATUS_CODE_DELETE_USER_SUCCESS } from "../constants";
 import LoginPage from "./LoginPage";
+import MatchingPage from "./MatchingPage";
 import validateToken from "./validate-token";
 
 function MainPage() {
@@ -86,21 +87,10 @@ function MainPage() {
     return (
         !isLogin 
         ?   <LoginPage setToken={setToken} /> 
-        :   <div>
-                <Box display={"flex"} flexDirection={"column"} width={"50%"}>
-                    <Typography variant={"h3"} marginBottom={"2rem"}>Loggged In Succesfully!</Typography>
-                    <Box display={"flex"} flexDirection={"row"} justifyContent={"centre"}>
-                    {isLogin
-                        ? <Typography variant={"h5"} marginBottom={"2rem"}>Valid Token</Typography>
-                        : <Typography variant={"h5"} marginBottom={"2rem"}>Invalid Token</Typography>
-                    }
-                    </Box>
-                </Box>
-                <p>
-                    <Button variant={"outlined"} onClick={handleLogout} component={Link} to="/mainpage">Log Out</Button>
-                    <Button variant={"outlined"} onClick={handleDeleteAccount} component={Link} to="/mainpage">Delete User</Button>
-                </p>
-            </div>
+        :   <MatchingPage
+                handleLogout={handleLogout}
+                handleDeleteAccount={handleDeleteAccount}
+                username={username}/>
     )
 }
 

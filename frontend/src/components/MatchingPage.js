@@ -14,11 +14,11 @@ import {
   Card
 } from "react-bootstrap";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import {findMatch} from "../client/client.js";
+import {Link} from "react-router-dom";
 import ParticlesComponent from "./Particles.js";
 import Timer from "./Timer.js";
-import {findMatch} from "../client/client.js"
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import rocketImage from "../images/rocket.gif";
 import greenPlanet from "../images/green-planet.png";
 import redPlanet from "../images/red-planet.png";
@@ -59,12 +59,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function MatchingPage() {
+function MatchingPage(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const username = "Sim Jun Heng";
+
     return (
     <Container fluid className={classes.mainContainer}>
       <Row>
@@ -75,7 +75,9 @@ function MatchingPage() {
             <div class="d-flex justify-content-center mt-3">
               <Card class="text-center" style={{ width: '18rem' }}>
                 <Card.Body>
-                  <Card.Title>PEER-ER {username}</Card.Title>
+                  <Card.Title>
+                    <p class="text-uppercase"> PEER-ER {props.username} </p>
+                  </Card.Title>
                   <Card.Text>
                     Ready to take on some challenges?
                   </Card.Text>
@@ -85,7 +87,9 @@ function MatchingPage() {
             <div class="d-flex justify-content-center mt-4">
               <Button
                 variant="outlined"
-                onClick={() => alert("Logout")}
+                onClick={props.handleLogout}
+                component={Link}
+                to="/mainpage"
                 style={{
                     borderRadius: 35,
                     backgroundColor: "#21b6ae",
