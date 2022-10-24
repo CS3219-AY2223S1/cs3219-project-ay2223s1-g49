@@ -64,3 +64,14 @@ export async function getQuestionContent(id) {
 
     return content;
 }
+
+export async function getQuestionAnswer(id) {
+    let answer = null;
+    const query = QuestionModel.findById(id).exec();
+    await query.then(function (question) {
+        if (!question) throw Error("Question id not found in database");
+        answer = question.answer;
+    });
+
+    return answer;
+}
