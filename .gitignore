@@ -3,3 +3,7 @@
 /workspace.xml
 .idea/
 frontend/node_modules/
+matching-service/node_modules/
+user-service/node_modules/
+question-service/node_modules/
+collaboration-service/node_modules/
