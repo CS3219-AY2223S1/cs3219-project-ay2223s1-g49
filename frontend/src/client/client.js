@@ -67,5 +67,8 @@ export const chatSocket = io('http://localhost:3003', {
 })
 
 chatSocket.on("connect", () => {
-  console.log("Client (FrontEnd) connected to chat service with id of: ${chatSocket.id}")
+  console.log(`New Socket Connection ${chatSocket.id}`)
+  chatSocket.on('message', (message) => {
+    console.log(message)
+  })
 })

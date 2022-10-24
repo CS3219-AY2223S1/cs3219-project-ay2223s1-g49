@@ -20,5 +20,10 @@ httpServer.listen(3003)
 const io = new Server(httpServer , {cors: { origin : "*"}})
 
 io.on("connection", (socket) => {
-    console.log(`client (Backend) connected to chat service with id ${socket.id}`)
+    console.log(`New Socket Connection ${socket.id}`)
+    socket.emit('message', 'Welcome to PeerChat!');
+    socket.broadcast.emit('message', 'A user has joined the chat!');
+    socket.on('disconnect', () => {
+      io.emit('message', 'A user has left the chat!');
+    })
 })
