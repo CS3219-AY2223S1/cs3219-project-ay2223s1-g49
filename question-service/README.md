@@ -8,12 +8,13 @@ Each question has 3 field:
 3. content (string) - the question content to be solved
 
 ## API endpoints
-### Create Question
+### Create Question (blocked during deployment)
 __Endpoint:__ _url_/service/create/question  
 __request body:__  
 &nbsp;&nbsp;{  
 &nbsp;&nbsp;&nbsp;&nbsp;"difficulty": "hard",  
-&nbsp;&nbsp;&nbsp;&nbsp;"content: "this is a hard question"  
+&nbsp;&nbsp;&nbsp;&nbsp;"content: "this is a hard question",
+&nbsp;&nbsp;&nbsp;&nbsp;"answer: "this is the answer to hard question"  
 &nbsp;&nbsp;}  
 __response body:__  
 &nbsp;&nbsp;{  
@@ -26,7 +27,7 @@ __error body:__
 
 <br>
 
-### Delete Question
+### Delete Question (blocked during deployment)
 __Endpoint:__ _url_/service/delete/question  
 __request body:__  
 &nbsp;&nbsp;{  
@@ -82,6 +83,21 @@ __request body:__
 __response body:__  
 &nbsp;&nbsp;{  
 &nbsp;&nbsp;&nbsp;&nbsp;"content": "This is a hard question",  
+&nbsp;&nbsp;}  
+__error body:__  
+&nbsp;&nbsp;{  
+&nbsp;&nbsp;&nbsp;&nbsp;"Error": "_Whatever the error is_",  
+&nbsp;&nbsp;}
+
+### Get question answer
+__Endpoint:__ _url_/service/get/question-answer  
+__request body:__  
+&nbsp;&nbsp;{  
+&nbsp;&nbsp;&nbsp;&nbsp;"id": "0123456789",  
+&nbsp;&nbsp;}  
+__response body:__  
+&nbsp;&nbsp;{  
+&nbsp;&nbsp;&nbsp;&nbsp;"answer": "This is the answer to hard question",  
 &nbsp;&nbsp;}  
 __error body:__  
 &nbsp;&nbsp;{  
