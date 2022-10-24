@@ -21,7 +21,6 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/style.css';
 import rocketImage from "../images/rocketImage.gif";
-import {ChatMessageText} from "../model/ChatMessageText.js"
 import {sendChatMessage} from "../client/client.js"
 
 const useStyles = makeStyles(theme => ({
@@ -70,15 +69,7 @@ function CollabPage() {
   const question = "Longest Palindromic Substring"
   const difficulty = "Medium"
   const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-  const [chatMessages, setChatMessages] = useState([
-    new ChatMessageText('Jun Heng', "Hellossssssssssssssssssssssss"),
-  ]);
   const [message, setMessage] = useState("");
-  const chatMessagesList = chatMessages.map((chatMessageText, index) => (
-    <ListItem className={classes.bubbleContainer} key={index}>
-      <ListItemText className={classes.bubble} primary={`${chatMessageText.username}: ${chatMessageText.message}`}/>
-    </ListItem>
-  ));
 
   const handleMessageChange = (event) => {
     setMessage(event.target.value);

@@ -63,8 +63,6 @@ export function quitCollab() {
 
 //-------------------------------- Chat Service ----------------------------------------------------
 
-const chatMessages = document.querySelector('.chat-messages');
-
 export const chatSocket = io('http://localhost:3003', {
   transports: ['websocket']
 })
@@ -74,8 +72,7 @@ chatSocket.on("connect", () => {
 })
 
 chatSocket.on("message", (message) => {
-  outputMessage(message) // Output Message
-  chatMessages.scrollTop = chatMessages.scrollHeight; //Scroll to the Bottom of the Chat
+  outputMessage(message);
 })
 
 export function sendChatMessage(message) {
@@ -90,7 +87,7 @@ function outputMessage(message) {
     <p class="text">
       ${message}
     </p>`;
-  chatMessages.appendChild(div);
+  document.querySelector('.chat-messages').appendChild(div);
 
 }
 
