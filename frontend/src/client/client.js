@@ -61,3 +61,11 @@ export function quitCollab() {
   collabSocket.emit(`quitCollab`, roomId, username)
 }
 
+//-------------------------------- Chat Service ----------------------------------------------------
+export const chatSocket = io('http://localhost:3003', {
+  transports: ['websocket']
+})
+
+chatSocket.on("connect", () => {
+  console.log("Client (FrontEnd) connected to chat service with id of: ${chatSocket.id}")
+})

@@ -1,13 +1,9 @@
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 import SignupPage from './components/SignupPage';
 import MainPage from "./components/MainPage";
-<<<<<<< HEAD
 import CollabPage from "./components/CollabPage";
-=======
 import FindMatch from "./components/FindMatch";
 import Test from "./components/Test";
->>>>>>> main
-import {Box} from "@mui/material";
 
 function App() {
     return (
