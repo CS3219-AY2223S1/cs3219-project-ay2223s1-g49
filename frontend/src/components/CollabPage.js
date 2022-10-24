@@ -19,8 +19,10 @@ import {
   Image
 } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/style.css';
 import rocketImage from "../images/rocketImage.gif";
 import {ChatMessageText} from "../model/ChatMessageText.js"
+import {sendChatMessage} from "../client/client.js"
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -38,28 +40,43 @@ const useStyles = makeStyles(theme => ({
     borderLeft: '1px solid rgba(235, 233, 230)',
   },
   chatWindow: {
-    height: '82vh',
-    paddingBottom: '5px'
+    height: '81vh',
+    width: '100%',
+    paddingBottom: '5px',
   },
   chatMessages: {
-    height: '18rem',
+    bottom: 0,
+    position: 'fixed',
     overflow: 'auto',
+    minHeight: '100%',
+  },
+  bubbleContainer: {
+    width: 'auto',
+  },
+  bubble: {
+    border: '0.5px solid black',
+    borderRadius: '10px',
+    margin: '5px',
+    padding: '10px',
+    display: 'inline-block',
+    width: 'auto'
   }
 }));
 
 
 function CollabPage() {
   const classes = useStyles();
+  const username = "Jun Heng"
   const question = "Longest Palindromic Substring"
   const difficulty = "Medium"
   const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
   const [chatMessages, setChatMessages] = useState([
-    new ChatMessageText('Jun Heng', "Hello"),
+    new ChatMessageText('Jun Heng', "Hellossssssssssssssssssssssss"),
   ]);
   const [message, setMessage] = useState("");
   const chatMessagesList = chatMessages.map((chatMessageText, index) => (
-    <ListItem key={index}>
-      <ListItemText primary={`${chatMessageText.username}: ${chatMessageText.message}`}/>
+    <ListItem className={classes.bubbleContainer} key={index}>
+      <ListItemText className={classes.bubble} primary={`${chatMessageText.username}: ${chatMessageText.message}`}/>
     </ListItem>
   ));
 
@@ -69,7 +86,7 @@ function CollabPage() {
 
   const sendMessage = () => {
     if (message) {
-      console.log("Send");
+      sendChatMessage(message);
     }
   }
 
@@ -96,7 +113,7 @@ function CollabPage() {
           <div style={{height: "90vh"}} >
           </div>
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',
-            height: "10vh", backgroundColor: "#0B034A", borderTop: '1px solid rgba(155, 191, 250)'}} >
+            height: "10vh", borderTop: '1px solid rgba(155, 191, 250)'}} >
               <div>
                 <Button variant="outlined"
                   onClick={() => alert("End Session")}
@@ -117,12 +134,9 @@ function CollabPage() {
             </div>
             <Divider style={{ marginTop: 5, backgroundColor: "#343536"}}/>
             <Grid container>
-              <Grid className={classes.chatWindow} xs={12} item>
-                <List className={classes.chatMessages}>
-                  <Typography>
-                  {chatMessagesList}
-                  </Typography>
-                </List>
+              <Grid className={classes.chatWindow} item>
+                <div class="chat-messages">
+                </div>
               </Grid>
               <Grid xs={10} item>
                 <TextField
