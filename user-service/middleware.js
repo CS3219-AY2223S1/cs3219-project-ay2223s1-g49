@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken'
 import { ormGetBlacklistToken as _getBlacklistedToken } from './model/user-orm.js'
 import { verifyToken } from './utils/verify-token.js'
 

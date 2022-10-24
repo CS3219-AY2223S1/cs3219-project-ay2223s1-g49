@@ -1,14 +1,32 @@
-process.env.NODE_ENV= 'test'
-
+// Mocha/Chai/App imports
 import chaiHttp from 'chai-http';
-import app from '../index.js';
 import chai from 'chai';
-import { HELLO_WORLD_STRING } from '../constants.js';
-import jwt from 'jsonwebtoken'
-const SECRET_KEY = process.env.JWT_SECRET_KEY //|| crypto.randomBytes(16).toString('hex')
-
+import app from '../index.js';
 const { expect } = chai;
 chai.use(chaiHttp)
+
+// Test using direct connection to MongoDB
+import mongoose from 'mongoose'
+import userModel from '../model/user-model.js';
+import tokenModel from '../model/token-model.js'
+let mongoDB = process.env.DB_CLOUD_URI_TEST
+if (!mongoDB || mongoDB=="" || process.env.ENV != "TEST") process.exit(1);
+mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
+
+
+// Import constants
+import { HELLO_WORLD_STRING } from '../constants.js';
+
+
+// Import Utils
+import jwt from 'jsonwebtoken'
+import { createSaltAndHash, verifyPassword } from '../utils/hash-module.js';
+import { verifyToken } from '../utils/verify-token.js';
+
+
+// Define environment variables
+const SECRET_KEY = process.env.JWT_TEST_KEY
+
 
 describe("Hello World Test", () => {
     it("Returns Hello World String", done => {
@@ -22,6 +40,7 @@ describe("Hello World Test", () => {
         });
     });
 
+// Deprecated method - Remove?
 describe("Test user checking", () => {
     it("Testing valid user", done => {
         const VALID_USERNAME = "test"
@@ -49,6 +68,20 @@ describe("Test user checking", () => {
 })
 
 describe("Test user login", () => {
+    before(async () => {
+        // Clear DB and insert test user
+        await userModel.deleteMany({})
+        const testPassword = await createSaltAndHash("test")
+        const user = userModel({ username: "test", password: testPassword })
+        user.save()
+    })
+
+    after(async () => {
+        // Clear DB
+        await userModel.deleteMany({})
+    })
+
+
     it("Testing successful login", done => {
         const VALID_USERNAME = "test"
         const VALID_PASSWORD = "test"
@@ -105,8 +138,8 @@ describe("Test user login", () => {
     })
 
     it("Testing missing username", done => {
-        const VALID_USERNAME = "test"
-        let invalidLogin = { username: VALID_USERNAME }
+        const VALID_PASSWORD = "test"
+        let invalidLogin = { password: VALID_PASSWORD }
         chai.request(app)
         .post('/api/user/login')
         .send(invalidLogin)
@@ -132,8 +165,8 @@ describe("Test user login", () => {
     })
 
     it("Testing missing password", done => {
-        const VALID_PASSWORD = "test"
-        let invalidLogin = { username: VALID_PASSWORD }
+        const VALID_USERNAME = "test"
+        let invalidLogin = { username: VALID_USERNAME }
         chai.request(app)
         .post('/api/user/login')
         .send(invalidLogin)
@@ -172,6 +205,19 @@ describe("Test user login", () => {
 })
 
 describe("Test create user", () => {
+    before(async () => {
+        // Clear DB and insert test user
+        await userModel.deleteMany({})
+        const testPassword = await createSaltAndHash("existinguser")
+        const user = userModel({ username: "existinguser", password: testPassword })
+        user.save()
+    })
+
+    after(async () => {
+        // Clear DB
+        await userModel.deleteMany({})
+    })
+
     it("Testing create new user returns success", done => {
         const VALID_USERNAME = "newuser"
         const VALID_PASSWORD = "newuser"
@@ -232,6 +278,21 @@ describe("Test create user", () => {
 })
 
 describe("Test delete user", () => {
+    before(async () => {
+        // Clear DB and insert test user
+        await userModel.deleteMany({})
+        await tokenModel.deleteMany({})
+        const testPassword = await createSaltAndHash("newuser")
+        const user = userModel({ username: "newuser", password: testPassword })
+        user.save()
+    })
+
+    after(async () => {
+        // Clear DB
+        await userModel.deleteMany({})
+        await tokenModel.deleteMany({})
+    })
+    
     it("Testing delete user returns success", done => {
         const VALID_USERNAME = "newuser"
         let validUser = { username: VALID_USERNAME }
@@ -264,5 +325,100 @@ describe("Test delete user", () => {
         })
     })
 
+    it("Testing delete user with invalid token returns failure", done => {
+        const VALID_USERNAME = "newuser"
+        let validUser = { username: VALID_USERNAME }
+        let invalidToken = jwt.sign({ user: validUser }, "INVALID")
+
+        chai.request(app)
+        .post('/api/user/delete-user')
+        .send(validUser)
+        .set("Authorization", invalidToken)
+        .end( (req,res) => {
+            expect(res).to.have.status(403);
+            done();
+        })
+    })
+
+    // TODO
     // need to delete token after this test
+    // token not blacklisted on delete user 
+})
+
+describe('Test change password', () => {
+    const VALID_USERNAME = "newuser"
+    const INVALID_USERNAME = "NONE"
+    const VALID_OLDPASSWORD = "newuser"
+    const INVALID_OLDPASSWORD = "NONE"
+    const VALID_NEWPASSWORD = "newuser1"
+    let validUsername = { username: VALID_USERNAME }
+    let token = jwt.sign({ user: validUsername }, SECRET_KEY)
+    let invalidToken = jwt.sign({ user: validUsername }, "INVALID")
+
+    before(async () => {
+        // Clear DB and insert test user
+        await userModel.deleteMany({})
+        await tokenModel.deleteMany({})
+        const testPassword = await createSaltAndHash(VALID_OLDPASSWORD)
+        const user = userModel({ username: VALID_USERNAME, password: testPassword })
+        user.save()
+    })
+
+    after(async () => {
+        // Clear DB
+        //await userModel.deleteMany({})
+        //await tokenModel.deleteMany({})
+    })
+
+    it(`should be able to change password with correct credentials`, done => {
+        let validUser = { username: VALID_USERNAME, oldpassword: VALID_OLDPASSWORD, newpassword: VALID_NEWPASSWORD }
+
+        chai.request(app)
+        .post('/api/user/change-password')
+        .send(validUser)
+        .set("Authorization", token)
+        .end( (req,res) => {
+            expect(res).to.have.status(200);
+            expect(res.body.message).to.equal(`Password for ${VALID_USERNAME} changed successfully!`)
+            done();
+        })
+    })
+
+    it(`should be able to login with new password after changing password`, done => {
+        let validLogin = { username: VALID_USERNAME , password: VALID_NEWPASSWORD }
+        chai.request(app)
+        .post('/api/user/login')
+        .send(validLogin)
+        .end( (req,res) => {
+            expect(res).to.have.status(200);
+            done();
+        })
+    })
+
+    it(`should not be able to change password with incorrect credentials`, done => {
+        let validUser = { username: VALID_USERNAME, oldpassword: INVALID_OLDPASSWORD, newpassword: VALID_NEWPASSWORD }
+
+        chai.request(app)
+        .post('/api/user/change-password')
+        .send(validUser)
+        .set("Authorization", token)
+        .end( (req,res) => {
+            expect(res).to.have.status(401);
+            expect(res.body.message).to.equal(`Unable to change password! Please check your credentials!`)
+            done();
+        })
+    })
+
+    it(`should be not able to change password with invalid token`, done => {
+        let validUser = { username: VALID_USERNAME, oldpassword: VALID_OLDPASSWORD, newpassword: VALID_NEWPASSWORD }
+
+        chai.request(app)
+        .post('/api/user/change-password')
+        .send(validUser)
+        .set("Authorization", invalidToken)
+        .end( (req,res) => {
+            expect(res).to.have.status(403);
+            done();
+        })
+    })
 })

@@ -5,6 +5,7 @@ import {
     ormBlacklistToken as _blacklistToken,
     ormGetBlacklistToken as _getBlacklistedToken,
     ormDeleteUser as _deleteUser,
+    ormChangePassword as _changePassword,
  } from '../model/user-orm.js'
 
 import {createSaltAndHash} from "../utils/hash-module.js"
@@ -13,12 +14,13 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY //|| crypto.randomBytes(16).toString('hex')
+
+const SECRET_KEY = process.env.ENV == "PROD" ? process.env.JWT_SECRET_KEY : process.env.JWT_TEST_KEY
 
 export async function createUser(req, res) {
     try {
         const { username, password } = req.body;
-        if (username && password) {
+        if (username && username.trim() !=="" && password) {
             const usernameInUse = await _checkUser(username);
             if (usernameInUse) {
                 return res.status(409).json({message: `Username ${username} has been used!`});
@@ -46,7 +48,7 @@ export async function createUser(req, res) {
 export async function deleteUser(req, res) {
     try {
         const { username } = req.body;
-        if (!username) {
+        if (!username || username.trim() ==="") {
             return res.status(400).json({message: 'Username to delete is missing!'});
         }
 
@@ -70,7 +72,7 @@ export async function deleteUser(req, res) {
 export async function authUser(req, res) {
     try{
         const { username, password } = req.body;
-        if (!username || username==="" || !password || password===""){
+        if (!username || username.trim() ==="" || !password || password===""){
             return res.status(400).json({message: 'Username and/or Password are missing!'});
         }
 
@@ -100,7 +102,7 @@ export async function authUser(req, res) {
 export async function checkUser(req, res) {
     try{
         const { username } = req.body;
-        if (!username) return res.status(400).json({message: 'Username is missing!'});
+        if (!username || username.trim()==="") return res.status(400).json({message: 'Username is missing!'});
 
         const resp = await _checkUser(username);
         
@@ -169,5 +171,35 @@ export async function getUsername(req, res) {
     } catch {
         console.error(err)
         return res.status(500).json({message: 'Error occured during getUsername'})
+    }
+}
+
+export async function changePassword(req,res) {
+    try {
+        const { username, oldpassword, newpassword } = req.body;
+        if (username && username.trim() !=="" && oldpassword && newpassword) {
+
+            const authenticatedUser = await _authUser(username, oldpassword);
+
+            if (authenticatedUser.err || !authenticatedUser) {
+                return res.status(401).json({message: `Unable to change password! Please check your credentials!`});
+            }
+
+            const hashedPassword = await createSaltAndHash(newpassword);
+            const resp = await _changePassword(username,hashedPassword);
+
+
+            if (resp.err == null && resp){
+                console.log(`Password for ${username} changed successfully!`)
+                return res.status(200).json({message: `Password for ${username} changed successfully!`});
+            } 
+
+            return res.status(500).json({message: resp.message || 'Unable to change password!'})
+
+        } else {
+            return res.status(400).json({message: 'Username and/or Password(s) are missing!'});
+        }
+    } catch (err) {
+        return res.status(500).json({message: 'Unexpected database failure when creating new user!'})
     }
 }
