@@ -1,7 +1,12 @@
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 import SignupPage from './components/SignupPage';
 import MainPage from "./components/MainPage";
+<<<<<<< HEAD
 import CollabPage from "./components/CollabPage";
+=======
+import FindMatch from "./components/FindMatch";
+import Test from "./components/Test";
+>>>>>>> main
 import {Box} from "@mui/material";
 
 function App() {
@@ -13,6 +18,7 @@ function App() {
                         <Route path="/signup" element={<SignupPage/>}/>
                         <Route path="/mainpage" element={<MainPage/>}/>
                         <Route path="/collab" element={<CollabPage/>}/>
+                        <Route path="/test" element={<Test/>}/>
                         <Route path="/*" element={<Navigate replace to="/mainpage" />}/>
                     </Routes>
                 </Router>
