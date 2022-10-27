@@ -1,0 +1,49 @@
+name: Question Service Deployment
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [ "**" ]
+
+defaults:
+ run:
+  working-directory: ./question-service
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create .env file
+        run: |
+          touch .env
+          echo DB_CLOUD_URI_PROD=${{ secrets.DB_CLOUD_URI_PROD }} > .env
+          echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> .env
+          echo ENV="PROD" >> .env
+
+      - name: Create ZIP deployment package
+        run: zip -r question-service.zip ./
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-region: "ap-southeast-1"
+
+      - name: Upload package to S3 bucket
+        run: aws s3 cp question-service.zip s3://cs3219g49-tp-bucket/
+
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name "Question Service" \
+          --source-bundle S3Bucket="cs3219g49-tp-bucket",S3Key="question-service.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: aws elasticbeanstalk update-environment --environment-name cs3219g49-question-service --version-label "ver-${{ github.sha }}"
