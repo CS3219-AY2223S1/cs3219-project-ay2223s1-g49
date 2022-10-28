@@ -18,6 +18,10 @@ app.use('/api/user', routes).all((_, res) => {
 
 })
 
-app.listen(port, () => console.log('user-service listening on port 8000'));
+app.get("/", (_,res) => {
+    res.send(`Server live at ${new Date().toUTCString()}`)
+})
+
+app.listen(port, () => console.log(`user-service listening on port ${port}`));
 
 export default app
