@@ -65,3 +65,5 @@ io.on("connection", (socket) => {
         socket.emit('getUserDetails', details)
     })
 })
+
+export default app;
