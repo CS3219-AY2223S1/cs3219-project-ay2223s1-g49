@@ -12,7 +12,7 @@ app.use(cors())
 app.options("*", cors())
 
 app.get('/', (req, res) => {
-    res.send('Hello World from collab-service')
+    res.send('Hello World from collaboration-service')
 });
 
 const httpServer = createServer(app)

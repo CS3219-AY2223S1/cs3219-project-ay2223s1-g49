@@ -7,5 +7,10 @@ matching-service/node_modules/
 user-service/node_modules/
 question-service/node_modules/
 collaboration-service/node_modules/
-*.env
-.idea
+chat-service/node_modules/
+matching-service/.env
+user-service/.env
+question-service/.env
+collaboration-service/.env
+chat-service/.env
+
