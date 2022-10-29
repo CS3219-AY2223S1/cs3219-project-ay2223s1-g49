@@ -18,7 +18,7 @@ export async function createCollab(params) {
 }
 
 export async function deleteCollabForUser(param) {
-  CollabModel.findOneAndDelete({"username" : param}).exec()
+  const query = CollabModel.findOneAndDelete({"username" : param}).exec()
   await query.then((matched) => {
     if (matched) {
       console.log(`Deleted user ${username} in the collab db`)
@@ -29,13 +29,14 @@ export async function deleteCollabForUser(param) {
 }
 
 export async function getUserDetails(param) {
-  CollabModel.findOne({"username" : param}).exec()
-  await query.then((matched) => {
-    if (matched) {
-      return matched
-    } else {
-      console.log(`user ${username} could not be found in the collab db`)
-      return null
+  try{
+    var res = await CollabModel.findOne({ "username": param })
+    if (res != null){
+      return res
     }
-  })
+    return null
+  } catch(err){
+    return null
+  }
 }
+

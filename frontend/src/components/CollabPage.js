@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState, useEffect } from "react";
 import {
   Typography,
   Button,
@@ -10,7 +10,7 @@ import {
   TextField,
   IconButton
 } from "@mui/material";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import SendIcon from '@mui/icons-material/SendRounded';
 import {
   Container,
@@ -21,7 +21,7 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/style.css';
 import rocketImage from "../images/rocketImage.gif";
-import {sendChatMessage,findMatch,runCollabService} from "../client/client.js"
+import { sendChatMessage, findMatch, runCollabService } from "../client/client.js"
 import RealTimeEditor from "../client/realTimeEditor.jsx"
 
 const useStyles = makeStyles(theme => ({
@@ -82,50 +82,59 @@ function CollabPage() {
     }
   }
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    runCollabService(params.get("cid"), params.get("username"), params.get("difficulty"));
+  }, [])
+
   return (
     <Container fluid className={classes.mainContainer}>
       <Row>
         <Col className={classes.questionContainer} xs={4}>
           <div class="d-flex justify-content-center">
-            <Image fluid src={rocketImage} style={{width: '40%'}}/>
+            <Image fluid src={rocketImage} style={{ width: '40%' }} />
           </div>
-          <Typography style={{ marginLeft: 20, marginTop: 20, flexGrow: 1, fontWeight: 600, fontSize: 23}}>
-             {question}
+          <Typography style={{ marginLeft: 20, marginTop: 20, flexGrow: 1, fontWeight: 600, fontSize: 23 }}>
+            {question}
           </Typography>
           <Button variant="outlined" style={{ marginLeft: 20, marginTop: 10 }} disabled>
             {difficulty}
           </Button>
-          <Divider style={{ marginLeft: 20, marginTop: 20, width: '40vh', backgroundColor: "#343536"}}/>
-          <Typography style={{ marginLeft: 20, marginTop: 30, fontSize: 15}}>
-             {description}
+          <Divider style={{ marginLeft: 20, marginTop: 20, width: '40vh', backgroundColor: "#343536" }} />
+          <Typography style={{ marginLeft: 20, marginTop: 30, fontSize: 15 }}>
+            {description}
           </Typography>
         </Col>
         <Col className={classes.codeContainer} xs={5}>
           <Row>
-          <div style={{height: "90vh"}} >
-            <RealTimeEditor/>
-          </div>
-          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',
-            height: "10vh", borderTop: '1px solid rgba(155, 191, 250)'}} >
+            <div style={{ height: "90vh" }} >
+              <RealTimeEditor />
+            </div>
+            <div style={{
+              display: 'flex', justifyContent: 'center', alignItems: 'center',
+              height: "10vh", borderTop: '1px solid rgba(155, 191, 250)'
+            }} >
               <div>
                 <Button variant="outlined"
                   onClick={() => alert("End Session")}
-                  style={{ borderRadius: 5, backgroundColor: "#e6f6ff"}}>
+                  style={{ borderRadius: 5, backgroundColor: "#e6f6ff" }}>
                   End Session
                 </Button>
               </div>
-          </div>
+            </div>
           </Row>
         </Col>
         <Col className={classes.chatContainer} xs={3}>
           <Row>
             <div class="d-flex justify-content-center">
-              <Typography style={{marginTop: 10, fontSize: 20, fontWeight: 600,
-                fontStyle: 'italic', color: "#0B034A"}}>
+              <Typography style={{
+                marginTop: 10, fontSize: 20, fontWeight: 600,
+                fontStyle: 'italic', color: "#0B034A"
+              }}>
                 Chat Application
               </Typography>
             </div>
-            <Divider style={{ marginTop: 5, backgroundColor: "#343536"}}/>
+            <Divider style={{ marginTop: 5, backgroundColor: "#343536" }} />
             <Grid container>
               <Grid className={classes.chatWindow} item>
                 <div class="chat-messages">
@@ -138,11 +147,11 @@ function CollabPage() {
                   label="Type in your message"
                   size="small"
                   variant="outlined"
-                  style={{marginTop: 10}}
+                  style={{ marginTop: 10 }}
                   fullWidth />
               </Grid>
               <Grid xs={2} item>
-                <IconButton style={{marginLeft: 10, marginTop: 10}} onClick={sendMessage} >
+                <IconButton style={{ marginLeft: 10, marginTop: 10 }} onClick={sendMessage} >
                   <SendIcon />
                 </IconButton>
               </Grid>

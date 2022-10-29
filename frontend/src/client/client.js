@@ -9,11 +9,7 @@ export var dictionaryusername = {}
 //contains key: Collabsocket.Id, value: difficulty
 export var dictionarydifficulty = {}
 
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+
 
 //-------------------------------- Matching service ----------------------------------------------------
 
