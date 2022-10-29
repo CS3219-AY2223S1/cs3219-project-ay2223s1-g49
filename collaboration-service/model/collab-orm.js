@@ -23,9 +23,7 @@ export async function ormDeleteCollabForUser(username) {
 
 export async function ormGetUserDetails(username) {
     try {
-        console.log("before" )
         const detail = await getUserDetails(username);
-        console.log("after" + detail)
         if (detail) {
             return detail
         } else {
