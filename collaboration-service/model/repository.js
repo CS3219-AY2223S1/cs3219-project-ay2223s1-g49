@@ -21,9 +21,9 @@ export async function deleteCollabForUser(param) {
   const query = CollabModel.findOneAndDelete({"username" : param}).exec()
   await query.then((matched) => {
     if (matched) {
-      console.log(`Deleted user ${username} in the collab db`)
+      console.log(`Deleted user ${param} in the collab db`)
     } else {
-      console.log(`user ${username} could not be found/deleted in the collab db`)
+      console.log(`user ${param} could not be found/deleted in the collab db`)
     }
   })
 }

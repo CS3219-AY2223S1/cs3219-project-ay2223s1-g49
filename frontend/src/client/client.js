@@ -39,6 +39,10 @@ export function runCollabService(newRoomId, username, difficulty) {
     collabSocket.emit('collab', newRoomId, username, difficulty)
 }
 
+export function runChatService(newRoomId) {
+  chatSocket.emit('chat', newRoomId)
+}
+
 export function timeOut(usernameVal, difficultyVal) {
   console.log("Client timed out!")
   matchingSocket.emit(`timeout`, {username : usernameVal, difficulty : difficultyVal})
@@ -74,6 +78,11 @@ collabSocket.on("connect", () => {
       if (Details != null) {
         localStorage.setItem("globalVariable", JSON.stringify(Details))
       }
+    })
+
+    collabSocket.on('quitCollabSuccess', () => {
+      localStorage.removeItem("globalVariable");
+      window.location.href = `/mainpage`; 
     })
 
 })

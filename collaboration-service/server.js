@@ -52,6 +52,7 @@ io.on("connection", (socket) => {
     socket.on(`quitCollab`, (username) => {
         deleteCollabForUser(username)
         socket.leave(dictionaryCollab[socket.id])
+        socket.emit('quitCollabSuccess')
     })
 
     socket.on('CODE_CHANGED', async (roomId, code) => {

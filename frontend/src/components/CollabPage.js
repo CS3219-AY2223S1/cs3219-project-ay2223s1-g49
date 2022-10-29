@@ -23,7 +23,7 @@ import '../styles/style.css';
 import rocketImage from "../images/rocketImage.gif";
 import validateToken from "./validate-token";
 import { URL_USER_GET_USERNAME } from "../configs";
-import { sendChatMessage, runCollabService, getCollabDetails, quitCollab } from "../client/client.js"
+import { sendChatMessage, runCollabService, getCollabDetails, quitCollab, runChatService } from "../client/client.js"
 import RealTimeEditor from "../client/realTimeEditor.jsx"
 
 
@@ -96,6 +96,7 @@ function CollabPage() {
   useEffect(() => {
       if (roomId !== null && username !== null && difficulty !== null) {
         runCollabService(roomId, username, difficulty);
+        runChatService(roomId);
       }
   }, [roomId, username, difficulty])
 
@@ -167,7 +168,7 @@ function CollabPage() {
             }} >
               <div>
                 <Button variant="outlined"
-                  onClick={() => handleEndSession}
+                  onClick={() => handleEndSession()}
                   style={{ borderRadius: 5, backgroundColor: "#e6f6ff" }}>
                   End Session
                 </Button>
