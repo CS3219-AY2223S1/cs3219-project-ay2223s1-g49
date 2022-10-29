@@ -14,11 +14,8 @@ function App() {
                     <Routes>
                         <Route path="/signup" element={<SignupPage/>}/>
                         <Route path="/mainpage" element={<MainPage/>}/>
-<<<<<<< HEAD
                         <Route path="/match" element={<MatchingPage/>}/>
-=======
                         <Route path="/collab" element={<CollabPage/>}/>
->>>>>>> FR5.0-collaboration-frontend
                         <Route path="/test" element={<Test/>}/>
                         <Route path="/*" element={<Navigate replace to="/mainpage" />}/>
                     </Routes>
