@@ -21,8 +21,7 @@ const io = new Server(httpServer , {cors: { origin : "*"}})
 
 io.on("connection", (socket) => {
     console.log(`New Socket Connection ${socket.id}`)
-    socket.on("chatMessage", (message) => {
-      console.log(message);
-      io.emit('message', message);
+    socket.on("chatMessage", (messageObject) => {
+      io.emit('message', messageObject);
     })
 })

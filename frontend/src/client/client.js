@@ -10,7 +10,6 @@ export var dictionaryusername = {}
 export var dictionarydifficulty = {}
 
 
-
 //-------------------------------- Matching service ----------------------------------------------------
 
 export const matchingSocket = io('http://localhost:3001')
@@ -20,7 +19,13 @@ matchingSocket.on("connect", async () => {
 
     matchingSocket.on(`matchSuccess`, async (newRoomId) => {
       console.log(`Successfully matched with matching Id: ${newRoomId}`)
-      window.location.href = `/collab?cid=${newRoomId}&username=${dictionaryusername[collabSocket.id]}&difficulty=${dictionarydifficulty[collabSocket.id]}`; 
+      const globalDetails = {
+        roomId: newRoomId,
+        username: dictionaryusername[collabSocket.id],
+        difficulty: dictionarydifficulty[collabSocket.id]
+      }
+      localStorage.setItem("globalVariable", JSON.stringify(globalDetails))
+      window.location.href = `/collab`; 
     })
 
     matchingSocket.on(`getUserDetails`, (details) => {
@@ -66,13 +71,15 @@ collabSocket.on("connect", () => {
 
     collabSocket.on('getUserDetails', (Details) => {
       console.log(`Details for ${dictionaryusername[collabSocket.id]} are: ${Details}`)
-      // collabSocket.join()
+      if (Details != null) {
+        localStorage.setItem("globalVariable", JSON.stringify(Details))
+      }
     })
 
 })
 
-export function quitCollab() {
-  collabSocket.emit(`quitCollab`, dictionaryusername[collabSocket.id])
+export function quitCollab(username) {
+  collabSocket.emit(`quitCollab`, username)
 }
 
 export function getCollabDetails(username) {
@@ -89,19 +96,21 @@ chatSocket.on("connect", () => {
   console.log(`New Socket Connection ${chatSocket.id}`)
 })
 
-chatSocket.on("message", (message) => {
-  outputMessage(message);
+chatSocket.on("message", (messageObject) => {
+  outputMessage(messageObject);
 })
 
-export function sendChatMessage(message) {
-  chatSocket.emit('chatMessage', message);
+export function sendChatMessage(username, message) {
+  const messageObject = {username: username, message: message}
+  chatSocket.emit('chatMessage', messageObject);
 }
 
-function outputMessage(message) {
+function outputMessage(messageObject) {
+  const {username, message} = messageObject;
   const time = getFormattedTime();
   const div = document.createElement('div');
   div.classList.add('message');
-  div.innerHTML = `<p class="meta"> Brad <span> ${time} </spam> </p>
+  div.innerHTML = `<p class="meta"> ${username} <span> ${time} </spam> </p>
     <p class="text">
       ${message}
     </p>`;

@@ -4,12 +4,12 @@ import {
   Button,
   Divider,
   Grid,
-  List,
-  ListItem,
-  ListItemText,
   TextField,
   IconButton
 } from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"
+import Cookies from 'universal-cookie';
 import { makeStyles } from "@material-ui/core/styles";
 import SendIcon from '@mui/icons-material/SendRounded';
 import {
@@ -21,8 +21,11 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/style.css';
 import rocketImage from "../images/rocketImage.gif";
-import { sendChatMessage, findMatch, runCollabService } from "../client/client.js"
+import validateToken from "./validate-token";
+import { URL_USER_GET_USERNAME } from "../configs";
+import { sendChatMessage, runCollabService, getCollabDetails, quitCollab } from "../client/client.js"
 import RealTimeEditor from "../client/realTimeEditor.jsx"
+
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -65,12 +68,16 @@ const useStyles = makeStyles(theme => ({
 
 
 function CollabPage() {
+  const navigate = useNavigate();
+  const cookies = new Cookies()
   const classes = useStyles();
-  const username = "Jun Heng"
-  const question = "Longest Palindromic Substring"
-  const difficulty = "Medium"
+  const question = "Longest Palindromic Substring";
   const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
   const [message, setMessage] = useState("");
+  const [token, setToken] = useState(cookies.get('access token'));
+  const [username, setUsername] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [difficulty, setDifficulty] = useState("");
 
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
@@ -78,14 +85,58 @@ function CollabPage() {
 
   const sendMessage = () => {
     if (message) {
-      sendChatMessage(message);
+      sendChatMessage(username, message);
     }
   }
 
+  const handleEndSession = () => {
+    quitCollab(username)
+  }
+
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    runCollabService(params.get("cid"), params.get("username"), params.get("difficulty"));
-  }, [])
+      if (roomId !== null && username !== null && difficulty !== null) {
+        runCollabService(roomId, username, difficulty);
+      }
+  }, [roomId, username, difficulty])
+
+  function createAxiosHeader() {
+    const jwt = cookies.get('access token');
+    const instance = axios.create({
+      headers: {
+        'Authorization': jwt
+      }
+    });
+    return instance;
+  }
+
+  const initialiseUsername = () => {
+    const instance = createAxiosHeader();
+    instance.post(URL_USER_GET_USERNAME)
+      .then(res => { 
+        setUsername(res.data.username)   
+      })
+      .catch((err) => { console.log("Error getting username from cookie: ", err.toJSON()) })
+  }
+
+  validateToken(token).then(tokenValid => {
+    console.log("verifying token")
+    if (!tokenValid) {
+      console.log("invalid token")
+      cookies.remove('access token')
+      navigate('/login')
+    } else {
+      console.log("valid token")
+      initialiseUsername()
+      getCollabDetails(username)
+      const details = JSON.parse(localStorage.getItem("globalVariable"))
+      if (details !== null) {
+        setRoomId(details.roomId)
+        setDifficulty(details.difficulty)
+      } else {
+        navigate("/mainpage")
+      }
+    }
+  })
 
   return (
     <Container fluid className={classes.mainContainer}>
@@ -116,7 +167,7 @@ function CollabPage() {
             }} >
               <div>
                 <Button variant="outlined"
-                  onClick={() => alert("End Session")}
+                  onClick={() => handleEndSession}
                   style={{ borderRadius: 5, backgroundColor: "#e6f6ff" }}>
                   End Session
                 </Button>
