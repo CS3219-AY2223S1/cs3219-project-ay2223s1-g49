@@ -1,4 +1,4 @@
-name: User Service Test
+name: Collaboration Service Test
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
 
 defaults:
  run:
-  working-directory: ./user-service
+  working-directory: ./collaboration-service
 
 jobs:
   test:

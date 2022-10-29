@@ -3,6 +3,7 @@ import cors from 'cors'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import { createCollab, deleteCollabForUser, getUserDetails } from './collab-controller.js'
+const port = process.env.PORT || 3002
 
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -16,7 +17,7 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app)
 
-httpServer.listen(3002)
+httpServer.listen(port)
 
 const io = new Server(httpServer , {cors: { origin : "*"}})
 
@@ -64,3 +65,5 @@ io.on("connection", (socket) => {
         socket.emit('getUserDetails', details)
     })
 })
+
+export default app;
