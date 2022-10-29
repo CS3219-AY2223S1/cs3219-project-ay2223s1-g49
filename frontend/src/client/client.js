@@ -24,7 +24,7 @@ matchingSocket.on("connect", async () => {
 
     matchingSocket.on(`matchSuccess`, async (newRoomId) => {
       console.log(`Successfully matched with matching Id: ${newRoomId}`)
-      window.location.href = `/test?cid=${newRoomId}&username=${dictionaryusername[collabSocket.id]}&difficulty=${dictionarydifficulty[collabSocket.id]}`; 
+      window.location.href = `/collab?cid=${newRoomId}&username=${dictionaryusername[collabSocket.id]}&difficulty=${dictionarydifficulty[collabSocket.id]}`; 
     })
 
     matchingSocket.on(`getUserDetails`, (details) => {
