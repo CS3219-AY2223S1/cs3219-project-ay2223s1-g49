@@ -12,7 +12,7 @@ app.use(cors())
 app.options("*", cors())
 
 app.get('/', (req, res) => {
-    res.send('Hello World from collab-service')
+    res.send('Hello World from collaboration-service')
 });
 
 const httpServer = createServer(app)
@@ -52,6 +52,7 @@ io.on("connection", (socket) => {
     socket.on(`quitCollab`, (username) => {
         deleteCollabForUser(username)
         socket.leave(dictionaryCollab[socket.id])
+        socket.emit('quitCollabSuccess')
     })
 
     socket.on('CODE_CHANGED', async (roomId, code) => {

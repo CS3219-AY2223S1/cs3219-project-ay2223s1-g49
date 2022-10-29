@@ -30,7 +30,7 @@ export async function ormGetUserDetails(username) {
             return null
         }
     } catch (err) {
-        console.log(`ERROR: Could not delete collab for user: ${username}`)
-        return { err }
+        console.log(`ERROR: Could not find collab for user: ${username}`)
+        return null
     }
 }

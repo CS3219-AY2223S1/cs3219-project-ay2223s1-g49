@@ -5,6 +5,13 @@ import { ormGetUserDetails as _getUserDetails} from './model/collab-orm.js'
 export async function createCollab(roomId, username, difficulty) {
     try {
         console.log(`Recieved username of: ${username} and difficulty of: ${difficulty} with roomId: ${roomId}`)
+        const isExist = await getUserDetails(username)
+        console.log("A****")
+        console.log(isExist)
+        if (isExist !== null) {
+            console.log(`user ${username} already exist in database!`)
+            return isExist
+        }
         if (username && difficulty && roomId) {
             const resp = await _createCollab(username, difficulty, roomId);
             if (resp.err) {
