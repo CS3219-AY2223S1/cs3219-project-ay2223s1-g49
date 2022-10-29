@@ -9,26 +9,34 @@ export var dictionaryusername = {}
 //contains key: Collabsocket.Id, value: difficulty
 export var dictionarydifficulty = {}
 
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 //-------------------------------- Matching service ----------------------------------------------------
 
 export const matchingSocket = io('http://localhost:3001')
 
-matchingSocket.on("connect", () => {
+matchingSocket.on("connect", async () => {
     console.log(`Client (FrontEnd) connected to Matching service with id of: ${matchingSocket.id}`)
 
-    matchingSocket.on(`matchSuccess`, (newRoomId) => {
+    matchingSocket.on(`matchSuccess`, async (newRoomId) => {
       console.log(`Successfully matched with matching Id: ${newRoomId}`)
-      const cid = collabSocket.id
-      dictionarySharedRoomId[cid] = newRoomId
-      collabSocket.emit(`collab`, newRoomId, dictionaryusername[cid], dictionarydifficulty[cid])
-      //window.location.href = "/test";
+      window.location.href = `/test?cid=${newRoomId}&username=${dictionaryusername[collabSocket.id]}&difficulty=${dictionarydifficulty[collabSocket.id]}`; 
     })
 
     matchingSocket.on(`getUserDetails`, (details) => {
       console.log(`Details for ${dictionaryusername[collabSocket.id]} are: ${details}`)
     })
 })
+
+export function runCollabService(newRoomId, username, difficulty) {
+    const cid = collabSocket.id
+    dictionarySharedRoomId[cid] = newRoomId
+    collabSocket.emit('collab', newRoomId, username, difficulty)
+}
 
 export function timeOut(usernameVal, difficultyVal) {
   console.log("Client timed out!")
@@ -49,8 +57,8 @@ export function getMatchingDetails(username) {
 }
 //-------------------------------- Collab service ----------------------------------------------------
 export const collabSocket = io('http://localhost:3002', {
-  transports: ['websocket']
-})
+    transports: ['websocket']
+  })
 
 collabSocket.on("connect", () => {
     console.log(`Client (FrontEnd) connected to collab service with id of: ${collabSocket.id}`)
@@ -62,6 +70,7 @@ collabSocket.on("connect", () => {
 
     collabSocket.on('getUserDetails', (Details) => {
       console.log(`Details for ${dictionaryusername[collabSocket.id]} are: ${Details}`)
+      // collabSocket.join()
     })
 
 })
