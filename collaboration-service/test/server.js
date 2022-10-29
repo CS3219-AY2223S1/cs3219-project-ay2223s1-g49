@@ -18,7 +18,7 @@ describe("Hello World Test", () => {
             .get(route)
             .end((err, res) => {
                 expect(res).to.have.status(200);
-                expect(res.text).to.equals("Hello World from collab-service");
+                expect(res.text).to.equals("Hello World from collaboration-service");
                 done();
             });
         });
