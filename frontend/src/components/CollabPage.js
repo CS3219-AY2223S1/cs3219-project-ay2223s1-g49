@@ -21,7 +21,8 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/style.css';
 import rocketImage from "../images/rocketImage.gif";
-import {sendChatMessage} from "../client/client.js"
+import {sendChatMessage,findMatch,runCollabService} from "../client/client.js"
+import RealTimeEditor from "../client/realTimeEditor.jsx"
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
@@ -102,6 +103,7 @@ function CollabPage() {
         <Col className={classes.codeContainer} xs={5}>
           <Row>
           <div style={{height: "90vh"}} >
+            <RealTimeEditor/>
           </div>
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',
             height: "10vh", borderTop: '1px solid rgba(155, 191, 250)'}} >
