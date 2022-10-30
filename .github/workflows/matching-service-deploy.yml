@@ -46,7 +46,7 @@ jobs:
       - name: Create .env file  
         run: |
           echo "" > .env
-          echo "DB_CLOUD_URI=${{ secrets.DB_CLOUD_URI_PROD }}" >> .env
+          echo "DB_CLOUD_URI_PROD=${{ secrets.DB_CLOUD_URI_PROD }}" >> .env
           echo ENV="PROD" >> .env
 
       - name: Create ZIP deployment package

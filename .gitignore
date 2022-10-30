@@ -14,3 +14,4 @@ question-service/.env
 collaboration-service/.env
 chat-service/.env
 
+.env
