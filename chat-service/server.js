@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+const port = process.env.PORT || 3003
 
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -15,7 +16,7 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app)
 
-httpServer.listen(3003)
+httpServer.listen(port)
 
 const io = new Server(httpServer , {cors: { origin : "*"}})
 
@@ -35,3 +36,5 @@ io.on("connection", (socket) => {
     })
 
 })
+
+export default app;
