@@ -1,10 +1,12 @@
-import { Box, Button, Typography, TextField, Stack } from "@mui/material";
+import { Box, Button, Typography, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
-import Grid from "@mui/material/Grid";
 import DialogTitle from "@mui/material/DialogTitle";
+import Alert from "@mui/material/Alert";
+import Collapse from "@mui/material/Collapse";
+import Grid from "@mui/material/Grid";
 import { Link } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { useState } from "react";
@@ -32,6 +34,13 @@ function MainPage() {
     const [newpassword, setNewPw] = useState("");
     const [verifynewpassword, setVerifyNewPw] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
+    const [openConfirmation, setOpenConfirmation] = useState(false);
+
+    const [openSuccessNotification, setOpenSuccessNotification] =
+        useState(false);
+    const [openFailureNotification, setOpenFailureNotification] =
+        useState(false);
+    const [failureType, setFailureType] = useState();
 
     if (!token) {
         return <LoginPage setToken={setToken} />;
@@ -72,7 +81,6 @@ function MainPage() {
             .then((res) => {})
             .catch((err) => {});
         cookies.remove("access token");
-        //setIsLogin(false)
         window.location.reload(false);
     };
 
@@ -99,34 +107,20 @@ function MainPage() {
     };
 
     const handleChangePassword = async () => {
-        console.log(
-            "old",
-            oldpassword,
-            "new",
-            newpassword,
-            "verify",
-            verifynewpassword
-        );
         if (
             !newpassword ||
-            newpassword == "" ||
+            newpassword.trim() === "" ||
             !oldpassword ||
-            oldpassword == "" ||
+            oldpassword.trim() === "" ||
             !verifynewpassword ||
-            verifynewpassword == ""
+            verifynewpassword.trim() === ""
         ) {
-            console.log("All fields are required");
-            alert("All fields are required.");
+            triggerFailureNotification("missing-field");
             return;
         }
 
         if (newpassword !== verifynewpassword) {
-            console.log(
-                "New passwords do not match. Please retype your new passwords."
-            );
-            alert(
-                "New passwords do not match. Please retype your new passwords."
-            );
+            triggerFailureNotification("wrong-verify-password");
             resetPasswordFields();
             return;
         }
@@ -140,31 +134,37 @@ function MainPage() {
             })
             .then((res) => {
                 if (res && res.status === STATUS_CODE_CHANGE_PASSWORD_SUCCESS) {
-                    console.log("Password successfully changed!");
-                    alert("Password successfully changed!");
-                    handleClose();
+                    handleDialogAction("Close");
+                    triggerSuccessNotification();
                 } else {
-                    console.log("Unable to change password");
-                    alert("Unable to change password, please try again later");
+                    triggerFailureNotification();
                     resetPasswordFields();
                 }
             })
             .catch((err) => {
                 if (
-                    err.response.status ==
+                    err.response.status ===
                     STATUS_CODE_CHANGE_PASSWORD_INVALID_CRED
                 ) {
-                    console.log(
-                        "Unable to verify current password. Please try again."
-                    );
-                    alert(
-                        "Unable to verify current password. Please try again."
-                    );
+                    triggerFailureNotification("wrong-old-password");
                     resetPasswordFields();
                 } else {
                     console.log("Error at handleChangePW: ", err.toJSON());
                 }
             });
+    };
+
+    const triggerSuccessNotification = async () => {
+        setOpenSuccessNotification(true);
+        await delay(5000);
+        setOpenSuccessNotification(false);
+    };
+
+    const triggerFailureNotification = async (type) => {
+        setFailureType(type);
+        setOpenFailureNotification(true);
+        await delay(5000);
+        setOpenFailureNotification(false);
     };
 
     const resetPasswordFields = () => {
@@ -173,13 +173,38 @@ function MainPage() {
         setVerifyNewPw("");
     };
 
-    const handleClickOpen = () => {
-        setOpenDialog(true);
+    const handleDialogAction = (action) => {
+        if (action === "open") {
+            setOpenDialog(true);
+        }
+        if (action === "close") {
+            setOpenDialog(false);
+            resetPasswordFields();
+        }
     };
 
-    const handleClose = () => {
-        setOpenDialog(false);
-        resetPasswordFields();
+    const handleConfirmationAction = (action) => {
+        if (action === "open") {
+            setOpenConfirmation(true);
+        }
+        if (action === "close") {
+            setOpenConfirmation(false);
+        }
+    };
+
+    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+    const renderNotification = (type) => {
+        switch (type) {
+            case "wrong-old-password":
+                return "Old password entered is invalid, please re-enter your old password.";
+            case "wrong-verify-password":
+                return "New password mismatch, please re-enter your new password.";
+            case "missing-field":
+                return "All fields are required, please try again.";
+            default:
+                return "Unable to change password, please try again later";
+        }
     };
 
     function createAxiosHeader() {
@@ -196,10 +221,11 @@ function MainPage() {
         <LoginPage setToken={setToken} />
     ) : (
         <div>
-            <Box display={"flex"} flexDirection={"column"} width={"50%"}>
+            <Box display={"flex"} flexDirection={"column"} width={"100%"}>
                 <Typography variant={"h3"} marginBottom={"2rem"}>
                     Loggged In Succesfully!
                 </Typography>
+
                 <Box
                     display={"flex"}
                     flexDirection={"row"}
@@ -227,17 +253,21 @@ function MainPage() {
                 </Button>
                 <Button
                     variant={"outlined"}
-                    onClick={handleDeleteAccount}
-                    component={Link}
-                    to="/mainpage"
+                    onClick={() => handleConfirmationAction("open")}
                 >
                     Delete User
                 </Button>
-                <Button variant={"outlined"} onClick={handleClickOpen}>
-                    Click here to change password
+                <Button
+                    variant={"outlined"}
+                    onClick={() => handleDialogAction("open")}
+                >
+                    Change password
                 </Button>
             </p>
-            <Dialog open={openDialog} onClose={handleClose}>
+            <Dialog
+                open={openDialog}
+                onClose={() => handleDialogAction("close")}
+            >
                 <Box
                     sx={{
                         display: "flex",
@@ -256,7 +286,7 @@ function MainPage() {
                                 fontSize: "h4.fontSize",
                             }}
                         >
-                            Change Password
+                            <b>Change Password</b>
                         </DialogTitle>
                     </Grid>
                     <Grid
@@ -336,6 +366,66 @@ function MainPage() {
                         </Button>
                     </Grid>
                 </Box>
+            </Dialog>
+            <Collapse in={openSuccessNotification}>
+                <Alert
+                    severity="success"
+                    onClose={() => {
+                        setOpenSuccessNotification(false);
+                    }}
+                    sx={{
+                        position: "absolute",
+                        top: "16px",
+                        right: "16px",
+                        zIndex: 0,
+                    }}
+                >
+                    Password successfully changed!
+                </Alert>
+            </Collapse>
+            <Collapse in={openFailureNotification}>
+                <Alert
+                    severity="error"
+                    onClose={() => {
+                        setOpenFailureNotification(false);
+                    }}
+                    sx={{
+                        position: "absolute",
+                        top: "16px",
+                        right: "16px",
+                        zIndex: 0,
+                    }}
+                >
+                    {renderNotification(failureType)}
+                </Alert>
+            </Collapse>
+            <Dialog
+                open={openConfirmation}
+                onClose={() => handleConfirmationAction("close")}
+            >
+                <DialogTitle>Confirm deletion of account?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Once account is deleted, the information lost will be
+                        irreversible.
+                        <br></br>
+                        Are you sure you want to delete your account?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="contained"
+                        onClick={() => handleConfirmationAction("close")}
+                        sx={{
+                            backgroundColor: "#ED3447",
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button variant="text" onClick={handleDeleteAccount}>
+                        Confirm
+                    </Button>
+                </DialogActions>
             </Dialog>
         </div>
     );
