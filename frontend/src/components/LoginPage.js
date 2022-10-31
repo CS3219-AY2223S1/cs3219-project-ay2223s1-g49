@@ -182,6 +182,7 @@ export default function LoginPage({ setToken }) {
                                     width: "10%",
                                     padding: "0.5rem",
                                     color: "gray",
+                                    transform: "scale(3)",
                                 }}
                             />
                             <TextField
@@ -201,6 +202,7 @@ export default function LoginPage({ setToken }) {
                                     width: "10%",
                                     padding: "0.5rem",
                                     color: "gray",
+                                    transform: "scale(3)",
                                 }}
                             />
                             <TextField

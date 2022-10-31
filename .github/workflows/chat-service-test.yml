@@ -1,4 +1,4 @@
-name: User Service Test
+name: Chat Service Test
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
 
 defaults:
  run:
-  working-directory: ./user-service
+  working-directory: ./chat-service
 
 jobs:
   test:
@@ -23,11 +23,6 @@ jobs:
       matrix:
         node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-    env:
-      ENV: TEST
-      JWT_TEST_KEY: ${{ secrets.JWT_TEST_KEY }}
-      DB_CLOUD_URI_TEST: ${{ secrets.DB_CLOUD_URI_TEST }}
 
     steps:
     - uses: actions/checkout@v3

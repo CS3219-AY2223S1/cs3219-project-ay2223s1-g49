@@ -1,9 +1,17 @@
 import { ormCreateCollab as _createCollab } from './model/collab-orm.js'
 import { ormDeleteCollabForUser as _deleteCollabForUser} from './model/collab-orm.js'
+import { ormGetUserDetails as _getUserDetails} from './model/collab-orm.js'
 
 export async function createCollab(roomId, username, difficulty) {
     try {
         console.log(`Recieved username of: ${username} and difficulty of: ${difficulty} with roomId: ${roomId}`)
+        const isExist = await getUserDetails(username)
+        console.log("A****")
+        console.log(isExist)
+        if (isExist !== null) {
+            console.log(`user ${username} already exist in database!`)
+            return isExist
+        }
         if (username && difficulty && roomId) {
             const resp = await _createCollab(username, difficulty, roomId);
             if (resp.err) {
@@ -28,5 +36,18 @@ export async function deleteCollabForUser(username) {
         return obj;
     } catch (err) {
         console.log(`Unable to delete collab for user: ${username}!`);
+    }
+}
+
+export async function getUserDetails(username) {
+    try {
+        const obj = await _getUserDetails(username);
+        if (obj) {
+            return obj
+        } else {
+            return null
+        }
+    } catch (err) {
+        console.log(`Faced an error finding a collab for user: ${username}!`);
     }
 }

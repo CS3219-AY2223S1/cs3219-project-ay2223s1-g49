@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 
 dotenv.config();
 
-let mongoDB = process.env.ENV == "PROD" ? process.env.DB_CLOUD_URI : process.env.DB_LOCAL_URI;
+let mongoDB = process.env.ENV == "PROD" ? process.env.DB_CLOUD_URI_PROD : process.env.DB_CLOUD_URI_TEST;
 
 mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
 
@@ -28,6 +28,15 @@ export async function getDifficultyForUser(param) {
 
 export async function deleteMatchForUser(param) {
   const query = MatchModel.findOneAndDelete({"username" : param}).exec();
+  var matchedUser = null;
+  await query.then( (matched) => {
+    matchedUser = matched;
+  })
+  return matchedUser;
+}
+
+export async function getUserDetails(param) {
+  const query = MatchModel.fineOne({"username" : param}).exec();
   var matchedUser = null;
   await query.then( (matched) => {
     matchedUser = matched;

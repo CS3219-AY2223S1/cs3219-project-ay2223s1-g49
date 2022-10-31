@@ -1,15 +1,6 @@
-import { Box, Button, Typography, TextField } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Alert from "@mui/material/Alert";
-import Collapse from "@mui/material/Collapse";
-import Grid from "@mui/material/Grid";
-import { Link } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
     URL_USER_LOGOUT,
@@ -22,20 +13,19 @@ import {
     STATUS_CODE_CHANGE_PASSWORD_SUCCESS,
     STATUS_CODE_CHANGE_PASSWORD_INVALID_CRED,
 } from "../constants";
+import { getCollabDetails } from "../client/client.js";
 import LoginPage from "./LoginPage";
+import MatchingPage from "./MatchingPage";
 import validateToken from "./validate-token";
 
 function MainPage() {
+    const navigate = useNavigate();
     const cookies = new Cookies();
     const [isLogin, setIsLogin] = useState(false);
     const [token, setToken] = useState(cookies.get("access token"));
     const [username, setUsername] = useState("");
-    const [oldpassword, setOldPw] = useState("");
-    const [newpassword, setNewPw] = useState("");
-    const [verifynewpassword, setVerifyNewPw] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
     const [openConfirmation, setOpenConfirmation] = useState(false);
-
     const [openSuccessNotification, setOpenSuccessNotification] =
         useState(false);
     const [openFailureNotification, setOpenFailureNotification] =
@@ -56,6 +46,11 @@ function MainPage() {
             console.log("valid token");
             setIsLogin(true);
             initialiseUsername();
+            getCollabDetails(username);
+            const details = JSON.parse(localStorage.getItem("globalVariable"));
+            if (details !== null) {
+                navigate("/collab");
+            }
         }
     });
 
@@ -81,6 +76,7 @@ function MainPage() {
             .then((res) => {})
             .catch((err) => {});
         cookies.remove("access token");
+        localStorage.removeItem("globalVariable");
         window.location.reload(false);
     };
 
@@ -88,6 +84,7 @@ function MainPage() {
         const instance = createAxiosHeader();
         if (!username || username === "") {
             console.log("No username initialised, please relogin...");
+            window.location.reload(false);
             return;
         }
 
@@ -106,7 +103,11 @@ function MainPage() {
         handleLogout();
     };
 
-    const handleChangePassword = async () => {
+    const handleChangePassword = async (
+        oldpassword,
+        newpassword,
+        verifynewpassword
+    ) => {
         if (
             !newpassword ||
             newpassword.trim() === "" ||
@@ -121,7 +122,6 @@ function MainPage() {
 
         if (newpassword !== verifynewpassword) {
             triggerFailureNotification("wrong-verify-password");
-            resetPasswordFields();
             return;
         }
 
@@ -134,11 +134,10 @@ function MainPage() {
             })
             .then((res) => {
                 if (res && res.status === STATUS_CODE_CHANGE_PASSWORD_SUCCESS) {
-                    handleDialogAction("close");
+                    setOpenDialog(false);
                     triggerSuccessNotification();
                 } else {
                     triggerFailureNotification();
-                    resetPasswordFields();
                 }
             })
             .catch((err) => {
@@ -147,64 +146,19 @@ function MainPage() {
                     STATUS_CODE_CHANGE_PASSWORD_INVALID_CRED
                 ) {
                     triggerFailureNotification("wrong-old-password");
-                    resetPasswordFields();
                 } else {
                     console.log("Error at handleChangePW: ", err.toJSON());
                 }
             });
     };
 
-    const triggerSuccessNotification = async () => {
+    const triggerSuccessNotification = () => {
         setOpenSuccessNotification(true);
-        await delay(5000);
-        setOpenSuccessNotification(false);
     };
 
-    const triggerFailureNotification = async (type) => {
+    const triggerFailureNotification = (type) => {
         setFailureType(type);
         setOpenFailureNotification(true);
-        await delay(5000);
-        setOpenFailureNotification(false);
-    };
-
-    const resetPasswordFields = () => {
-        setOldPw("");
-        setNewPw("");
-        setVerifyNewPw("");
-    };
-
-    const handleDialogAction = (action) => {
-        if (action === "open") {
-            setOpenDialog(true);
-        }
-        if (action === "close") {
-            setOpenDialog(false);
-            resetPasswordFields();
-        }
-    };
-
-    const handleConfirmationAction = (action) => {
-        if (action === "open") {
-            setOpenConfirmation(true);
-        }
-        if (action === "close") {
-            setOpenConfirmation(false);
-        }
-    };
-
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-    const renderNotification = (type) => {
-        switch (type) {
-            case "wrong-old-password":
-                return "Old password entered is invalid, please re-enter your old password.";
-            case "wrong-verify-password":
-                return "New password mismatch, please re-enter your new password.";
-            case "missing-field":
-                return "All fields are required, please try again.";
-            default:
-                return "Unable to change password, please try again later";
-        }
     };
 
     function createAxiosHeader() {
@@ -220,214 +174,22 @@ function MainPage() {
     return !isLogin ? (
         <LoginPage setToken={setToken} />
     ) : (
-        <div>
-            <Box display={"flex"} flexDirection={"column"} width={"100%"}>
-                <Typography variant={"h3"} marginBottom={"2rem"}>
-                    Loggged In Succesfully!
-                </Typography>
-
-                <Box
-                    display={"flex"}
-                    flexDirection={"row"}
-                    justifyContent={"centre"}
-                >
-                    {isLogin ? (
-                        <Typography variant={"h5"} marginBottom={"2rem"}>
-                            Valid Token
-                        </Typography>
-                    ) : (
-                        <Typography variant={"h5"} marginBottom={"2rem"}>
-                            Invalid Token
-                        </Typography>
-                    )}
-                </Box>
-            </Box>
-            <p>
-                <Button
-                    variant={"outlined"}
-                    onClick={handleLogout}
-                    component={Link}
-                    to="/mainpage"
-                >
-                    Log Out
-                </Button>
-                <Button
-                    variant={"outlined"}
-                    onClick={() => handleConfirmationAction("open")}
-                >
-                    Delete User
-                </Button>
-                <Button
-                    variant={"outlined"}
-                    onClick={() => handleDialogAction("open")}
-                >
-                    Change password
-                </Button>
-            </p>
-            <Dialog
-                open={openDialog}
-                onClose={() => handleDialogAction("close")}
-            >
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        width: "fit-content",
-                        alignItems: "center",
-                        margin: 5,
-                    }}
-                >
-                    <Grid sx={{ textAlign: "center" }}>
-                        <DialogTitle
-                            sx={{
-                                letterSpacing: 2,
-                                p: 2,
-                                mb: 3,
-                                fontSize: "h4.fontSize",
-                            }}
-                        >
-                            <b>Change Password</b>
-                        </DialogTitle>
-                    </Grid>
-                    <Grid
-                        sx={{
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                        }}
-                    >
-                        <Grid sx={{ my: 2 }}>
-                            <div>Old Password</div>
-                            <TextField
-                                id="oldpw"
-                                variant="outlined"
-                                type="password"
-                                value={oldpassword}
-                                onChange={(e) => setOldPw(e.target.value)}
-                                sx={{
-                                    mt: 2,
-                                    backgroundColor: "#F1F5F8",
-                                    width: "100%",
-                                }}
-                            ></TextField>
-                        </Grid>
-
-                        <Grid sx={{ my: 2 }}>
-                            <div>New Password</div>
-                            <TextField
-                                fullwidth
-                                id="oldpw"
-                                variant="outlined"
-                                type="password"
-                                value={newpassword}
-                                onChange={(e) => setNewPw(e.target.value)}
-                                sx={{
-                                    mt: 2,
-                                    backgroundColor: "#F1F5F8",
-                                    width: "100%",
-                                }}
-                            ></TextField>
-                        </Grid>
-
-                        <Grid sx={{ my: 2 }}>
-                            <div>Re-enter New Password</div>
-                            <TextField
-                                fullwidth
-                                id="verifynewpw"
-                                variant="outlined"
-                                type="password"
-                                value={verifynewpassword}
-                                onChange={(e) => setVerifyNewPw(e.target.value)}
-                                sx={{
-                                    mt: 2,
-                                    backgroundColor: "#F1F5F8",
-                                    width: "100%",
-                                }}
-                            ></TextField>
-                        </Grid>
-
-                        <Button
-                            variant={"outlined"}
-                            onClick={handleChangePassword}
-                            sx={{
-                                my: "2rem",
-                                background:
-                                    "linear-gradient(45deg, #217F95 20%, #E19D92 90%)",
-                                border: 0,
-                                borderRadius: 10,
-                                boxShadow:
-                                    "0 1px 5px 2px rgba(81, 135, 149, .2)",
-                                color: "white",
-                                height: 48,
-                                padding: "0 30px",
-                            }}
-                        >
-                            Change Password
-                        </Button>
-                    </Grid>
-                </Box>
-            </Dialog>
-            <Collapse in={openSuccessNotification} sx={{ zIndex: 0 }}>
-                <Alert
-                    severity="success"
-                    onClose={() => {
-                        setOpenSuccessNotification(false);
-                    }}
-                    sx={{
-                        position: "absolute",
-                        top: "16px",
-                        right: "16px",
-                        zIndex: 1400,
-                    }}
-                >
-                    Password successfully changed!
-                </Alert>
-            </Collapse>
-            <Collapse in={openFailureNotification} sx={{ zIndex: 0 }}>
-                <Alert
-                    severity="error"
-                    onClose={() => {
-                        setOpenFailureNotification(false);
-                    }}
-                    sx={{
-                        position: "absolute",
-                        top: "16px",
-                        right: "16px",
-                        zIndex: 1400,
-                    }}
-                >
-                    {renderNotification(failureType)}
-                </Alert>
-            </Collapse>
-            <Dialog
-                open={openConfirmation}
-                onClose={() => handleConfirmationAction("close")}
-            >
-                <DialogTitle>Confirm deletion of account?</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        Once account is deleted, the information lost will be
-                        irreversible.
-                        <br></br>
-                        Are you sure you want to delete your account?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        variant="contained"
-                        onClick={() => handleConfirmationAction("close")}
-                        sx={{
-                            backgroundColor: "#ED3447",
-                        }}
-                    >
-                        Cancel
-                    </Button>
-                    <Button variant="text" onClick={handleDeleteAccount}>
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
+        <MatchingPage
+            handleLogout={handleLogout}
+            handleDeleteAccount={handleDeleteAccount}
+            handleChangePassword={handleChangePassword}
+            username={username}
+            openDialog={openDialog}
+            setOpenDialog={setOpenDialog}
+            openConfirmation={openConfirmation}
+            setOpenConfirmation={setOpenConfirmation}
+            openSuccessNotification={openSuccessNotification}
+            setOpenSuccessNotification={setOpenSuccessNotification}
+            openFailureNotification={openFailureNotification}
+            setOpenFailureNotification={setOpenFailureNotification}
+            failureType={failureType}
+            setFailureType={setFailureType}
+        />
     );
 }
 

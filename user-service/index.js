@@ -9,6 +9,7 @@ app.use(express.json())
 app.use(cors()) // config cors so that front-end can use
 app.options('*', cors())
 import cookieParser from 'cookie-parser';
+const port = process.env.PORT || 8000
 
 // Controller will contain all the User-defined Routes
 app.use('/api/user', routes).all((_, res) => {
@@ -17,6 +18,10 @@ app.use('/api/user', routes).all((_, res) => {
 
 })
 
-app.listen(8000, () => console.log('user-service listening on port 8000'));
+app.get("/", (_,res) => {
+    res.send(`Server live at ${new Date().toUTCString()}`)
+})
+
+app.listen(port, () => console.log(`user-service listening on port ${port}`));
 
 export default app

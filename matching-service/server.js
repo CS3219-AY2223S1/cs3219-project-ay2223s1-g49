@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from "socket.io";
-import { createMatch, deleteMatchForUser, getMatchForDifficulty, attemptJoinMatch } from './controller/match-controller.js';
+import { createMatch, deleteMatchForUser, getMatchForDifficulty, attemptJoinMatch, getUserDetails } from './controller/match-controller.js';
+const port = process.env.PORT || 3001
 
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -16,7 +17,7 @@ app.get('/', (req, res) => {
 
 const httpServer = createServer(app)
 
-httpServer.listen(3001);
+httpServer.listen(port);
 
 const io = new Server(httpServer , {cors: { origin : "*"}});
 
@@ -60,4 +61,11 @@ io.on("connection", (socket) => {
     console.log(`socket ${socket.id} has left matching service`)
   })
 
+  socket.on(`getMatchForUser`, async (message) => {
+    const username = await getUserDetails(message.username)
+    socket.emit(`returnMatchForUser`, username)
+  })
+
 });
+
+export default app
