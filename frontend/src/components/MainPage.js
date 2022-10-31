@@ -134,7 +134,7 @@ function MainPage() {
             })
             .then((res) => {
                 if (res && res.status === STATUS_CODE_CHANGE_PASSWORD_SUCCESS) {
-                    handleDialogAction("Close");
+                    handleDialogAction("close");
                     triggerSuccessNotification();
                 } else {
                     triggerFailureNotification();
@@ -367,7 +367,7 @@ function MainPage() {
                     </Grid>
                 </Box>
             </Dialog>
-            <Collapse in={openSuccessNotification}>
+            <Collapse in={openSuccessNotification} sx={{ zIndex: 0 }}>
                 <Alert
                     severity="success"
                     onClose={() => {
@@ -377,13 +377,13 @@ function MainPage() {
                         position: "absolute",
                         top: "16px",
                         right: "16px",
-                        zIndex: 0,
+                        zIndex: 1400,
                     }}
                 >
                     Password successfully changed!
                 </Alert>
             </Collapse>
-            <Collapse in={openFailureNotification}>
+            <Collapse in={openFailureNotification} sx={{ zIndex: 0 }}>
                 <Alert
                     severity="error"
                     onClose={() => {
@@ -393,7 +393,7 @@ function MainPage() {
                         position: "absolute",
                         top: "16px",
                         right: "16px",
-                        zIndex: 0,
+                        zIndex: 1400,
                     }}
                 >
                     {renderNotification(failureType)}
