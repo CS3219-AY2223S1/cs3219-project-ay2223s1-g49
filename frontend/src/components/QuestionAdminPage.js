@@ -1,5 +1,5 @@
-import { Button, Grid, Tab, Tabs, TextField } from "@mui/material";
-import React, { useState } from "react";
+import { Button, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import makeStyles from "@mui/styles/makeStyles";
 import Alert from "@mui/material/Alert";
@@ -24,30 +24,24 @@ function QuestionAdminPage(props) {
         create: true,
         edit: false,
     });
-    const [questionList, setQuestionList] = useState([
-        {
-            _id: "63610e7bc1ee88fecc8f76ba",
-            difficulty: "hard",
-            content: " cool  ",
-            __v: 0,
-        },
-        {
-            _id: "63611037c4e7a180544bfe0d",
-            difficulty: "hard",
-            content: " cool2  ",
-            __v: 0,
-        },
-        {
-            _id: "6361103cc4e7a180544bfe0f",
-            difficulty: "hard",
-            content: " cool3  ",
-            __v: 0,
-        },
-    ]);
+    const [questionList, setQuestionList] = useState();
     const [notificationStatus, setNotificationStatus] = useState({
         success: false,
         failure: false,
     });
+    const [errorType, setErrorType] = useState("");
+    const [loaded, setLoaded] = useState(false);
+
+    axios
+        .create()
+        .post("http://localhost:7000/service/get/all-questions")
+        .then((resp) => {
+            setQuestionList(resp.data.questions);
+            setLoaded(true);
+        })
+        .catch((err) => {
+            triggerError("Failed to get questions!");
+        });
 
     const classes = useStyles();
     const clearInput = () => {
@@ -56,7 +50,25 @@ function QuestionAdminPage(props) {
         setAnswer("");
     };
 
-    return (
+    const triggerError = (type) => {
+        setErrorType(type);
+        setNotificationStatus({ ...notificationStatus, failure: true });
+    };
+
+    const refreshQuestionList = () => {
+        axios
+            .create()
+            .post("http://localhost:7000/service/get/all-questions")
+            .then((resp) => {
+                setQuestionList(resp.data.questions);
+                console.log("refreshed");
+            })
+            .catch((err) => {
+                triggerError("Failed to get questions!");
+            });
+    };
+
+    return !loaded ? null : (
         <Grid container direction="row">
             <Grid id="left" item xs={6} p={6}>
                 <Tabs
@@ -133,12 +145,11 @@ function QuestionAdminPage(props) {
                                     clearInput();
                                 }
                             })
-                            .catch(() => {
-                                setNotificationStatus({
-                                    ...notificationStatus,
-                                    failure: true,
-                                });
+                            .catch((err) => {
+                                console.log(err);
+                                triggerError("Error when creating question!");
                             });
+                        refreshQuestionList();
                     }}
                 >
                     Create
@@ -156,6 +167,9 @@ function QuestionAdminPage(props) {
                 </Button>
             </Grid>
             <Grid id="right" item xs={6} p={6}>
+                <Typography sx={{ fontSize: "h4.fontSize" }}>
+                    Question List
+                </Typography>
                 {questionList.map((item, idx) => (
                     <Grid
                         direction="row"
@@ -184,6 +198,22 @@ function QuestionAdminPage(props) {
                                 <DeleteIcon
                                     sx={{
                                         transform: "scale(1.2)",
+                                    }}
+                                    onClick={() => {
+                                        axios
+                                            .create()
+                                            .post(
+                                                "http://localhost:7000/service/delete/question",
+                                                { id: item._id }
+                                            )
+                                            .then(() => {
+                                                refreshQuestionList();
+                                            })
+                                            .catch((err) => {
+                                                triggerError(
+                                                    "Failed to delete questions!"
+                                                );
+                                            });
                                     }}
                                 />
                             </div>
@@ -237,7 +267,7 @@ function QuestionAdminPage(props) {
                         });
                     }}
                 >
-                    Error when creating question!
+                    {errorType}
                 </Alert>
             </Snackbar>
         </Grid>

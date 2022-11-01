@@ -26,9 +26,9 @@ const routes = express.Router();
 routes.get("/", (_, res) =>
     res.send(`Server live at ${new Date().toUTCString()}`)
 );
-routes.post("/create/question", block, createQuestion);
-routes.post("/delete/question", block, deleteQuestion);
-routes.post("/get/all-questions", block, getAllQuestions);
+routes.post("/create/question", allow, createQuestion);
+routes.post("/delete/question", allow, deleteQuestion);
+routes.post("/get/all-questions", allow, getAllQuestions);
 routes.post("/get/limit", allow, getLimit);
 routes.post("/get/random-id", allow, getRandomId);
 routes.post("/get/question-content", allow, getQuestionContent);
