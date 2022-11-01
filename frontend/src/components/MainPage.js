@@ -1,5 +1,5 @@
 import Cookies from "universal-cookie";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -25,9 +25,13 @@ function MainPage() {
     const [isLogin, setIsLogin] = useState(false);
     const [token, setToken] = useState(cookies.get("access token"));
     const [username, setUsername] = useState("");
-    const [oldpassword, setOldPw] = useState("");
-    const [newpassword, setNewPw] = useState("");
-    const [verifynewpassword, setVerifyNewPw] = useState("");
+    const [openDialog, setOpenDialog] = useState(false);
+    const [openConfirmation, setOpenConfirmation] = useState(false);
+    const [openSuccessNotification, setOpenSuccessNotification] =
+        useState(false);
+    const [openFailureNotification, setOpenFailureNotification] =
+        useState(false);
+    const [failureType, setFailureType] = useState();
 
     if (!token) {
         return <LoginPage setToken={setToken} />;
@@ -74,7 +78,6 @@ function MainPage() {
             .catch((err) => {});
         cookies.remove("access token");
         localStorage.removeItem("globalVariable");
-        //setIsLogin(false)
         window.location.reload(false);
     };
 
@@ -82,6 +85,7 @@ function MainPage() {
         const instance = createAxiosHeader();
         if (!username || username === "") {
             console.log("No username initialised, please relogin...");
+            window.location.reload(false);
             return;
         }
 
@@ -100,28 +104,25 @@ function MainPage() {
         handleLogout();
     };
 
-    const handleChangePassword = async () => {
+    const handleChangePassword = async (
+        oldpassword,
+        newpassword,
+        verifynewpassword
+    ) => {
         if (
             !newpassword ||
-            newpassword == "" ||
+            newpassword.trim() === "" ||
             !oldpassword ||
-            oldpassword == "" ||
+            oldpassword.trim() === "" ||
             !verifynewpassword ||
-            verifynewpassword == ""
+            verifynewpassword.trim() === ""
         ) {
-            console.log("All fields are required");
-            alert("All fields are required.");
+            triggerFailureNotification("missing-field");
             return;
         }
 
         if (newpassword !== verifynewpassword) {
-            console.log(
-                "New passwords do not match. Please retype your new passwords."
-            );
-            alert(
-                "New passwords do not match. Please retype your new passwords."
-            );
-            resetPasswordFields();
+            triggerFailureNotification("wrong-verify-password");
             return;
         }
 
@@ -134,37 +135,31 @@ function MainPage() {
             })
             .then((res) => {
                 if (res && res.status === STATUS_CODE_CHANGE_PASSWORD_SUCCESS) {
-                    console.log("Password successfully changed!");
-                    alert("Password successfully changed!");
-                    resetPasswordFields();
+                    setOpenDialog(false);
+                    triggerSuccessNotification();
                 } else {
-                    console.log("Unable to change password");
-                    alert("Unable to change password, please try again later");
-                    resetPasswordFields();
+                    triggerFailureNotification();
                 }
             })
             .catch((err) => {
                 if (
-                    err.response.status ==
+                    err.response.status ===
                     STATUS_CODE_CHANGE_PASSWORD_INVALID_CRED
                 ) {
-                    console.log(
-                        "Unable to verify current password. Please try again."
-                    );
-                    alert(
-                        "Unable to verify current password. Please try again."
-                    );
-                    resetPasswordFields();
+                    triggerFailureNotification("wrong-old-password");
                 } else {
                     console.log("Error at handleChangePW: ", err.toJSON());
                 }
             });
     };
 
-    const resetPasswordFields = () => {
-        setOldPw("");
-        setNewPw("");
-        setVerifyNewPw("");
+    const triggerSuccessNotification = () => {
+        setOpenSuccessNotification(true);
+    };
+
+    const triggerFailureNotification = (type) => {
+        setFailureType(type);
+        setOpenFailureNotification(true);
     };
 
     function createAxiosHeader() {
@@ -180,12 +175,23 @@ function MainPage() {
     return !isLogin ? (
         <LoginPage setToken={setToken} />
     ) : username === "admin" ? (
-        <QuestionAdminPage />
+        <QuestionAdminPage handleLogout={handleLogout} />
     ) : (
         <MatchingPage
             handleLogout={handleLogout}
             handleDeleteAccount={handleDeleteAccount}
+            handleChangePassword={handleChangePassword}
             username={username}
+            openDialog={openDialog}
+            setOpenDialog={setOpenDialog}
+            openConfirmation={openConfirmation}
+            setOpenConfirmation={setOpenConfirmation}
+            openSuccessNotification={openSuccessNotification}
+            setOpenSuccessNotification={setOpenSuccessNotification}
+            openFailureNotification={openFailureNotification}
+            setOpenFailureNotification={setOpenFailureNotification}
+            failureType={failureType}
+            setFailureType={setFailureType}
         />
     );
 }
