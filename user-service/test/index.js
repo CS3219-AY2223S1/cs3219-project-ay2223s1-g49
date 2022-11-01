@@ -73,7 +73,7 @@ describe("Test user login", () => {
         await userModel.deleteMany({})
         const testPassword = await createSaltAndHash("test")
         const user = userModel({ username: "test", password: testPassword })
-        user.save()
+        await user.save()
     })
 
     after(async () => {
@@ -210,7 +210,7 @@ describe("Test create user", () => {
         await userModel.deleteMany({})
         const testPassword = await createSaltAndHash("existinguser")
         const user = userModel({ username: "existinguser", password: testPassword })
-        user.save()
+        await user.save()
     })
 
     after(async () => {
@@ -284,7 +284,7 @@ describe("Test delete user", () => {
         await tokenModel.deleteMany({})
         const testPassword = await createSaltAndHash("newuser")
         const user = userModel({ username: "newuser", password: testPassword })
-        user.save()
+        await user.save()
     })
 
     after(async () => {
@@ -361,7 +361,7 @@ describe('Test change password', () => {
         await tokenModel.deleteMany({})
         const testPassword = await createSaltAndHash(VALID_OLDPASSWORD)
         const user = userModel({ username: VALID_USERNAME, password: testPassword })
-        user.save()
+        await user.save()
     })
 
     after(async () => {

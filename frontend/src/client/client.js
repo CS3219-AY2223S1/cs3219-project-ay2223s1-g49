@@ -1,28 +1,47 @@
 import { io } from "socket.io-client";
 
-var roomId = null
-var username = null
-var difficulty = null
+//contains key: CollabSocket.Id, value: sharedRoomId
+export var dictionarySharedRoomId = {}
 
-function setBasicInfo(user, diff) {
-  username = user
-  difficulty = diff
-}
+//contains key: Collabsocket.Id, value: username
+export var dictionaryusername = {}
+
+//contains key: Collabsocket.Id, value: difficulty
+export var dictionarydifficulty = {}
+
 
 //-------------------------------- Matching service ----------------------------------------------------
 
 export const matchingSocket = io('http://localhost:3001')
 
-matchingSocket.on("connect", () => {
+matchingSocket.on("connect", async () => {
     console.log(`Client (FrontEnd) connected to Matching service with id of: ${matchingSocket.id}`)
 
-    matchingSocket.on(`matchSuccess`, (newRoomId) => {
+    matchingSocket.on(`matchSuccess`, async (newRoomId) => {
       console.log(`Successfully matched with matching Id: ${newRoomId}`)
-      matchingSocket.emit(`quitMatching`)
-      roomId = newRoomId
-      collabSocket.emit(`collab`, roomId, username, difficulty)
+      const globalDetails = {
+        roomId: newRoomId,
+        username: dictionaryusername[collabSocket.id],
+        difficulty: dictionarydifficulty[collabSocket.id]
+      }
+      localStorage.setItem("globalVariable", JSON.stringify(globalDetails))
+      window.location.href = `/collab`; 
+    })
+
+    matchingSocket.on(`getUserDetails`, (details) => {
+      console.log(`Details for ${dictionaryusername[collabSocket.id]} are: ${details}`)
     })
 })
+
+export function runCollabService(newRoomId, username, difficulty) {
+    const cid = collabSocket.id
+    dictionarySharedRoomId[cid] = newRoomId
+    collabSocket.emit('collab', newRoomId, username, difficulty)
+}
+
+export function runChatService(newRoomId) {
+  chatSocket.emit('chat', newRoomId)
+}
 
 export function timeOut(usernameVal, difficultyVal) {
   console.log("Client timed out!")
@@ -32,32 +51,90 @@ export function timeOut(usernameVal, difficultyVal) {
 
 export function findMatch(usernameVal, difficultyVal) {
   console.log("Client finding match")
-  setBasicInfo(usernameVal, difficultyVal)
+  const cid = collabSocket.id
+  dictionaryusername[cid] = usernameVal
+  dictionarydifficulty[cid] = difficultyVal
   matchingSocket.emit('match', {username : usernameVal, difficulty : difficultyVal})
 }
 
+export function getMatchingDetails(username) {
+  matchingSocket.emit(`getUserDetails`, username)
+}
 //-------------------------------- Collab service ----------------------------------------------------
 export const collabSocket = io('http://localhost:3002', {
-  transports: ['websocket']
-})
-
-export var myCollabId = ""
+    transports: ['websocket']
+  })
 
 collabSocket.on("connect", () => {
     console.log(`Client (FrontEnd) connected to collab service with id of: ${collabSocket.id}`)
 
-    collabSocket.on(`collab`, (collabRoomId, username, difficulty) => {
-      myCollabId = collabRoomId
-      console.log(`Client (FrontEnd) is attempting to join collab room of ${collabRoomId}`)
+    collabSocket.on(`collabSuccess`, (collabRoomId) => {
+      console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId}`);
+
     })
 
-    collabSocket.on(`collabSuccess`, (collabRoomId) => {
-      console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId}`)
+    collabSocket.on('getUserDetails', (Details) => {
+      console.log(`Details for ${dictionaryusername[collabSocket.id]} are: ${Details}`)
+      if (Details != null) {
+        localStorage.setItem("globalVariable", JSON.stringify(Details))
+      }
+    })
+
+    collabSocket.on('quitCollabSuccess', () => {
+      localStorage.removeItem("globalVariable");
+      window.location.href = `/mainpage`; 
     })
 
 })
 
-export function quitCollab() {
-  collabSocket.emit(`quitCollab`, roomId, username)
+export function quitCollab(username) {
+  collabSocket.emit(`quitCollab`, username)
 }
 
+export function getCollabDetails(username) {
+  collabSocket.emit(`getUserDetails`, username)
+}
+
+//-------------------------------- Chat Service ----------------------------------------------------
+
+export const chatSocket = io('http://localhost:3003', {
+  transports: ['websocket']
+})
+
+chatSocket.on("connect", () => {
+  console.log(`New Socket Connection ${chatSocket.id}`)
+})
+
+chatSocket.on("message", (messageObject) => {
+  outputMessage(messageObject);
+})
+
+export function sendChatMessage(username, message) {
+  const messageObject = {username: username, message: message}
+  chatSocket.emit('chatMessage', messageObject);
+}
+
+function outputMessage(messageObject) {
+  const {username, message} = messageObject;
+  const time = getFormattedTime();
+  const div = document.createElement('div');
+  div.classList.add('message');
+  div.innerHTML = `<p class="meta"> ${username} <span> ${time} </spam> </p>
+    <p class="text">
+      ${message}
+    </p>`;
+  document.querySelector('.chat-messages').appendChild(div);
+
+}
+
+function getFormattedTime() {
+  const d = new Date();
+  let hours = d.getHours();
+  let minutes = d.getMinutes();
+  let ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  if (minutes.toString().length !== 2) {
+    minutes = "0" + minutes
+  }
+  return hours + ":" + minutes + ampm;
+}

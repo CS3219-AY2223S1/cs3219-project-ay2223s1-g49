@@ -1,9 +1,17 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+.idea/
 frontend/node_modules/
-
 matching-service/node_modules/
-
 user-service/node_modules/
+question-service/node_modules/
+collaboration-service/node_modules/
+chat-service/node_modules/
+matching-service/.env
+user-service/.env
+question-service/.env
+collaboration-service/.env
+chat-service/.env
 
-*.env
-
-node_modules
+.env
