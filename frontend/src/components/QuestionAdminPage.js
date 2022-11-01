@@ -1,11 +1,16 @@
 import { Button, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import makeStyles from "@mui/styles/makeStyles";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {
+    URL_CREATE_QUESTION,
+    URL_DELETE_QUESTION,
+    URL_GET_ALL_QUESTIONS,
+} from "../configs";
 
 const useStyles = makeStyles({
     edit: {
@@ -32,9 +37,10 @@ function QuestionAdminPage(props) {
     const [errorType, setErrorType] = useState("");
     const [loaded, setLoaded] = useState(false);
 
+    // Initial loading of questions
     axios
         .create()
-        .post("http://localhost:7000/service/get/all-questions")
+        .post(URL_GET_ALL_QUESTIONS)
         .then((resp) => {
             setQuestionList(resp.data.questions);
             setLoaded(true);
@@ -58,13 +64,50 @@ function QuestionAdminPage(props) {
     const refreshQuestionList = () => {
         axios
             .create()
-            .post("http://localhost:7000/service/get/all-questions")
+            .post(URL_GET_ALL_QUESTIONS)
             .then((resp) => {
                 setQuestionList(resp.data.questions);
-                console.log("refreshed");
             })
             .catch((err) => {
                 triggerError("Failed to get questions!");
+            });
+    };
+
+    const handleCreateQuestion = () => {
+        axios
+            .create()
+            .post(URL_CREATE_QUESTION, {
+                difficulty: difficulty,
+                content: question,
+                answer: answer,
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    setNotificationStatus({
+                        ...notificationStatus,
+                        success: true,
+                    });
+                    clearInput();
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                triggerError("Error when creating question!");
+            });
+        refreshQuestionList();
+    };
+
+    const handleDeleteQuestion = (id) => {
+        axios
+            .create()
+            .post(URL_DELETE_QUESTION, {
+                id: id,
+            })
+            .then(() => {
+                refreshQuestionList();
+            })
+            .catch((err) => {
+                triggerError("Failed to delete questions!");
             });
     };
 
@@ -123,35 +166,7 @@ function QuestionAdminPage(props) {
                         onChange={(e) => setAnswer(e.target.value)}
                     />
                 </div>
-                <Button
-                    color="primary"
-                    onClick={() => {
-                        axios
-                            .create()
-                            .post(
-                                "http://localhost:7000/service/create/question",
-                                {
-                                    difficulty: difficulty,
-                                    content: question,
-                                    answer: answer,
-                                }
-                            )
-                            .then((res) => {
-                                if (res.status === 200) {
-                                    setNotificationStatus({
-                                        ...notificationStatus,
-                                        success: true,
-                                    });
-                                    clearInput();
-                                }
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                                triggerError("Error when creating question!");
-                            });
-                        refreshQuestionList();
-                    }}
-                >
+                <Button color="primary" onClick={handleCreateQuestion}>
                     Create
                 </Button>
                 <Button color="secondary" onClick={clearInput}>
@@ -200,20 +215,7 @@ function QuestionAdminPage(props) {
                                         transform: "scale(1.2)",
                                     }}
                                     onClick={() => {
-                                        axios
-                                            .create()
-                                            .post(
-                                                "http://localhost:7000/service/delete/question",
-                                                { id: item._id }
-                                            )
-                                            .then(() => {
-                                                refreshQuestionList();
-                                            })
-                                            .catch((err) => {
-                                                triggerError(
-                                                    "Failed to delete questions!"
-                                                );
-                                            });
+                                        handleDeleteQuestion(item._id);
                                     }}
                                 />
                             </div>
