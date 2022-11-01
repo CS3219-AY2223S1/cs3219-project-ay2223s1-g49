@@ -5,6 +5,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
     edit: {
@@ -14,7 +15,7 @@ const useStyles = makeStyles({
     },
 });
 
-function QuestionAdminPage() {
+function QuestionAdminPage(props) {
     const [difficulty, setDifficulty] = useState();
     const [question, setQuestion] = useState();
     const [answer, setAnswer] = useState();
@@ -144,6 +145,14 @@ function QuestionAdminPage() {
                 </Button>
                 <Button color="secondary" onClick={clearInput}>
                     Clear
+                </Button>
+                <Button
+                    variant="contained"
+                    onClick={props.handleLogout}
+                    component={Link}
+                    to="/mainpage"
+                >
+                    LOGOUT
                 </Button>
             </Grid>
             <Grid id="right" item xs={6} p={6}>
