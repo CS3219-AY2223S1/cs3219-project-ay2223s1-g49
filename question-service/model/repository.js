@@ -6,8 +6,8 @@ import mongoose from "mongoose";
 
 let mongoDB =
     process.env.ENV == "PROD"
-        ? process.env.DB_CLOUD_URI
-        : process.env.DB_LOCAL_URI;
+        ? process.env.DB_CLOUD_URI_PROD
+        : process.env.DB_CLOUD_URI_TEST;
 
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -63,4 +63,26 @@ export async function getQuestionContent(id) {
     });
 
     return content;
+}
+
+export async function getQuestionAnswer(id) {
+    let answer = null;
+    const query = QuestionModel.findById(id).exec();
+    await query.then(function (question) {
+        if (!question) throw Error("Question id not found in database");
+        answer = question.answer;
+    });
+
+    return answer;
+}
+
+export async function getAllQuestions() {
+    let allQuestions = null;
+    const query = QuestionModel.find().exec();
+    await query.then(function (questions, error) {
+        if (error) throw error;
+        allQuestions = questions;
+    });
+
+    return allQuestions;
 }
