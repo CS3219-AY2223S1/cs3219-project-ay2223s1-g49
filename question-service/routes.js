@@ -18,15 +18,17 @@ import {
     createQuestion,
     deleteQuestion,
     getQuestionAnswer,
+    getAllQuestions,
 } from "./controller/question-controller.js";
 
-const  routes = express.Router();
+const routes = express.Router();
 
 routes.get("/", (_, res) =>
     res.send(`Server live at ${new Date().toUTCString()}`)
 );
 routes.post("/create/question", block, createQuestion);
 routes.post("/delete/question", block, deleteQuestion);
+routes.post("/get/all-questions", block, getAllQuestions);
 routes.post("/get/limit", allow, getLimit);
 routes.post("/get/random-id", allow, getRandomId);
 routes.post("/get/question-content", allow, getQuestionContent);

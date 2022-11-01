@@ -5,6 +5,7 @@ import {
     ormGetQuestionContent,
     ormGetRandomId,
     ormGetQuestionAnswer,
+    ormGetAllQuestions,
 } from "../model/question-orm.js";
 
 function createMissingParamError(param) {
@@ -122,6 +123,18 @@ export async function getQuestionAnswer(req, res) {
     } catch (err) {
         return res.status(500).json({
             Error: `Get question answer failed with error: ${err.message}`,
+        });
+    }
+}
+
+export async function getAllQuestions(req, res) {
+    try {
+        const resp = await ormGetAllQuestions();
+        if (resp.err) throw Error(resp.err);
+        return res.status(200).json({ questions: resp.questions });
+    } catch (err) {
+        return res.status(500).json({
+            Error: `Get all questions failed with error: ${err.message}`,
         });
     }
 }

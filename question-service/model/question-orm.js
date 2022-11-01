@@ -5,6 +5,7 @@ import {
     getRandomId,
     getQuestionContent,
     getQuestionAnswer,
+    getAllQuestions,
 } from "./repository.js";
 
 function createErrResponse(err, method) {
@@ -98,5 +99,18 @@ export async function ormGetQuestionAnswer(id) {
         return resp;
     } catch (err) {
         return createErrResponse(err.message, "ormGetQuestionAnswer");
+    }
+}
+
+export async function ormGetAllQuestions() {
+    try {
+        const allQuestions = await getAllQuestions();
+        const resp = {
+            err: null,
+            questions: allQuestions,
+        };
+        return resp;
+    } catch (err) {
+        return createErrResponse(err.message, "ormGetAllQuestions");
     }
 }

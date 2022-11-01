@@ -75,3 +75,14 @@ export async function getQuestionAnswer(id) {
 
     return answer;
 }
+
+export async function getAllQuestions() {
+    let allQuestions = null;
+    const query = QuestionModel.find().exec();
+    await query.then(function (questions, error) {
+        if (error) throw error;
+        allQuestions = questions;
+    });
+
+    return allQuestions;
+}
