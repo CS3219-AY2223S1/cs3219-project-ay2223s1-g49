@@ -69,4 +69,15 @@ jobs:
       - name: Upload package to S3 bucket
         run: aws s3 cp frontend.zip s3://cs3219g49-tp-bucket/
 
+      - name: Create new ElasticBeanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name "Frontend" \
+          --source-bundle S3Bucket="cs3219g49-tp-bucket",S3Key="frontend.zip" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+      - name: Deploy new ElasticBeanstalk Application Version
+        run: aws elasticbeanstalk update-environment --environment-name cs3219g49-frontend --version-label "ver-${{ github.sha }}"
+
     
