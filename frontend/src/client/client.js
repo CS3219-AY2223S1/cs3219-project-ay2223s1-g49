@@ -1,4 +1,5 @@
 import { io } from "socket.io-client";
+import { MATCH_SVC_URI_HOSTNAME, COLLAB_SVC_URI_HOSTNAME, CHAT_SVC_URI_HOSTNAME  } from "../configs";
 
 //contains key: CollabSocket.Id, value: sharedRoomId
 export var dictionarySharedRoomId = {}
@@ -11,8 +12,8 @@ export var dictionarydifficulty = {}
 
 
 //-------------------------------- Matching service ----------------------------------------------------
-
-export const matchingSocket = io('http://localhost:3001')
+const matchingHost = MATCH_SVC_URI_HOSTNAME
+export const matchingSocket = io(matchingHost)
 
 matchingSocket.on("connect", async () => {
     console.log(`Client (FrontEnd) connected to Matching service with id of: ${matchingSocket.id}`)
@@ -61,7 +62,8 @@ export function getMatchingDetails(username) {
   matchingSocket.emit(`getUserDetails`, username)
 }
 //-------------------------------- Collab service ----------------------------------------------------
-export const collabSocket = io('http://localhost:3002', {
+const collabHost = COLLAB_SVC_URI_HOSTNAME
+export const collabSocket = io(collabHost, {
     transports: ['websocket']
   })
 
@@ -96,8 +98,8 @@ export function getCollabDetails(username) {
 }
 
 //-------------------------------- Chat Service ----------------------------------------------------
-
-export const chatSocket = io('http://localhost:3003', {
+const chatbHost = CHAT_SVC_URI_HOSTNAME
+export const chatSocket = io(chatbHost, {
   transports: ['websocket']
 })
 
