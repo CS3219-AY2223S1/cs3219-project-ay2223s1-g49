@@ -51,10 +51,10 @@ jobs:
           name: build-artifact
 
       - name: Unzip artifact
-        run: unzip ./frontend/build.zip ./
+        run: unzip ../build.zip ./
 
-      - name: Delete artifact
-        run: rm ./frontend/build.zip
+      #- name: Delete artifact
+      #  run: rm ./frontend/build.zip
 
       - name: Create ZIP deployment package
         run: zip -r frontend.zip ./
