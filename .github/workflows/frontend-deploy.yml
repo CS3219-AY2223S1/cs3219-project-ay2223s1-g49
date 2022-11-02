@@ -37,7 +37,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: build-artifact
-        path: ./build.zip
+        path: ./frontend/build.zip
 
   deploy:
     needs: build
