@@ -24,6 +24,30 @@ const io = new Server(httpServer , {cors: { origin : "*"}})
 //key: socket.id, value: shared room
 var dictionaryCollab = {}
 
+//key: shared room, value: message in room
+var dictionarySavedMessage = {}
+
+function getSharedRoomId(socket) {
+    const myId = socket.id
+    return dictionaryCollab[myId]
+}
+
+function updateSavedMessage(socket, message) {
+    const sharedRomId = getSharedRoomId(socket)
+    dictionarySavedMessage[sharedRomId] = message
+}
+
+function getSavedMessage(socket) {
+    const sharedRoomId = getSharedRoomId(socket)
+    return dictionarySavedMessage[sharedRoomId]
+}
+
+function clearDictionaries(socket) {
+    const sharedRoomId = getSharedRoomId(socket)
+    dictionaryCollab[socket.id] = ""
+    dictionarySavedMessage[sharedRoomId] = ""
+}
+
 io.on("connection", (socket) => {
     console.log(`client (Backend) connected to collab service with id ${socket.id}`)
     socket.on(`collab`, (collabId, username, difficulty) => {
@@ -33,6 +57,9 @@ io.on("connection", (socket) => {
         createCollab(collabId, username, difficulty)
         socket.emit(`collabSuccess`, collabId)
         listAllConnectedRooms(socket)
+        if (getSavedMessage(socket) && getSavedMessage(socket) != "") {
+            socket.emit('CODE_INIT', getSavedMessage(socket))
+        }
     })
 
     function listAllConnectedRooms(socket) {
@@ -52,6 +79,7 @@ io.on("connection", (socket) => {
     socket.on(`quitCollab`, (username) => {
         deleteCollabForUser(username)
         socket.leave(dictionaryCollab[socket.id])
+        clearDictionaries(socket)
         socket.emit('quitCollabSuccess')
     })
 
@@ -59,6 +87,7 @@ io.on("connection", (socket) => {
         console.log('someone sent ' + code)
         socket.to(dictionaryCollab[socket.id]).emit('CODE_CHANGED', roomId, code)
         console.log(`something has changed on one end for room ${roomId}    collabRoom: ${dictionaryCollab[socket.id]}`)
+        updateSavedMessage(socket, code)
     })
 
     socket.on('getUserDetails', async (username) => {

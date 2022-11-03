@@ -3,6 +3,7 @@
 /workspace.xml
 .idea/
 frontend/node_modules/
+frontend/build
 matching-service/node_modules/
 user-service/node_modules/
 question-service/node_modules/
@@ -15,3 +16,4 @@ collaboration-service/.env
 chat-service/.env
 
 .env
+*.zip
