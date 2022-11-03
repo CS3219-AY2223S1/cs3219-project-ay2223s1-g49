@@ -33,6 +33,10 @@ const RealTimeEditor = () => {
             editor.setValue(code)
         })
 
+        client.collabSocket.on('CODE_INIT', (code) => {
+            editor.setValue(code)
+        })
+
     }, [])
     return (
         <>
