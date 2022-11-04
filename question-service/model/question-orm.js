@@ -4,6 +4,8 @@ import {
     getDifficultyLimit,
     getRandomId,
     getQuestionContent,
+    getQuestionAnswer,
+    getAllQuestions,
 } from "./repository.js";
 
 function createErrResponse(err, method) {
@@ -16,9 +18,13 @@ function createErrResponse(err, method) {
     return resp;
 }
 
-export async function ormCreateQuestion(difficulty, content) {
+export async function ormCreateQuestion(difficulty, content, answer) {
     try {
-        const newQuestion = await createQuestion({ difficulty, content });
+        const newQuestion = await createQuestion({
+            difficulty,
+            content,
+            answer,
+        });
         await newQuestion.save();
 
         const resp = {
@@ -80,5 +86,31 @@ export async function ormGetQuestionContent(id) {
         return resp;
     } catch (err) {
         return createErrResponse(err.message, "ormGetQuestionContent");
+    }
+}
+
+export async function ormGetQuestionAnswer(id) {
+    try {
+        const answer = await getQuestionAnswer(id);
+        const resp = {
+            err: null,
+            answer: answer,
+        };
+        return resp;
+    } catch (err) {
+        return createErrResponse(err.message, "ormGetQuestionAnswer");
+    }
+}
+
+export async function ormGetAllQuestions() {
+    try {
+        const allQuestions = await getAllQuestions();
+        const resp = {
+            err: null,
+            questions: allQuestions,
+        };
+        return resp;
+    } catch (err) {
+        return createErrResponse(err.message, "ormGetAllQuestions");
     }
 }
