@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "mocha --timeout 10000 --exit",
-    "dev" : "nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "devDependencies": {
     "chai": "^3.5.0",

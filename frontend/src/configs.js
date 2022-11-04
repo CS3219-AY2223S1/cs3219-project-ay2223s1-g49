@@ -1,18 +1,18 @@
 export const USER_SVC_URI_HOSTNAME =
     "http://cs3219g49-user-service.eba-gsqyhcuy.ap-southeast-1.elasticbeanstalk.com";
-// export const USER_SVC_URI_HOSTNAME =    "http://localhost:8000"
+// export const USER_SVC_URI_HOSTNAME = "http://localhost:8000";
 export const COLLAB_SVC_URI_HOSTNAME =
     "http://cs3219g49-collab-service.eba-iknxhrpx.ap-southeast-1.elasticbeanstalk.com";
-// export const COLLAB_SVC_URI_HOSTNAME =    "http://localhost:3002"
+// export const COLLAB_SVC_URI_HOSTNAME = "http://localhost:3002";
 export const MATCH_SVC_URI_HOSTNAME =
     "http://cs3219g49-matching-service.eba-grtr7n7q.ap-southeast-1.elasticbeanstalk.com";
-// export const MATCH_SVC_URI_HOSTNAME =    "http://localhost:7000"
+// export const MATCH_SVC_URI_HOSTNAME = "http://localhost:3001";
 export const QUESTION_SVC_URI_HOSTNAME =
     "http://cs3219g49-question-service.eba-75dcym54.ap-southeast-1.elasticbeanstalk.com";
-// export const QUESTION_SVC_URI_HOSTNAME =    "http://localhost:3002"
+// export const QUESTION_SVC_URI_HOSTNAME = "http://localhost:3004";
 export const CHAT_SVC_URI_HOSTNAME =
     "http://cs3219g49-chat-service.eba-d5ik24uv.ap-southeast-1.elasticbeanstalk.com";
-// export const CHAT_SVC_URI_HOSTNAME =    "http://localhost:3003"
+// export const CHAT_SVC_URI_HOSTNAME = "http://localhost:3003";
 
 const PREFIX_USER_SVC = "/api/user";
 const PREFIX_USER_SIGN_UP = "/api/user/signup";

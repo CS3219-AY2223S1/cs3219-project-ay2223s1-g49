@@ -43,6 +43,7 @@
     "build-ci": "CI=false && react-scripts build",
     "build": "react-scripts build",
     "test": "mocha --timeout 10000 --exit",
+    "dev": "react-scripts start",
     "lint": "npx eslint ."
   },
   "eslintConfig": {

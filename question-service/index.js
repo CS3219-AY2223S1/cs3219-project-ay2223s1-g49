@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import routes from "./routes.js";
 
-const port = process.env.PORT || 7000
+const port = process.env.PORT || 3004;
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -22,12 +22,12 @@ app.use("/service", routes).all((_, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
 });
 
-app.all('/', function (req, res) {
+app.all("/", function (req, res) {
     res.status(405).json();
 });
 
-
-
-app.listen(port, () => console.log(`question-service listening on port ${port}`));
+app.listen(port, () =>
+    console.log(`question-service listening on port ${port}`)
+);
 
 export default app;
