@@ -8,6 +8,6 @@ RUN npm install --force
 
 COPY . .
 
-EXPOSE 80
+EXPOSE 8081
 
 CMD ["index.js"]
