@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors";
-import { block, allow } from "./middleware.js";
+import { auth, allow } from "./middleware.js";
 import cookieParser from "cookie-parser";
-import { auth } from "./middleware.js";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -26,9 +25,9 @@ const routes = express.Router();
 routes.get("/", (_, res) =>
     res.send(`Server live at ${new Date().toUTCString()}`)
 );
-routes.post("/create/question", block, createQuestion);
-routes.post("/delete/question", block, deleteQuestion);
-routes.post("/get/all-questions", block, getAllQuestions);
+routes.post("/create/question", auth, createQuestion);
+routes.post("/delete/question", auth, deleteQuestion);
+routes.post("/get/all-questions", auth, getAllQuestions);
 routes.post("/get/limit", allow, getLimit);
 routes.post("/get/random-id", allow, getRandomId);
 routes.post("/get/question-content", allow, getQuestionContent);

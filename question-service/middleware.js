@@ -8,18 +8,18 @@ export const allow = (req, res, next) => {
     next();
 };
 
-export const auth = async (req,res,next) => {
-    try{
-        const token = (req.headers['authorization'])
+export const auth = async (req, res, next) => {
+    try {
+        const token = req.headers["authorization"];
         console.log(`Checking access rights`);
-        
-        if (await verifyAccess(token)){
-            next()
+        console.log(req.headers["authorization"]);
+        if (await verifyAccess(token)) {
+            next();
         } else {
-            return res.status(403).send()
+            return res.status(403).send();
         }
-    } catch(err){
-        console.log('Server error');
-        return res.status(500).send()
+    } catch (err) {
+        console.log("Server error");
+        return res.status(500).send();
     }
-}
+};

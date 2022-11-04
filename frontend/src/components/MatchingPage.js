@@ -105,18 +105,21 @@ function MatchingPage(props) {
         <Container fluid className={classes.mainContainer}>
             <Row>
                 <Col className={classes.leftContainer} xs={4}>
-                    <div class="d-flex justify-content-center mt-4">
+                    <div className="d-flex justify-content-center mt-4">
                         <Image
                             fluid
                             src={rocketImage}
                             style={{ height: "100%", width: "100%" }}
                         />
                     </div>
-                    <div class="d-flex justify-content-center mt-3">
-                        <Card class="text-center" style={{ width: "18rem" }}>
+                    <div className="d-flex justify-content-center mt-3">
+                        <Card
+                            className="text-center"
+                            style={{ width: "18rem" }}
+                        >
                             <Card.Body>
                                 <Card.Title>
-                                    <p class="text-uppercase">
+                                    <p className="text-uppercase">
                                         PEER-ER {props.username}
                                     </p>
                                 </Card.Title>
@@ -126,7 +129,7 @@ function MatchingPage(props) {
                             </Card.Body>
                         </Card>
                     </div>
-                    <div class="d-flex justify-content-center mt-4">
+                    <div className="d-flex justify-content-center mt-4">
                         <Button
                             variant="outlined"
                             onClick={props.handleLogout}
@@ -196,7 +199,7 @@ function MatchingPage(props) {
                             />
                         </Typography>
                     </div>
-                    <div class="mt-2">
+                    <div className="mt-2">
                         <Typography
                             style={{
                                 marginLeft: 20,
@@ -220,9 +223,9 @@ function MatchingPage(props) {
                             your interviews together.
                         </Typography>
                     </div>
-                    <div class="mt-2 d-flex flex-row">
+                    <div className="mt-2 d-flex flex-row">
                         <Card
-                            class="overflow-hidden"
+                            className="overflow-hidden"
                             style={{
                                 width: "31%",
                                 height: "13vw",
@@ -243,7 +246,7 @@ function MatchingPage(props) {
                             />
                         </Card>
                         <Card
-                            class="overflow-hidden"
+                            className="overflow-hidden"
                             style={{
                                 width: "31%",
                                 height: "13vw",
@@ -264,7 +267,7 @@ function MatchingPage(props) {
                             />
                         </Card>
                         <Card
-                            class="overflow-hidden"
+                            className="overflow-hidden"
                             style={{
                                 width: "31%",
                                 height: "13vw",
