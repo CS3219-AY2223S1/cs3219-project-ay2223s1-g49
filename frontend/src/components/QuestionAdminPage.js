@@ -1,5 +1,5 @@
 import { Button, Grid, Tab, Tabs, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import makeStyles from "@mui/styles/makeStyles";
 import Alert from "@mui/material/Alert";
@@ -29,25 +29,25 @@ function QuestionAdminPage(props) {
         create: true,
         edit: false,
     });
-    const [questionList, setQuestionList] = useState();
+    const [questionList, setQuestionList] = useState([]);
     const [notificationStatus, setNotificationStatus] = useState({
         success: false,
         failure: false,
     });
     const [errorType, setErrorType] = useState("");
-    const [loaded, setLoaded] = useState(false);
 
     // Initial loading of questions
-    axios
-        .create()
-        .post(URL_GET_ALL_QUESTIONS)
-        .then((resp) => {
-            setQuestionList(resp.data.questions);
-            setLoaded(true);
-        })
-        .catch((err) => {
-            triggerError("Failed to get questions!");
-        });
+    useEffect(() => {
+        axios
+            .create()
+            .post(URL_GET_ALL_QUESTIONS)
+            .then((resp) => {
+                setQuestionList(resp.data.questions);
+            })
+            .catch((err) => {
+                triggerError("Failed to get questions!");
+            });
+    }, []);
 
     const classes = useStyles();
     const clearInput = () => {
@@ -111,7 +111,7 @@ function QuestionAdminPage(props) {
             });
     };
 
-    return !loaded ? null : (
+    return (
         <Grid container direction="row">
             <Grid id="left" item xs={6} p={6}>
                 <Tabs
@@ -182,49 +182,65 @@ function QuestionAdminPage(props) {
                 </Button>
             </Grid>
             <Grid id="right" item xs={6} p={6}>
-                <Typography sx={{ fontSize: "h4.fontSize" }}>
-                    Question List
-                </Typography>
-                {questionList.map((item, idx) => (
-                    <Grid
-                        direction="row"
-                        container
-                        sx={{
-                            my: 5,
-                            border: 1,
-                            maxHeight: "80vh",
-                            overflow: "auto",
-                        }}
-                    >
-                        <Grid item xs={5}>
-                            {item._id}
-                        </Grid>
-                        <Grid item xs={6}>
-                            {item.difficulty}
-                        </Grid>
-                        <Grid item xs={1}>
-                            <div
-                                className={classes.edit}
-                                style={{
-                                    textAlign: "center",
-                                    borderRadius: "50px",
-                                }}
-                            >
-                                <DeleteIcon
-                                    sx={{
-                                        transform: "scale(1.2)",
-                                    }}
-                                    onClick={() => {
-                                        handleDeleteQuestion(item._id);
-                                    }}
-                                />
-                            </div>
-                        </Grid>
-                        <Grid item xs={12}>
-                            {item.content}
-                        </Grid>
+                <Grid class="align-items-center d-flex flex-row" container>
+                    <Grid item xs={4}>
+                        <Typography sx={{ fontSize: "h4.fontSize" }}>
+                            Question List
+                        </Typography>
                     </Grid>
-                ))}
+                    <Grid item xs={6}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={refreshQuestionList}
+                        >
+                            Refresh
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <div style={{ maxHeight: "80vh", overflow: "auto" }}>
+                    {questionList.map((item, idx) => (
+                        <Grid
+                            direction="row"
+                            container
+                            sx={{
+                                my: 5,
+                                border: 1,
+                                maxHeight: "80vh",
+                                overflow: "auto",
+                            }}
+                        >
+                            <Grid item xs={5}>
+                                {item._id}
+                            </Grid>
+                            <Grid item xs={6}>
+                                {item.difficulty}
+                            </Grid>
+                            <Grid item xs={1}>
+                                <div
+                                    className={classes.edit}
+                                    style={{
+                                        textAlign: "center",
+                                        borderRadius: "50px",
+                                    }}
+                                >
+                                    <DeleteIcon
+                                        sx={{
+                                            transform: "scale(1.2)",
+                                        }}
+                                        onClick={() => {
+                                            handleDeleteQuestion(item._id);
+                                        }}
+                                    />
+                                </div>
+                            </Grid>
+                            <Grid item xs={12}>
+                                {item.content}
+                            </Grid>
+                        </Grid>
+                    ))}
+                </div>
             </Grid>
             <Snackbar
                 open={notificationStatus.success}
