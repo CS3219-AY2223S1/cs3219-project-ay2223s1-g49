@@ -175,7 +175,11 @@ function MainPage() {
     return !isLogin ? (
         <LoginPage setToken={setToken} />
     ) : username === "admin" ? (
-        <QuestionAdminPage handleLogout={handleLogout} />
+        <QuestionAdminPage
+            cookies={cookies}
+            createAxiosHeader={createAxiosHeader}
+            handleLogout={handleLogout}
+        />
     ) : (
         <MatchingPage
             handleLogout={handleLogout}

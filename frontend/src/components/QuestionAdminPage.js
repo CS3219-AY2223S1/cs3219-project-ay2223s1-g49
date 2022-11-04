@@ -4,7 +4,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import makeStyles from "@mui/styles/makeStyles";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import {
     URL_CREATE_QUESTION,
@@ -38,8 +37,8 @@ function QuestionAdminPage(props) {
 
     // Initial loading of questions
     useEffect(() => {
-        axios
-            .create()
+        props
+            .createAxiosHeader()
             .post(URL_GET_ALL_QUESTIONS)
             .then((resp) => {
                 setQuestionList(resp.data.questions);
@@ -62,8 +61,8 @@ function QuestionAdminPage(props) {
     };
 
     const refreshQuestionList = () => {
-        axios
-            .create()
+        props
+            .createAxiosHeader()
             .post(URL_GET_ALL_QUESTIONS)
             .then((resp) => {
                 setQuestionList(resp.data.questions);
@@ -74,8 +73,8 @@ function QuestionAdminPage(props) {
     };
 
     const handleCreateQuestion = () => {
-        axios
-            .create()
+        props
+            .createAxiosHeader()
             .post(URL_CREATE_QUESTION, {
                 difficulty: difficulty,
                 content: question,
@@ -98,8 +97,8 @@ function QuestionAdminPage(props) {
     };
 
     const handleDeleteQuestion = (id) => {
-        axios
-            .create()
+        props
+            .createAxiosHeader()
             .post(URL_DELETE_QUESTION, {
                 id: id,
             })
@@ -125,12 +124,8 @@ function QuestionAdminPage(props) {
                         console.log(editMode);
                     }}
                 >
-                    <Tab value={0} label="Create">
-                        <p>Create</p>
-                    </Tab>
-                    <Tab value={1} label="Edit" disabled={!editMode.edit}>
-                        <p>Edit</p>
-                    </Tab>
+                    <Tab value={0} label="Create" />
+                    <Tab value={1} label="Edit" disabled={!editMode.edit} />
                 </Tabs>
                 <div className="my-5">
                     <div>Difficulty</div>
@@ -155,7 +150,6 @@ function QuestionAdminPage(props) {
                 </div>
                 <div className="my-5">
                     <div>Answer</div>
-
                     <TextField
                         multiline
                         rows={5}
@@ -182,7 +176,7 @@ function QuestionAdminPage(props) {
                 </Button>
             </Grid>
             <Grid id="right" item xs={6} p={6}>
-                <Grid class="align-items-center d-flex flex-row" container>
+                <Grid className="align-items-center d-flex flex-row" container>
                     <Grid item xs={4}>
                         <Typography sx={{ fontSize: "h4.fontSize" }}>
                             Question List
@@ -210,14 +204,23 @@ function QuestionAdminPage(props) {
                                 maxHeight: "80vh",
                                 overflow: "auto",
                             }}
+                            key={idx}
                         >
-                            <Grid item xs={5}>
+                            <Grid item xs={5} key={idx}>
                                 {item._id}
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid
+                                item
+                                xs={6}
+                                style={{
+                                    overflowY: "hidden",
+                                    overflowX: "auto",
+                                }}
+                                key={idx}
+                            >
                                 {item.difficulty}
                             </Grid>
-                            <Grid item xs={1}>
+                            <Grid item xs={1} key={idx}>
                                 <div
                                     className={classes.edit}
                                     style={{
@@ -232,10 +235,19 @@ function QuestionAdminPage(props) {
                                         onClick={() => {
                                             handleDeleteQuestion(item._id);
                                         }}
+                                        key={idx}
                                     />
                                 </div>
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid
+                                item
+                                xs={12}
+                                style={{
+                                    overflowY: "hidden",
+                                    overflowX: "auto",
+                                }}
+                                key={idx}
+                            >
                                 {item.content}
                             </Grid>
                         </Grid>
