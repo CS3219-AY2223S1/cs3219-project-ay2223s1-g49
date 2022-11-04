@@ -17,6 +17,7 @@ import { getCollabDetails } from "../client/client.js";
 import LoginPage from "./LoginPage";
 import MatchingPage from "./MatchingPage";
 import validateToken from "./validate-token";
+import QuestionAdminPage from "./QuestionAdminPage";
 
 function MainPage() {
     const navigate = useNavigate();
@@ -173,6 +174,12 @@ function MainPage() {
 
     return !isLogin ? (
         <LoginPage setToken={setToken} />
+    ) : username === "admin" ? (
+        <QuestionAdminPage
+            cookies={cookies}
+            createAxiosHeader={createAxiosHeader}
+            handleLogout={handleLogout}
+        />
     ) : (
         <MatchingPage
             handleLogout={handleLogout}

@@ -9,6 +9,10 @@ let QuestionModelSchema = new Schema({
         type: String,
         required: true,
     },
+    answer: {
+        type: String,
+        required: true,
+    },
 });
 
 export default mongoose.model("QuestionModel", QuestionModelSchema);
