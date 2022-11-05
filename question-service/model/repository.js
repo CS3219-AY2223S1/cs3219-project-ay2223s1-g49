@@ -43,6 +43,7 @@ export async function getDifficultyLimit(_difficulty) {
 
 export async function getRandomId(_difficulty) {
     let id = null;
+    console.log(`difficulty is ${_difficulty}`)
     const query = QuestionModel.aggregate([
         { $match: { difficulty: _difficulty } },
         { $sample: { size: 1 } },

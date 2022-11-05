@@ -3,6 +3,7 @@ import cors from 'cors'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import { createCollab, deleteCollabForUser, getUserDetails } from './collab-controller.js'
+import axios from 'axios'
 const port = process.env.PORT || 3002
 
 const app = express()
@@ -27,6 +28,9 @@ var dictionaryCollab = {}
 //key: shared room, value: message in room
 var dictionarySavedMessage = {}
 
+//key: shared room, value: question id
+var dictionarySavedQuestion = {}
+
 function getSharedRoomId(socket) {
     const myId = socket.id
     return dictionaryCollab[myId]
@@ -46,20 +50,35 @@ function clearDictionaries(socket) {
     const sharedRoomId = getSharedRoomId(socket)
     dictionaryCollab[socket.id] = ""
     dictionarySavedMessage[sharedRoomId] = ""
+    dictionarySavedQuestion[sharedRoomId] = ""
+}
+
+function questionExists(socket) {
+    const sharedRomId = getSharedRoomId(socket)
+    return dictionarySavedQuestion[sharedRomId]
 }
 
 io.on("connection", (socket) => {
     console.log(`client (Backend) connected to collab service with id ${socket.id}`)
-    socket.on(`collab`, (collabId, username, difficulty) => {
+    socket.on(`collab`, (collabId, username, difficulty, randomQuestionId) => {
         console.log(`recieved collab signal from ${username} of room ${socket.id} with collabId: ${collabId}`)
         dictionaryCollab[socket.id] = collabId
         socket.join(collabId)
         createCollab(collabId, username, difficulty)
-        socket.emit(`collabSuccess`, collabId)
-        listAllConnectedRooms(socket)
+        // listAllConnectedRooms(socket)
         if (getSavedMessage(socket) && getSavedMessage(socket) != "") {
             socket.emit('CODE_INIT', getSavedMessage(socket))
         }
+
+        const prevQuestionId = questionExists(socket)
+
+        if (prevQuestionId == null || prevQuestionId == "") {
+            dictionarySavedQuestion[collabId] = randomQuestionId
+            socket.emit(`collabSuccess`, collabId, randomQuestionId)
+        } else {
+            socket.emit(`collabSuccess`, collabId, prevQuestionId)
+        }
+
     })
 
     function listAllConnectedRooms(socket) {

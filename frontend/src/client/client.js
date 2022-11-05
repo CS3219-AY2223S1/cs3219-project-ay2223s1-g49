@@ -1,5 +1,7 @@
 import { io } from "socket.io-client";
-import { MATCH_SVC_URI_HOSTNAME, COLLAB_SVC_URI_HOSTNAME, CHAT_SVC_URI_HOSTNAME  } from "../configs";
+import { MATCH_SVC_URI_HOSTNAME, COLLAB_SVC_URI_HOSTNAME, CHAT_SVC_URI_HOSTNAME, URL_GET_RANDOM_QUESTION  } from "../configs";
+import axios from 'axios'
+
 
 //contains key: CollabSocket.Id, value: sharedRoomId
 export var dictionarySharedRoomId = {}
@@ -15,11 +17,25 @@ export var dictionarydifficulty = {}
 const matchingHost = MATCH_SVC_URI_HOSTNAME
 export const matchingSocket = io(matchingHost)
 
+export function collabWithRandomQuestionId(newRoomId, username, difficulty) {
+  var randomId = null
+  axios.create().post(URL_GET_RANDOM_QUESTION, {
+    difficulty: difficulty
+  })
+  .then((resp) => {
+      randomId = resp.data.id
+      collabSocket.emit('collab', newRoomId, username, difficulty, randomId)
+  })
+  .catch((err) => {
+      // do err handling
+  });
+}
+
 matchingSocket.on("connect", async () => {
     console.log(`Client (FrontEnd) connected to Matching service with id of: ${matchingSocket.id}`)
 
     matchingSocket.on(`matchSuccess`, async (newRoomId) => {
-      console.log(`Successfully matched with matching Id: ${newRoomId}`)
+      console.log(`Successfully matched with matching Id: ${newRoomId} for username ${dictionaryusername[collabSocket.id]}, difficulty: ${dictionarydifficulty[collabSocket.id]}`)
       const globalDetails = {
         roomId: newRoomId,
         username: dictionaryusername[collabSocket.id],
@@ -37,7 +53,8 @@ matchingSocket.on("connect", async () => {
 export function runCollabService(newRoomId, username, difficulty) {
     const cid = collabSocket.id
     dictionarySharedRoomId[cid] = newRoomId
-    collabSocket.emit('collab', newRoomId, username, difficulty)
+
+    collabWithRandomQuestionId(newRoomId, username, difficulty)
 }
 
 export function runChatService(newRoomId) {
@@ -70,9 +87,9 @@ export const collabSocket = io(collabHost, {
 collabSocket.on("connect", () => {
     console.log(`Client (FrontEnd) connected to collab service with id of: ${collabSocket.id}`)
 
-    collabSocket.on(`collabSuccess`, (collabRoomId) => {
-      console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId}`);
-
+    collabSocket.on(`collabSuccess`, (collabRoomId, questionId) => {
+      console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId} with question Id of ${questionId}`);
+      //frontEnd.setQuestion(questionId)
     })
 
     collabSocket.on('getUserDetails', (Details) => {
