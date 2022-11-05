@@ -14,7 +14,7 @@ services:
       - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
       - "JWT_SECRET_KEY=TEST_KEY"
       - "JWT_TEST_KEY=TEST_KEY"
-      - "ENV=PROD"
+      - "ENV=TEST"
 
   question-service:
     image: cs3219g49-question-service
@@ -29,7 +29,7 @@ services:
       - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
       - "JWT_SECRET_KEY=TEST_KEY"
       - "JWT_TEST_KEY=TEST_KEY"
-      - "ENV=PROD"
+      - "ENV=TEST"
 
   matching-service:
     image: cs3219g49-matching-service
@@ -44,7 +44,7 @@ services:
       - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
       - "JWT_SECRET_KEY=TEST_KEY"
       - "JWT_TEST_KEY=TEST_KEY"
-      - "ENV=PROD"
+      - "ENV=TEST"
 
   frontend-service:
     image: cs3219g49-frontend-service
@@ -67,6 +67,7 @@ services:
       - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
       - "JWT_SECRET_KEY=TEST_KEY"
       - "JWT_TEST_KEY=TEST_KEY"
+      - "ENV=TEST"
 
   collaboration-service:
     image: cs3219g49-collaboration-service
@@ -81,3 +82,4 @@ services:
       - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
       - "JWT_SECRET_KEY=TEST_KEY"
       - "JWT_TEST_KEY=TEST_KEY"
+      - "ENV=TEST"
