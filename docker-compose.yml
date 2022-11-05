@@ -1,0 +1,83 @@
+version: "3.5"
+
+services:
+  user-service:
+    image: cs3219g49-user-service
+    build: ./user-service
+    container_name: user-service
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "JWT_SECRET_KEY=TEST_KEY"
+      - "JWT_TEST_KEY=TEST_KEY"
+      - "ENV=PROD"
+
+  question-service:
+    image: cs3219g49-question-service
+    build: ./question-service
+    container_name: question-service
+
+    ports:
+      - "3004:3004"
+
+    environment:
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "JWT_SECRET_KEY=TEST_KEY"
+      - "JWT_TEST_KEY=TEST_KEY"
+      - "ENV=PROD"
+
+  matching-service:
+    image: cs3219g49-matching-service
+    build: ./matching-service
+    container_name: matching-service
+
+    ports:
+      - "3001:3001"
+
+    environment:
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "JWT_SECRET_KEY=TEST_KEY"
+      - "JWT_TEST_KEY=TEST_KEY"
+      - "ENV=PROD"
+
+  frontend-service:
+    image: cs3219g49-frontend-service
+    build: ./frontend
+    container_name: frontend-service
+
+    ports:
+      - "8081:8081"
+
+  chat-service:
+    image: cs3219g49-chat-service
+    build: ./chat-service
+    container_name: chat-service
+
+    ports:
+      - "3003:3003"
+
+    environment:
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "JWT_SECRET_KEY=TEST_KEY"
+      - "JWT_TEST_KEY=TEST_KEY"
+
+  collaboration-service:
+    image: cs3219g49-collaboration-service
+    build: ./collaboration-service
+    container_name: collaboration-service
+
+    ports:
+      - "3002:3002"
+
+    environment:
+      - "DB_CLOUD_URI_PROD=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/prod?retryWrites=true&w=majority"
+      - "DB_CLOUD_URI_TEST=mongodb+srv://cs3219grp49:dockerCompose@cluster0.flgp7sz.mongodb.net/test?retryWrites=true&w=majority"
+      - "JWT_SECRET_KEY=TEST_KEY"
+      - "JWT_TEST_KEY=TEST_KEY"
