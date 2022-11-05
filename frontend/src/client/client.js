@@ -53,6 +53,7 @@ matchingSocket.on("connect", async () => {
 export function runCollabService(newRoomId, username, difficulty) {
     const cid = collabSocket.id
     dictionarySharedRoomId[cid] = newRoomId
+    dictionaryusername[collabSocket.id] = username
 
     collabWithRandomQuestionId(newRoomId, username, difficulty)
 }
@@ -109,11 +110,18 @@ collabSocket.on("connect", () => {
       window.location.href = `/mainpage`; 
     })
 
+    collabSocket.on(`quitCollabPing`, () => {
+      console.log(`pinged ${dictionaryusername[collabSocket.id]}!!!!!!!!!`)
+      collabSocket.emit(`quitCollab`, dictionaryusername[collabSocket.id])
+    })
+
 })
 
 export function quitCollab(username) {
+  console.log(`quitting for ${username}`)
   collabSocket.emit(`quitCollab`, username)
 }
+
 
 export function getCollabDetails(username) {
   collabSocket.emit(`getUserDetails`, username)

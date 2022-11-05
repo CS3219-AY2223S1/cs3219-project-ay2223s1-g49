@@ -95,10 +95,17 @@ io.on("connection", (socket) => {
         })
     })
 
-    socket.on(`quitCollab`, (username) => {
+    socket.on(`quitCollabPing`, (username) => {
         deleteCollabForUser(username)
         socket.leave(dictionaryCollab[socket.id])
         clearDictionaries(socket)
+        socket.emit('quitCollabSuccess')
+    })
+
+    socket.on(`quitCollab`, (username) => {
+        socket.to(dictionaryCollab[socket.id]).emit('quitCollabPing')
+        deleteCollabForUser(username)
+        socket.leave(dictionaryCollab[socket.id])
         socket.emit('quitCollabSuccess')
     })
 
