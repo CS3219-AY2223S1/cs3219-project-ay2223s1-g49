@@ -73,6 +73,7 @@ function CollabPage() {
   const classes = useStyles();
   const question = "Longest Palindromic Substring";
   const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  const [questionId, setQuestionId] = useState("");
   const [message, setMessage] = useState("");
   const [token, setToken] = useState(cookies.get('access token'));
   const [username, setUsername] = useState("");
@@ -96,6 +97,10 @@ function CollabPage() {
   useEffect(() => {
       if (roomId !== null && username !== null && difficulty !== null) {
         runCollabService(roomId, username, difficulty);
+        const details = JSON.parse(localStorage.getItem("questionDetails"))
+        if (details !== null) {
+          setQuestionId(details.questionId);
+        }     
         runChatService(roomId);
       }
   }, [roomId, username, difficulty])
@@ -147,7 +152,7 @@ function CollabPage() {
             <Image fluid src={rocketImage} style={{ width: '40%' }} />
           </div>
           <Typography style={{ marginLeft: 20, marginTop: 20, flexGrow: 1, fontWeight: 600, fontSize: 23 }}>
-            {question}
+            {questionId}
           </Typography>
           <Button variant="outlined" style={{ marginLeft: 20, marginTop: 10 }} disabled>
             {difficulty}

@@ -90,6 +90,11 @@ collabSocket.on("connect", () => {
     collabSocket.on(`collabSuccess`, (collabRoomId, questionId) => {
       console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId} with question Id of ${questionId}`);
       //frontEnd.setQuestion(questionId)
+      const questionDetails = {
+        roomId: collabRoomId,
+        questionId: questionId
+      }
+      localStorage.setItem("questionDetails", JSON.stringify(questionDetails));
     })
 
     collabSocket.on('getUserDetails', (Details) => {
