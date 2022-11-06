@@ -111,7 +111,8 @@ function CollabPage() {
     }).catch(err => {
       console.log(err);
     })
-    setDescription(data.data.content);
+    setDescription(data.data.question.content);
+    setQuestion(data.data.question.title);
   }
 
   function createAxiosHeader() {
@@ -164,7 +165,7 @@ function CollabPage() {
             <Image fluid src={rocketImage} style={{ width: '40%' }} />
           </div>
           <Typography style={{ marginLeft: 20, marginTop: 20, flexGrow: 1, fontWeight: 600, fontSize: 23 }}>
-            {questionId}
+            {question}
           </Typography>
           <ThemeProvider theme={theme}>
             <Button 
