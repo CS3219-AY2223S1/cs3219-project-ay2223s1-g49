@@ -107,6 +107,7 @@ collabSocket.on("connect", () => {
 
     collabSocket.on('quitCollabSuccess', () => {
       localStorage.removeItem("globalVariable");
+      localStorage.removeItem("questionDetails");
       window.location.href = `/mainpage`; 
     })
 

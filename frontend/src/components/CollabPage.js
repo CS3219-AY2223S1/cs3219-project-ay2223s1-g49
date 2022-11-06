@@ -5,7 +5,8 @@ import {
   Divider,
   Grid,
   TextField,
-  IconButton
+  IconButton,
+  ThemeProvider
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"
@@ -20,9 +21,10 @@ import {
 } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/style.css';
+import { theme } from "../styles/theme.js"
 import rocketImage from "../images/rocketImage.gif";
 import validateToken from "./validate-token";
-import { URL_USER_GET_USERNAME } from "../configs";
+import { URL_USER_GET_USERNAME, URL_GET_SPECIFIC_QUESTIONS } from "../configs";
 import { sendChatMessage, runCollabService, getCollabDetails, quitCollab, runChatService } from "../client/client.js"
 import RealTimeEditor from "../client/realTimeEditor.jsx"
 
@@ -43,7 +45,7 @@ const useStyles = makeStyles(theme => ({
     borderLeft: '1px solid rgba(235, 233, 230)',
   },
   chatWindow: {
-    height: '81vh',
+    height: '90vh',
     width: '100%',
     paddingBottom: '5px',
   },
@@ -71,14 +73,16 @@ function CollabPage() {
   const navigate = useNavigate();
   const cookies = new Cookies()
   const classes = useStyles();
-  const question = "Longest Palindromic Substring";
-  const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  //const question = "Longest Palindromic Substring";
+  //const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
   const [questionId, setQuestionId] = useState("");
+  const [description, setDescription] = useState("");
   const [message, setMessage] = useState("");
   const [token, setToken] = useState(cookies.get('access token'));
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState("");
   const [difficulty, setDifficulty] = useState("");
+  const [question, setQuestion] = useState("");
 
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
@@ -96,14 +100,19 @@ function CollabPage() {
 
   useEffect(() => {
       if (roomId !== null && username !== null && difficulty !== null) {
-        runCollabService(roomId, username, difficulty);
-        const details = JSON.parse(localStorage.getItem("questionDetails"))
-        if (details !== null) {
-          setQuestionId(details.questionId);
-        }     
+        runCollabService(roomId, username, difficulty);   
         runChatService(roomId);
       }
   }, [roomId, username, difficulty])
+
+  const getQuestion = async (event) =>  {
+    const data = await axios.post(URL_GET_SPECIFIC_QUESTIONS, {
+      id: questionId
+    }).catch(err => {
+      console.log(err);
+    })
+    setDescription(data.data.content);
+  }
 
   function createAxiosHeader() {
     const jwt = cookies.get('access token');
@@ -134,10 +143,13 @@ function CollabPage() {
       console.log("valid token")
       initialiseUsername()
       getCollabDetails(username)
-      const details = JSON.parse(localStorage.getItem("globalVariable"))
-      if (details !== null) {
-        setRoomId(details.roomId)
-        setDifficulty(details.difficulty)
+      const detail1 = JSON.parse(localStorage.getItem("globalVariable"));
+      const detail2 = JSON.parse(localStorage.getItem("questionDetails"));
+      if (detail1 !== null) {
+        setRoomId(detail1.roomId)
+        setDifficulty(detail1.difficulty)
+        setQuestionId(detail2.questionId);
+        getQuestion(detail2.questionId);
       } else {
         navigate("/mainpage")
       }
@@ -154,9 +166,13 @@ function CollabPage() {
           <Typography style={{ marginLeft: 20, marginTop: 20, flexGrow: 1, fontWeight: 600, fontSize: 23 }}>
             {questionId}
           </Typography>
-          <Button variant="outlined" style={{ marginLeft: 20, marginTop: 10 }} disabled>
-            {difficulty}
-          </Button>
+          <ThemeProvider theme={theme}>
+            <Button 
+              variant="outlined" 
+              style={{ marginLeft: 20, marginTop: 10}} color={difficulty === "Easy" ? "success" : difficulty === "Medium" ? "secondary" : "primary"}>
+              {difficulty}
+            </Button>
+          </ThemeProvider>
           <Divider style={{ marginLeft: 20, marginTop: 20, width: '40vh', backgroundColor: "#343536" }} />
           <Typography style={{ marginLeft: 20, marginTop: 30, fontSize: 15 }}>
             {description}
