@@ -65,6 +65,9 @@ const useStyles = makeStyles(theme => ({
     padding: '10px',
     display: 'inline-block',
     width: 'auto'
+  },
+  displayLinebreak: {
+    whiteSpace: "pre-line"
   }
 }));
 
@@ -111,6 +114,7 @@ function CollabPage() {
     }).catch(err => {
       console.log(err);
     })
+    console.log(data.data.question.content)
     setDescription(data.data.question.content);
     setQuestion(data.data.question.title);
   }
@@ -175,7 +179,7 @@ function CollabPage() {
             </Button>
           </ThemeProvider>
           <Divider style={{ marginLeft: 20, marginTop: 20, width: '40vh', backgroundColor: "#343536" }} />
-          <Typography style={{ marginLeft: 20, marginTop: 30, fontSize: 15 }}>
+          <Typography className={classes.displayLinebreak} style={{ marginLeft: 20, marginTop: 30, fontSize: 15 }}>
             {description}
           </Typography>
         </Col>
