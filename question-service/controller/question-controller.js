@@ -17,6 +17,8 @@ export async function createQuestion(req, res) {
         const missingParam = [];
         if (!req.body.difficulty || req.body.difficulty.trim().length == 0)
             missingParam.push("difficulty");
+        if (!req.body.title || req.body.title.trim().length == 0)
+            missingParam.push("title");
         if (!req.body.content || req.body.content.trim().length == 0)
             missingParam.push("content");
         if (!req.body.answer || req.body.answer.trim().length == 0)
@@ -29,6 +31,7 @@ export async function createQuestion(req, res) {
 
         const resp = await ormCreateQuestion(
             req.body.difficulty,
+            req.body.title,
             req.body.content,
             req.body.answer
         );
@@ -102,7 +105,7 @@ export async function getQuestionContent(req, res) {
 
         const resp = await ormGetQuestionContent(req.body.id);
         if (resp.err) throw Error(resp.err);
-        return res.status(200).json({ content: resp.content });
+        return res.status(200).json({ question: resp.content });
     } catch (err) {
         return res.status(500).json({
             Error: `Get question content failed with error: ${err.message}`,

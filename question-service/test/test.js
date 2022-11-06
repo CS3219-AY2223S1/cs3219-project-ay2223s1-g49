@@ -27,11 +27,13 @@ describe("Test create questions", () => {
     const URL = "/service/create/question";
     it("Should be blocked", (done) => {
         const VALID_DIFFICULTY = "easy";
+        const VALID_TITLE = "Longest Palindrome Question";
         const VALID_CONTENT = "Lorem Ipsum";
         const VALID_ANSWER =
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
         const VALID_PAYLOAD = {
             difficulty: VALID_DIFFICULTY,
+            title: VALID_TITLE,
             content: VALID_CONTENT,
             answer: VALID_ANSWER,
         };
@@ -68,18 +70,21 @@ describe("Test questions limit", () => {
         await QuestionModel.deleteMany({});
         const hardQuestion = QuestionModel({
             difficulty: "hard",
+            title: "Sample Question Title",
             content: "  cool  ",
             answer: "this is answer",
         });
         await hardQuestion.save();
         const easyQuestion1 = QuestionModel({
             difficulty: "easy",
+            title: "Sample Question Title",
             content: "  cool1  ",
             answer: "this is answer",
         });
         await easyQuestion1.save();
         const easyQuestion2 = QuestionModel({
             difficulty: "easy",
+            title: "Sample Question Title",
             content: "  cool2  ",
             answer: "this is answer",
         });
@@ -141,18 +146,21 @@ describe("Test quesions random id", () => {
         await QuestionModel.deleteMany({});
         const hardQuestion = QuestionModel({
             difficulty: "hard",
+            title: "Sample Question Title",
             content: "  cool  ",
             answer: "this is answer",
         });
         await hardQuestion.save();
         const easyQuestion1 = QuestionModel({
             difficulty: "easy",
+            title: "Sample Question Title",
             content: "  cool1  ",
             answer: "this is answer",
         });
         await easyQuestion1.save();
         const easyQuestion2 = QuestionModel({
             difficulty: "easy",
+            title: "Sample Question Title",
             content: "  cool2  ",
             answer: "this is answer",
         });
@@ -213,12 +221,14 @@ describe("Test quesions random id", () => {
 describe("Test quesions random id", () => {
     const URL = "/service/get/question-content";
     const questionContent = "  cool  ";
+    const questionTitle = "Sample Question Title";
     var questionID;
     before(async () => {
         // Clear DB and insert test user
         await QuestionModel.deleteMany({});
         const hardQuestion = QuestionModel({
             difficulty: "hard",
+            title: questionTitle,
             content: questionContent,
             answer: "this is answer",
         });
@@ -241,7 +251,8 @@ describe("Test quesions random id", () => {
             .send(VALID_PAYLOAD)
             .end((req, res) => {
                 expect(res).to.have.status(200);
-                expect(res.body.content).to.equal(questionContent);
+                expect(res.body.question.content).to.equal(questionContent);
+                expect(res.body.question.title).to.equal(questionTitle);
                 done();
             });
     });
@@ -268,6 +279,7 @@ describe("Test quesions random id", () => {
         await QuestionModel.deleteMany({});
         const hardQuestion = QuestionModel({
             difficulty: "hard",
+            title: "Sample Question Title",
             content: questionContent,
             answer: questionAnswer,
         });
@@ -317,6 +329,7 @@ describe("Test get all questions", () => {
         await QuestionModel.deleteMany({});
         const hardQuestion = QuestionModel({
             difficulty: "hard",
+            title: "Sample Question Title",
             content: questionContent,
             answer: questionAnswer,
         });

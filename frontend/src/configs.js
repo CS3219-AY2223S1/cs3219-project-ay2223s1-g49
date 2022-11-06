@@ -25,6 +25,7 @@ const PREFIX_USER_CHANGE_PASSWORD = "/api/user/change-password";
 
 const PREFIX_CREATE_QUESTION = "/service/create/question";
 const PREFIX_DELETE_QUESTION = "/service/delete/question";
+const PREFIX_GET_SPECIFIC_QUESTION = "/service/get/question-content";
 const PREFIX_GET_RANDOM_QUESTION = "/service/get/random-id";
 const PREFIX_GET_DIFFICULTY_LIMIT = "/service/get/limit";
 const PREFIX_GET_QUESTION_ANSWER = "/service/get/question-answer";
@@ -42,6 +43,8 @@ export const URL_GET_QUESTION_ANSWER =
     QUESTION_SVC_URI_HOSTNAME + PREFIX_GET_QUESTION_ANSWER;
 export const URL_GET_ALL_QUESTIONS =
     QUESTION_SVC_URI_HOSTNAME + PREFIX_GET_ALL_QUESTIONS;
+export const URL_GET_SPECIFIC_QUESTIONS =
+    QUESTION_SVC_URI_HOSTNAME + PREFIX_GET_SPECIFIC_QUESTION;
 
 export const URL_USER_SVC = USER_SVC_URI_HOSTNAME + PREFIX_USER_SVC;
 export const URL_USER_LOGIN = USER_SVC_URI_HOSTNAME + PREFIX_USER_LOGIN;

@@ -88,18 +88,18 @@ function MatchingPage(props) {
         setMatchStatus("Please wait while we find you a match");
     const handleNoMatchFound = () =>
         setMatchStatus("No match available now. Please try again later");
-    const [difficultyLevel, setDifficultyLevel] = React.useState("hard");
+    const [difficultyLevel, setDifficultyLevel] = React.useState("Hard");
     const handleEasy = () => {
-        setDifficultyLevel("easy");
-        return "easy";
+        setDifficultyLevel("Easy");
+        return "Easy";
     };
     const handleMedium = () => {
-        setDifficultyLevel("medium");
-        return "medium";
+        setDifficultyLevel("Medium");
+        return "Medium";
     };
     const handleHard = () => {
-        setDifficultyLevel("hard");
-        return "hard";
+        setDifficultyLevel("Hard");
+        return "Hard";
     };
     return (
         <Container fluid className={classes.mainContainer}>
