@@ -18,10 +18,11 @@ function createErrResponse(err, method) {
     return resp;
 }
 
-export async function ormCreateQuestion(difficulty, content, answer) {
+export async function ormCreateQuestion(difficulty, title, content, answer) {
     try {
         const newQuestion = await createQuestion({
             difficulty,
+            title,
             content,
             answer,
         });

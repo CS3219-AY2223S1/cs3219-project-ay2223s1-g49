@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 
 function QuestionAdminPage(props) {
     const [difficulty, setDifficulty] = useState();
+    const [title, setTitle] = useState();
     const [question, setQuestion] = useState();
     const [answer, setAnswer] = useState();
     const [editMode, setEditMode] = useState({
@@ -51,6 +52,7 @@ function QuestionAdminPage(props) {
     const classes = useStyles();
     const clearInput = () => {
         setDifficulty("");
+        setTitle("");
         setQuestion("");
         setAnswer("");
     };
@@ -77,6 +79,7 @@ function QuestionAdminPage(props) {
             .createAxiosHeader()
             .post(URL_CREATE_QUESTION, {
                 difficulty: difficulty,
+                title: title,
                 content: question,
                 answer: answer,
             })
@@ -134,6 +137,15 @@ function QuestionAdminPage(props) {
                         placeholder="Difficulty level"
                         variant="filled"
                         onChange={(e) => setDifficulty(e.target.value)}
+                    ></TextField>
+                </div>
+                <div className="my-5">
+                    <div>Title</div>
+                    <TextField
+                        value={title}
+                        placeholder="Question Title"
+                        variant="filled"
+                        onChange={(e) => setTitle(e.target.value)}
                     ></TextField>
                 </div>
                 <div className="my-5">
@@ -248,7 +260,7 @@ function QuestionAdminPage(props) {
                                 }}
                                 key={idx}
                             >
-                                {item.content}
+                                {item.title}
                             </Grid>
                         </Grid>
                     ))}
