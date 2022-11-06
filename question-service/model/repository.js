@@ -43,6 +43,7 @@ export async function getDifficultyLimit(_difficulty) {
 
 export async function getRandomId(_difficulty) {
     let id = null;
+    console.log(`difficulty is ${_difficulty}`);
     const query = QuestionModel.aggregate([
         { $match: { difficulty: _difficulty } },
         { $sample: { size: 1 } },
@@ -55,14 +56,17 @@ export async function getRandomId(_difficulty) {
 }
 
 export async function getQuestionContent(id) {
-    let content = null;
+    let question_object = null;
     const query = QuestionModel.findById(id).exec();
     await query.then(function (question) {
         if (!question) throw Error("Question id not found in database");
-        content = question.content;
+        question_object = {
+            title: question.title,
+            content: question.content,
+        };
     });
 
-    return content;
+    return question_object;
 }
 
 export async function getQuestionAnswer(id) {
