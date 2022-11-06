@@ -22,7 +22,12 @@ const SECRET_KEY =
 export async function createUser(req, res) {
     try {
         const { username, password } = req.body;
-        if (username && username.trim() !== "" && password) {
+        if (
+            username &&
+            username.trim() !== "" &&
+            password &&
+            password.trim() !== ""
+        ) {
             const usernameInUse = await _checkUser(username);
             if (usernameInUse) {
                 return res

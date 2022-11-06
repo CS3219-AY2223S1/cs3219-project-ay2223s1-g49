@@ -12,8 +12,8 @@ function createErrResponse(err, method) {
     const message = `Error occured in ${method}: ${err.message}`;
     console.log(message);
     const resp = {
-        err: err,
-        message: message,
+        err: message,
+        message: null,
     };
     return resp;
 }
@@ -34,7 +34,7 @@ export async function ormCreateQuestion(difficulty, title, content, answer) {
         };
         return resp;
     } catch (err) {
-        return createErrResponse(err.message, "ormCreateQuestion");
+        return createErrResponse(err, "ormCreateQuestion");
     }
 }
 
@@ -47,7 +47,7 @@ export async function ormDeleteQuestion(id) {
         };
         return resp;
     } catch (err) {
-        return createErrResponse(err.message, "ormDeleteQuestion");
+        return createErrResponse(err, "ormDeleteQuestion");
     }
 }
 
@@ -60,7 +60,7 @@ export async function ormGetDifficultyLimit(difficulty) {
         };
         return resp;
     } catch (err) {
-        return createErrResponse(err.message, "ormGetDifficultyLimit");
+        return createErrResponse(err, "ormGetDifficultyLimit");
     }
 }
 
@@ -73,7 +73,12 @@ export async function ormGetRandomId(difficulty) {
         };
         return resp;
     } catch (err) {
-        return createErrResponse(err.message, "ormGetRandomId");
+        if (err.message === "No questions available")
+            return {
+                err: "No question of this difficulty is available!",
+                message: null,
+            };
+        return createErrResponse(err, "ormGetRandomId");
     }
 }
 
@@ -86,7 +91,7 @@ export async function ormGetQuestionContent(id) {
         };
         return resp;
     } catch (err) {
-        return createErrResponse(err.message, "ormGetQuestionContent");
+        return createErrResponse(err, "ormGetQuestionContent");
     }
 }
 
@@ -99,7 +104,7 @@ export async function ormGetQuestionAnswer(id) {
         };
         return resp;
     } catch (err) {
-        return createErrResponse(err.message, "ormGetQuestionAnswer");
+        return createErrResponse(err, "ormGetQuestionAnswer");
     }
 }
 
@@ -112,6 +117,6 @@ export async function ormGetAllQuestions() {
         };
         return resp;
     } catch (err) {
-        return createErrResponse(err.message, "ormGetAllQuestions");
+        return createErrResponse(err, "ormGetAllQuestions");
     }
 }
