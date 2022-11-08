@@ -43,6 +43,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Create .env file  
+        run: |
+          echo "" > .env
+          echo "DB_CLOUD_URI_PROD=${{ secrets.DB_CLOUD_URI_PROD }}" >> .env
+          echo ENV="PROD" >> .env
+
       - name: Create ZIP deployment package
         run: zip -r chat-service.zip ./
 
