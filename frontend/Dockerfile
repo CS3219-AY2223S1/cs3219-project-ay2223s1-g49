@@ -4,9 +4,9 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install --force
-
 COPY . .
+
+RUN npm install --force && npm run build
 
 EXPOSE 8081
 
