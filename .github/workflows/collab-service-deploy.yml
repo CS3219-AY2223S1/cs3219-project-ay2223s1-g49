@@ -22,7 +22,7 @@ jobs:
     env:
       ENV: TEST
       JWT_TEST_KEY: ${{ secrets.JWT_TEST_KEY }}
-      DB_CLOUD_URI_TEST: ${{ secrets.DB_CLOUD_URI_TEST }}
+      DB_CLOUD_URI_TEST: ${{ secrets.DB_CLOUD_URI_1_TEST }}
 
     steps:
     - uses: actions/checkout@v3
@@ -46,7 +46,7 @@ jobs:
       - name: Create .env file  
         run: |
           echo "" > .env
-          echo "DB_CLOUD_URI_PROD=${{ secrets.DB_CLOUD_URI_PROD }}" >> .env
+          echo "DB_CLOUD_URI_PROD=${{ secrets.DB_CLOUD_URI_1_PROD }}" >> .env
           echo ENV="PROD" >> .env
 
       - name: Create ZIP deployment package
