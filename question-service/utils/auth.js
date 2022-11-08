@@ -6,7 +6,6 @@ const allowedRoles = ["admin"];
 
 export const verifyAccess = async (_token) => {
     try {
-        console.log(SECRET_KEY);
         const valid = await verifyToken(_token);
         if (!valid) return false;
 
@@ -25,7 +24,6 @@ export const verifyAccess = async (_token) => {
 };
 
 const verifyToken = async (_token) => {
-    console.log("checking signature");
     if (!_token || _token == "") return false;
 
     try {
@@ -33,7 +31,6 @@ const verifyToken = async (_token) => {
         return true;
     } catch (err) {
         console.log(err);
-        console.log("tampered token");
         return false;
     }
 };

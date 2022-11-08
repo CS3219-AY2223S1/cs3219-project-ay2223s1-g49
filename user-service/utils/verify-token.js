@@ -11,14 +11,12 @@ export const verifyToken = async _token => {
 
         const resp = await _getBlacklistedToken(_token)
         if (resp.err || !resp){
-            console.log('invalid token');
             return false
         } else {
-            console.log('valid token');
             return true
         }
     } catch (err) {
-        console.log('tampered token');
+        console.log('Error occured while verifying token' + err)
         return false
     }
 

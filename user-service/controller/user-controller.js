@@ -105,7 +105,6 @@ export async function authUser(req, res) {
         }
 
         const resp = await _authUser(username, password);
-        console.log(resp);
 
         if (resp.err) {
             return (
@@ -170,7 +169,6 @@ export async function logout(req, res) {
                 if (err) {
                     return res.status(400).json({ message: "Invalid token" });
                 } else {
-                    console.log(decoded);
                     const username = decoded.user.username;
                     const resp = await _blacklistToken({ username, token });
                     if (resp.err) {
@@ -211,7 +209,7 @@ export async function getUsername(req, res) {
                 _username = decoded.user.username;
             }
         });
-        console.log("Username is: ", _username);
+        
         return res.status(200).json({ username: _username });
     } catch {
         console.error(err);

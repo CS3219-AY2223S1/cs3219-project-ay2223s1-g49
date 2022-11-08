@@ -4,7 +4,6 @@ import { verifyToken } from './utils/verify-token.js'
 export const auth = async (req,res,next) => {
     try{
         const token = (req.headers['authorization'])
-        console.log(`middleware verifying ${token}`);
         
         if (await verifyToken(token)){
             next()

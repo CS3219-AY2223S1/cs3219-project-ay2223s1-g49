@@ -11,8 +11,6 @@ export const allow = (req, res, next) => {
 export const auth = async (req, res, next) => {
     try {
         const token = req.headers["authorization"];
-        console.log(`Checking access rights`);
-        console.log(req.headers["authorization"]);
         if (await verifyAccess(token)) {
             next();
         } else {
