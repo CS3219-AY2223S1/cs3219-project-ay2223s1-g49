@@ -31,7 +31,7 @@ import RealTimeEditor from "../client/realTimeEditor.jsx"
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#212121',
   },
   questionContainer: {
     height: '100vh',
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
     borderLeft: '1px solid rgba(235, 233, 230)',
   },
   chatWindow: {
-    height: '90vh',
+    height: '85vh',
     width: '100%',
     paddingBottom: '5px',
   },
@@ -168,7 +168,7 @@ function CollabPage() {
           <div class="d-flex justify-content-center">
             <Image fluid src={rocketImage} style={{ width: '40%' }} />
           </div>
-          <Typography style={{ marginLeft: 20, marginTop: 20, flexGrow: 1, fontWeight: 600, fontSize: 23 }}>
+          <Typography style={{ marginLeft: 20, marginTop: 20, flexGrow: 1, fontWeight: 600, fontSize: 23, color: '#FFFFFF' }}>
             {question}
           </Typography>
           <ThemeProvider theme={theme}>
@@ -178,8 +178,8 @@ function CollabPage() {
               {difficulty}
             </Button>
           </ThemeProvider>
-          <Divider style={{ marginLeft: 20, marginTop: 20, width: '40vh', backgroundColor: "#343536" }} />
-          <Typography className={classes.displayLinebreak} style={{ marginLeft: 20, marginTop: 30, fontSize: 15 }}>
+          <Divider style={{ marginLeft: 20, marginTop: 20, width: '40vh', backgroundColor: "#FFFFFF" }} />
+          <Typography className={classes.displayLinebreak} style={{ marginLeft: 20, marginTop: 30, fontSize: 15, color: "#FFFFFF" }}>
             {description}
           </Typography>
         </Col>
@@ -207,7 +207,7 @@ function CollabPage() {
             <div class="d-flex justify-content-center">
               <Typography style={{
                 marginTop: 10, fontSize: 20, fontWeight: 600,
-                fontStyle: 'italic', color: "#0B034A"
+                fontStyle: 'italic', color: "#FFFFFF"
               }}>
                 Chat Application
               </Typography>
@@ -225,11 +225,11 @@ function CollabPage() {
                   label="Type in your message"
                   size="small"
                   variant="outlined"
-                  style={{ marginTop: 10 }}
+                  style={{ marginTop: 10, backgroundColor: "#FFFFFF"}}
                   fullWidth />
               </Grid>
               <Grid xs={2} item>
-                <IconButton style={{ marginLeft: 10, marginTop: 10 }} onClick={sendMessage} >
+                <IconButton style={{ marginLeft: 10, marginTop: 10, backgroundColor: "#FFFFFF" }} onClick={sendMessage} >
                   <SendIcon />
                 </IconButton>
               </Grid>

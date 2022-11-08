@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
         height: "100vh",
     },
     rightContainer: {
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#212121",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -103,7 +103,7 @@ function MatchingPage(props) {
     };
     return (
         <Container fluid className={classes.mainContainer}>
-            <Row>
+            <Row >
                 <Col className={classes.leftContainer} xs={4}>
                     <div className="d-flex justify-content-center mt-4">
                         <Image
@@ -187,7 +187,7 @@ function MatchingPage(props) {
                                 fontWeight: 600,
                                 fontSize: 40,
                             }}
-                            color="#424242"
+                            color="#FFFFFF"
                         >
                             Welcome to Peerprep
                             <RocketLaunchIcon
@@ -207,7 +207,7 @@ function MatchingPage(props) {
                                 fontWeight: 600,
                                 fontSize: 25,
                             }}
-                            color="#424242"
+                            color="#FFFFFF"
                         >
                             Find a Coding Partner
                         </Typography>
@@ -217,7 +217,7 @@ function MatchingPage(props) {
                                 flexGrow: 1,
                                 fontSize: 14,
                             }}
-                            color="#424242"
+                            color="#FFFFFF"
                         >
                             Collaborate with another student and practice for
                             your interviews together.
