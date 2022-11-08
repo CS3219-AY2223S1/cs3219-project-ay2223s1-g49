@@ -32,10 +32,7 @@ export function collabWithRandomQuestionId(newRoomId, username, difficulty) {
 }
 
 matchingSocket.on("connect", async () => {
-    console.log(`Client (FrontEnd) connected to Matching service with id of: ${matchingSocket.id}`)
-
     matchingSocket.on(`matchSuccess`, async (newRoomId) => {
-      console.log(`Successfully matched with matching Id: ${newRoomId} for username ${dictionaryusername[collabSocket.id]}, difficulty: ${dictionarydifficulty[collabSocket.id]}`)
       const globalDetails = {
         roomId: newRoomId,
         username: dictionaryusername[collabSocket.id],
@@ -63,13 +60,11 @@ export function runChatService(newRoomId) {
 }
 
 export function timeOut(usernameVal, difficultyVal) {
-  console.log("Client timed out!")
   matchingSocket.emit(`timeout`, {username : usernameVal, difficulty : difficultyVal})
 }
 
 
 export function findMatch(usernameVal, difficultyVal) {
-  console.log("Client finding match")
   const cid = collabSocket.id
   dictionaryusername[cid] = usernameVal
   dictionarydifficulty[cid] = difficultyVal
@@ -86,11 +81,7 @@ export const collabSocket = io(collabHost, {
   })
 
 collabSocket.on("connect", () => {
-    console.log(`Client (FrontEnd) connected to collab service with id of: ${collabSocket.id}`)
-
     collabSocket.on(`collabSuccess`, (collabRoomId, questionId) => {
-      console.log(`Client (FrontEnd) has successfully joined collab room : ${collabRoomId} with question Id of ${questionId}`);
-      //frontEnd.setQuestion(questionId)
       const questionDetails = {
         roomId: collabRoomId,
         questionId: questionId
@@ -99,7 +90,6 @@ collabSocket.on("connect", () => {
     })
 
     collabSocket.on('getUserDetails', (Details) => {
-      console.log(`Details for ${dictionaryusername[collabSocket.id]} are: ${Details}`)
       if (Details != null) {
         localStorage.setItem("globalVariable", JSON.stringify(Details))
       }
@@ -112,14 +102,12 @@ collabSocket.on("connect", () => {
     })
 
     collabSocket.on(`quitCollabPing`, () => {
-      console.log(`pinged ${dictionaryusername[collabSocket.id]}!!!!!!!!!`)
       collabSocket.emit(`quitCollab`, dictionaryusername[collabSocket.id])
     })
 
 })
 
 export function quitCollab(username) {
-  console.log(`quitting for ${username}`)
   collabSocket.emit(`quitCollab`, username)
 }
 

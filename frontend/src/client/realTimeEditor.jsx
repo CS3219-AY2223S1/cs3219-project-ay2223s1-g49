@@ -20,16 +20,13 @@ const RealTimeEditor = () => {
 
         editor.setSize('100%', '100%')
         editor.on('change', (instance, changes) => {
-            console.log('smth has changed on this page. I am ' + client.collabSocket.id)
             const { origin } = changes
             if (origin !== 'setValue') {
                 client.collabSocket.emit('CODE_CHANGED', client.collabSocket.id, instance.getValue())
-                console.log('emit change signal ' + instance.getValue())
             }
         })
 
         client.collabSocket.on('CODE_CHANGED', (roomId, code) => {
-            console.log('smth has changed on the other end!' + code)
             editor.setValue(code)
         })
 
