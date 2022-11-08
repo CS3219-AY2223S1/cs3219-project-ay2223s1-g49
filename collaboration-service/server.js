@@ -65,7 +65,6 @@ io.on("connection", (socket) => {
         dictionaryCollab[socket.id] = collabId
         socket.join(collabId)
         createCollab(collabId, username, difficulty)
-        // listAllConnectedRooms(socket)
         if (getSavedMessage(socket) && getSavedMessage(socket) != "") {
             socket.emit('CODE_INIT', getSavedMessage(socket))
         }
@@ -110,9 +109,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on('CODE_CHANGED', async (roomId, code) => {
-        console.log('someone sent ' + code)
         socket.to(dictionaryCollab[socket.id]).emit('CODE_CHANGED', roomId, code)
-        console.log(`something has changed on one end for room ${roomId}    collabRoom: ${dictionaryCollab[socket.id]}`)
         updateSavedMessage(socket, code)
     })
 

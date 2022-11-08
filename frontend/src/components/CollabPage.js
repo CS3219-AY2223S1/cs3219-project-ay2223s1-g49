@@ -114,7 +114,6 @@ function CollabPage() {
     }).catch(err => {
       console.log(err);
     })
-    console.log(data.data.question.content)
     setDescription(data.data.question.content);
     setQuestion(data.data.question.title);
   }
@@ -139,13 +138,10 @@ function CollabPage() {
   }
 
   validateToken(token).then(tokenValid => {
-    console.log("verifying token")
     if (!tokenValid) {
-      console.log("invalid token")
       cookies.remove('access token')
       navigate('/login')
     } else {
-      console.log("valid token")
       initialiseUsername()
       getCollabDetails(username)
       const detail1 = JSON.parse(localStorage.getItem("globalVariable"));
