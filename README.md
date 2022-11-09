@@ -47,7 +47,7 @@ Steps
 <br>
 
 2. User Service
-   1. Navigate to frontend directory
+   1. Navigate to User Service directory
       1. `cd ./user-service`
    2. Install dependencies
       1. `npm install`
@@ -59,7 +59,7 @@ Steps
 <br>
 
 3. Question Service
-   1. Navigate to frontend directory
+   1. Navigate to Question Service directory
       1. `cd ./question-service`
    2. Install dependencies
       1. `npm install`
@@ -71,7 +71,7 @@ Steps
 <br>
 
 4. Matching Service
-   1. Navigate to frontend directory
+   1. Navigate to Matching Service directory
       1. `cd ./matching-service`
    2. Install dependencies
       1. `npm install`
@@ -83,7 +83,7 @@ Steps
 <br>
 
 5. Collaboration Service
-   1. Navigate to frontend directory
+   1. Navigate to Collaboration Service directory
       1. `cd ./collaboration-service`
    2. Install dependencies
       1. `npm install`
@@ -95,7 +95,7 @@ Steps
 <br>
 
 6. Chat Service
-   1. Navigate to frontend directory
+   1. Navigate to Chat Service directory
       1. `cd ./chat-service`
    2. Install dependencies
       1. `npm install`
