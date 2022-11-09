@@ -124,7 +124,6 @@ function QuestionAdminPage(props) {
                             ...editMode.create,
                             ...editMode.edit,
                         });
-                        console.log(editMode);
                     }}
                 >
                     <Tab value={0} label="Create" />

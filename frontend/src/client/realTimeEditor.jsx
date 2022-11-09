@@ -9,7 +9,7 @@ const client = require('./client')
 const RealTimeEditor = () => {
 
     useEffect(() => {
-        console.log(document.getElementById('codemirror'))
+        // console.log(document.getElementById('codemirror'))
         const editor = CodeMirror.fromTextArea(document.getElementById('codemirror'), 
         {
             lineNumbers: true,

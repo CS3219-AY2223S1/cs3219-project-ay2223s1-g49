@@ -43,7 +43,7 @@ matchingSocket.on("connect", async () => {
     })
 
     matchingSocket.on(`getUserDetails`, (details) => {
-      console.log(`Details for ${dictionaryusername[collabSocket.id]} are: ${details}`)
+      // console.log(`Details for ${dictionaryusername[collabSocket.id]} are: ${details}`)
     })
 })
 
@@ -123,7 +123,7 @@ export const chatSocket = io(chatbHost, {
 })
 
 chatSocket.on("connect", () => {
-  console.log(`New Socket Connection ${chatSocket.id}`)
+  // console.log(`New Socket Connection ${chatSocket.id}`)
 })
 
 chatSocket.on("message", (messageObject) => {

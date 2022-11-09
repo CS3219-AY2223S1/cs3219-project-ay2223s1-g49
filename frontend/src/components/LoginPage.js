@@ -145,7 +145,7 @@ export default function LoginPage({ setToken }) {
                 expires: new Date(Date.now() + 86400000),
             }); // token expires in a day(86400000 ms)
             console.log("cookie returned");
-            console.log(cookies.get("access token"));
+            // console.log(cookies.get("access token"));
             setToken(res.data.token);
         }
     };
