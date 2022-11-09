@@ -1,0 +1,42 @@
+name: User Service Test
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [ "!main" ]
+
+  pull_request:
+    branches: [ "main" ]
+
+
+defaults:
+ run:
+  working-directory: ./user-service
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    env:
+      ENV: TEST
+      JWT_TEST_KEY: ${{ secrets.JWT_TEST_KEY }}
+      DB_CLOUD_URI_TEST: ${{ secrets.DB_CLOUD_URI_TEST }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - run: npm install
+    - run: npm test
